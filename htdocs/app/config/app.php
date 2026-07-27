@@ -129,5 +129,5 @@ return array(
 
     // Shown on error pages and in the footer so a user can quote a build
     // when they report a problem.
-    'build' => '1.0.0-step1',
+    'build' => '1.0.0-step2',
 );

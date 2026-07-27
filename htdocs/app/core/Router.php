@@ -309,19 +309,53 @@ class Router
             return $this->runPipeline($route, $request);
         }
 
+        // Nothing matched. The fallback handlers run through the GLOBAL
+        // middleware anyway — this is easy to get wrong and the
+        // consequences are quiet.
+        //
+        // Skip it and a 404 goes out with no security headers, no session,
+        // and therefore in the site default language rather than the
+        // reader's. Which means the most-hit page on any site — the one
+        // that catches every stale link and every bot — would be the one
+        // page with no Content-Security-Policy on it.
         if ($pathMatched) {
-            $response = $this->notAllowed !== null
-                ? call_user_func($this->notAllowed, $request)
-                : new Response('Method not allowed', 405);
+            $handler = $this->notAllowed;
+            $response = $this->runFallback($request, function (Request $req) use ($handler) {
+                return $handler !== null
+                    ? call_user_func($handler, $req)
+                    : new Response('Method not allowed', 405);
+            });
+
             // A 405 must say which methods would have worked. Some clients
             // rely on it and it costs one header.
             return $response->header('Allow', implode(', ', array_unique($allowed)));
         }
 
-        if ($this->notFound !== null) {
-            return call_user_func($this->notFound, $request);
-        }
-        return new Response('Not found', 404);
+        $handler = $this->notFound;
+        return $this->runFallback($request, function (Request $req) use ($handler) {
+            return $handler !== null
+                ? call_user_func($handler, $req)
+                : new Response('Not found', 404);
+        });
+    }
+
+    /**
+     * Run a handler through the global middleware only.
+     *
+     * Used for the 404 and 405 paths, which have no route and therefore no
+     * route middleware — a missing page must not require authentication or
+     * consume somebody's rate limit.
+     *
+     * @param Request  $request
+     * @param callable $handler
+     * @return Response
+     */
+    private function runFallback(Request $request, $handler)
+    {
+        return $this->runPipeline(array(
+            'action'     => $handler,
+            'middleware' => array(),
+        ), $request);
     }
 
     /**
@@ -461,6 +495,18 @@ class Router
             return call_user_func($middleware, $request, $next);
         }
 
+        // A middleware may carry one argument after a colon, so a route can
+        // read ->middleware('throttle:login'). The argument is passed to the
+        // constructor. One argument covers every case here — a throttle
+        // scope, a required role — and a comma-separated list would invite
+        // the sort of stringly-typed configuration nobody can grep for.
+        $argument = null;
+        $colon    = is_string($middleware) ? strpos($middleware, ':') : false;
+        if ($colon !== false) {
+            $argument   = substr($middleware, $colon + 1);
+            $middleware = substr($middleware, 0, $colon);
+        }
+
         $class = isset($this->aliases[$middleware]) ? $this->aliases[$middleware] : $middleware;
 
         if (!class_exists($class)) {
@@ -471,7 +517,7 @@ class Router
             throw new Exception('A required middleware is missing.');
         }
 
-        $instance = new $class();
+        $instance = $argument === null ? new $class() : new $class($argument);
         if (!method_exists($instance, 'handle')) {
             throw new Exception('Middleware has no handle() method: ' . $class);
         }

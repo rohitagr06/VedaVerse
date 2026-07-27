@@ -49,6 +49,13 @@ use VedaVerse\Core\View;
 
 Autoloader::register(__DIR__);
 
+// Helpers define global functions — e(), t(), csrf_field(), url() — so
+// they are required rather than autoloaded. Loaded before anything else
+// so every later layer, including the error handler, can use them.
+foreach (array('security', 'string', 'date', 'url', 'format') as $helper) {
+    require_once __DIR__ . '/app/helpers/' . $helper . '.php';
+}
+
 // ---------------------------------------------------------------------
 // 2. Configuration
 // ---------------------------------------------------------------------
@@ -91,18 +98,16 @@ Config::set('app.url', $request->base());
 // ---------------------------------------------------------------------
 View::init();
 
-// Language selection proper arrives with I18nService in Step 4. Until
-// then, honour an explicit ?lang= and fall back to the configured default,
-// which is enough for the error pages to be translated.
-$requestedLang = $request->query('lang');
-View::setLang(is_string($requestedLang) && $requestedLang !== ''
-    ? $requestedLang
-    : (string) Config::get('i18n.default', 'en'));
+// The default is set here so that anything failing BEFORE the middleware
+// runs — a configuration error, a dead database — still renders its error
+// page in a real language. SessionMiddleware then picks the visitor's
+// actual language from the URL, their account, their session or their
+// browser. Step 4 moves that logic into I18nService.
+View::setLang((string) Config::get('i18n.default', 'en'));
 
 View::share(array(
     'base_url'  => $request->base(),
     'site_name' => Config::get('app.name'),
-    'lang'      => View::lang(),
 ));
 
 // ---------------------------------------------------------------------
@@ -110,12 +115,35 @@ View::share(array(
 // ---------------------------------------------------------------------
 $router = new Router();
 
-// Short names for middleware, so a route reads as ->middleware('auth').
-// The classes themselves land in app/middleware/ in Step 2. Naming them
-// here now would make every route fail closed, which is correct behaviour
-// but not much use before the classes exist, so the map starts empty and
-// Step 2 fills it in.
-$router->aliases(array());
+// Short names, so a route reads as ->middleware('auth') rather than
+// naming a fully-qualified class. A middleware may take one argument
+// after a colon: 'throttle:login', 'role:moderator'.
+$router->aliases(array(
+    'auth'     => 'VedaVerse\\Middleware\\AuthMiddleware',
+    'role'     => 'VedaVerse\\Middleware\\AdminMiddleware',
+    'throttle' => 'VedaVerse\\Middleware\\RateLimitMiddleware',
+));
+
+/**
+ * The global stack, outermost first. The order is deliberate and is
+ * explained at the top of app/middleware/Middleware.php:
+ *
+ *   SecurityHeaders  attaches headers to EVERY response, including the
+ *                    503 from maintenance mode and the 403 from CSRF.
+ *   Session          starts the session and picks the language.
+ *   Maintenance      needs the session to exist, because its whole point
+ *                    is that an ADMIN can still get in. Put it before
+ *                    Session and the bypass silently never fires, which
+ *                    locks the owner out of the site they just closed.
+ *   Csrf             needs the session too, to compare the token, and
+ *                    refuses forged writes before any controller runs.
+ */
+$router->globalMiddleware(array(
+    'VedaVerse\\Middleware\\SecurityHeadersMiddleware',
+    'VedaVerse\\Middleware\\SessionMiddleware',
+    'VedaVerse\\Middleware\\MaintenanceMiddleware',
+    'VedaVerse\\Middleware\\CsrfMiddleware',
+));
 
 /**
  * Health check.
@@ -163,23 +191,61 @@ $router->get('/health', function (Request $req) {
  * Home.
  *
  * A placeholder until Step 5 builds the Chariot Path. It renders through
- * the real View layer so that the template lookup, escaping and layout
- * handling are all exercised rather than assumed.
+ * the real view layer and the real layout, so the account header, the
+ * flash messages, escaping and the language attribute are all exercised
+ * rather than assumed.
  */
 $router->get('/', function (Request $req) {
-    return Response::html(
-        '<!doctype html><html lang="' . View::e(View::htmlLang()) . '">'
-        . '<head><meta charset="utf-8">'
-        . '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        . '<title>' . View::e(Config::get('app.name')) . '</title></head>'
-        . '<body style="font-family:system-ui;max-width:36rem;margin:4rem auto;padding:0 1.5rem;line-height:1.6">'
-        . '<h1>' . View::e(Config::get('app.name')) . '</h1>'
-        . '<p>The foundation is installed and running. Content, the learning path and Sarathi '
-        . 'arrive in the next build steps.</p>'
-        . '<p><a href="/health">Health check</a></p>'
-        . '</body></html>'
-    );
+    return Response::html(View::render('pages/home', array(
+        'title'       => Config::get('app.name'),
+        'description' => Config::get('seo.description_default'),
+        'robots'      => Config::get('seo.robots_default'),
+        'canonical'   => $req->url('/'),
+    ), 'layouts/app'));
 })->name('home');
+
+/**
+ * Accounts.
+ *
+ * There is ONE sign-in screen, for everybody including administrators —
+ * see the note at the top of AuthController for why a second admin login
+ * form would be a liability rather than a defence.
+ *
+ * The throttle scopes are separate on purpose. Somebody who has locked
+ * themselves out of /login by mistyping must still be able to reach
+ * /recover, which is the only way back in when there is no email reset.
+ */
+$router->get('/login',  array('VedaVerse\\Controllers\\AuthController', 'showLogin'))->name('login');
+$router->post('/login', array('VedaVerse\\Controllers\\AuthController', 'login'))
+       ->middleware('throttle:login');
+
+$router->post('/logout', array('VedaVerse\\Controllers\\AuthController', 'logout'))->name('logout');
+
+$router->get('/register',  array('VedaVerse\\Controllers\\AuthController', 'showRegister'))->name('register');
+$router->post('/register', array('VedaVerse\\Controllers\\AuthController', 'register'))
+       ->middleware('throttle:login');
+
+$router->get('/recover',  array('VedaVerse\\Controllers\\AuthController', 'showRecover'))->name('recover');
+$router->post('/recover', array('VedaVerse\\Controllers\\AuthController', 'recover'))
+       ->middleware('throttle:recover');
+
+// Reached only by redirect, straight after registration or a reset. A
+// direct visit has nothing to show and bounces home — the code cannot be
+// looked up again by anybody, including an administrator.
+$router->get('/recovery-code', array('VedaVerse\\Controllers\\AuthController', 'showRecoveryCode'))
+       ->name('recovery-code');
+
+/**
+ * A placeholder for the admin panel, so the role check has something to
+ * guard and acceptance test 8 — redirect when signed out, 403 when signed
+ * in as a non-admin — can be run now rather than in Step 13.
+ */
+$router->get('/admin', function (Request $req) {
+    return Response::html('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+        . '<title>Admin</title></head><body style="font-family:system-ui;padding:2rem">'
+        . '<h1>Admin</h1><p>The panel is built in Step 13. This route exists now so the '
+        . 'role check has something to protect.</p></body></html>');
+})->middleware(array('auth', 'role:admin'))->name('admin');
 
 // ---------------------------------------------------------------------
 // 7. What to do when nothing matches
@@ -192,7 +258,12 @@ $router->onNotFound(function (Request $req) {
 });
 
 $router->onMethodNotAllowed(function (Request $req) {
-    return ErrorHandler::page(400);
+    // The 400 wording — "that request did not make sense" — is right for
+    // a wrong method, so it is reused rather than adding a seventh error
+    // page nobody will ever read. The STATUS is corrected to 405, because
+    // that is what tells a developer the route exists and the form is
+    // posting to the wrong verb. Answering 400 there costs an hour.
+    return ErrorHandler::page(400)->status(405);
 });
 
 // ---------------------------------------------------------------------

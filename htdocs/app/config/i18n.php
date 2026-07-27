@@ -168,6 +168,80 @@ return array(
         'validation.upload_size'  => array('en' => 'That file is too large.', 'hi' => 'यह फ़ाइल बहुत बड़ी है।', 'hinglish' => 'Yeh file bahut badi hai.'),
 
         // -------------------------------------------------------------
+        // Relative time and units
+        // -------------------------------------------------------------
+        'time.just_now'       => array('en' => 'just now', 'hi' => 'अभी', 'hinglish' => 'abhi'),
+        'time.minutes'        => array('en' => ':n minutes ago', 'hi' => ':n मिनट पहले', 'hinglish' => ':n minute pehle'),
+        'time.hours'          => array('en' => ':n hours ago', 'hi' => ':n घंटे पहले', 'hinglish' => ':n ghante pehle'),
+        'time.days'           => array('en' => ':n days ago', 'hi' => ':n दिन पहले', 'hinglish' => ':n din pehle'),
+        'time.minutes_short'  => array('en' => ':n min', 'hi' => ':n मिनट', 'hinglish' => ':n min'),
+        'time.under_a_minute' => array('en' => 'under a minute', 'hi' => 'एक मिनट से कम', 'hinglish' => 'ek minute se kam'),
+
+        'difficulty.beginner'     => array('en' => 'Beginner', 'hi' => 'शुरुआती', 'hinglish' => 'Shuruaati'),
+        'difficulty.intermediate' => array('en' => 'Intermediate', 'hi' => 'मध्यम', 'hinglish' => 'Medium'),
+        'difficulty.advanced'     => array('en' => 'Advanced', 'hi' => 'उन्नत', 'hinglish' => 'Advanced'),
+
+        // -------------------------------------------------------------
+        // Accounts
+        // -------------------------------------------------------------
+        // Written for somebody who is slightly anxious, because that is
+        // the state most people are in on a sign-in screen. Plain, short,
+        // no jargon — and honest about the recovery code, which is the one
+        // place this product genuinely cannot rescue anyone.
+        'auth.login.title'      => array('en' => 'Sign in', 'hi' => 'साइन इन करें', 'hinglish' => 'Sign in karo'),
+        'auth.login.lead'       => array('en' => 'Welcome back. Your reading is where you left it.', 'hi' => 'वापसी पर स्वागत है। आपका पढ़ा हुआ वहीं है जहाँ छोड़ा था।', 'hinglish' => 'Wapas aa gaye. Jahan chhoda tha wahin se shuru karo.'),
+        'auth.login.submit'     => array('en' => 'Sign in', 'hi' => 'साइन इन', 'hinglish' => 'Sign in'),
+        'auth.login.no_account' => array('en' => 'No account yet?', 'hi' => 'अभी खाता नहीं है?', 'hinglish' => 'Account nahi hai?'),
+        'auth.login.forgot'     => array('en' => 'Lost your password?', 'hi' => 'पासवर्ड भूल गए?', 'hinglish' => 'Password bhool gaye?'),
+
+        'auth.register.title'        => array('en' => 'Create an account', 'hi' => 'खाता बनाएँ', 'hinglish' => 'Account banao'),
+        'auth.register.lead'         => array('en' => 'You can read everything without one. An account adds syncing across devices, the forum, and certificates.', 'hi' => 'बिना खाते के भी सब पढ़ सकते हैं। खाते से डिवाइस के बीच सिंक, फ़ोरम और प्रमाणपत्र मिलते हैं।', 'hinglish' => 'Bina account ke bhi sab padh sakte ho. Account se sync, forum aur certificate milte hain.'),
+        'auth.register.submit'       => array('en' => 'Create my account', 'hi' => 'मेरा खाता बनाएँ', 'hinglish' => 'Account banao'),
+        'auth.register.have_account' => array('en' => 'Already have one?', 'hi' => 'पहले से खाता है?', 'hinglish' => 'Pehle se account hai?'),
+        'auth.register.no_email'     => array('en' => 'Your email is only used to sign in. Nothing is ever sent to it — this site sends no email at all.', 'hi' => 'ईमेल सिर्फ़ साइन इन के लिए है। कुछ भी नहीं भेजा जाता — यह साइट कोई ईमेल नहीं भेजती।', 'hinglish' => 'Email sirf sign in ke liye hai. Kuch bheja nahi jaata — yeh site koi email send hi nahi karti.'),
+
+        'auth.recover.title'   => array('en' => 'Recover your account', 'hi' => 'खाता वापस पाएँ', 'hinglish' => 'Account wapas lo'),
+        'auth.recover.lead'    => array('en' => 'Enter your email, the recovery code you wrote down at signup, and a new password.', 'hi' => 'अपना ईमेल, साइनअप के समय लिखा गया रिकवरी कोड, और नया पासवर्ड डालें।', 'hinglish' => 'Email, signup ke time likha recovery code, aur naya password daalo.'),
+        'auth.recover.submit'  => array('en' => 'Set a new password', 'hi' => 'नया पासवर्ड सेट करें', 'hinglish' => 'Naya password set karo'),
+        'auth.recover.done'    => array('en' => 'Password changed. You have been signed out everywhere else.', 'hi' => 'पासवर्ड बदल गया। बाकी सब जगह से साइन आउट कर दिया गया है।', 'hinglish' => 'Password change ho gaya. Baaki sab jagah se sign out kar diya hai.'),
+        'auth.recover.no_code' => array('en' => 'Lost the code as well? Then this account cannot be recovered — there is no email reset. You would need to create a new one.', 'hi' => 'कोड भी खो गया? तब यह खाता वापस नहीं मिल सकता — ईमेल रीसेट नहीं है। नया खाता बनाना होगा।', 'hinglish' => 'Code bhi kho gaya? Phir yeh account wapas nahi mil sakta — email reset hai hi nahi. Naya banana padega.'),
+
+        'auth.code.title'    => array('en' => 'Write this down now', 'hi' => 'इसे अभी लिख लें', 'hinglish' => 'Yeh abhi likh lo'),
+        'auth.code.lead'     => array('en' => 'This is your recovery code. It is shown once, right now, and stored only as a hash — nobody can look it up later, including us.', 'hi' => 'यह आपका रिकवरी कोड है। यह सिर्फ़ अभी एक बार दिख रहा है और केवल हैश के रूप में सुरक्षित है — बाद में कोई इसे नहीं देख सकता, हम भी नहीं।', 'hinglish' => 'Yeh tumhara recovery code hai. Sirf abhi ek baar dikh raha hai, aur sirf hash ban ke store hota hai — baad mein koi dekh nahi sakta, hum bhi nahi.'),
+        'auth.code.warning'  => array('en' => 'If you lose both your password and this code, the account cannot be recovered. There is no email reset, because this host blocks outgoing mail.', 'hi' => 'अगर पासवर्ड और यह कोड दोनों खो गए, तो खाता वापस नहीं मिलेगा। ईमेल रीसेट नहीं है, क्योंकि यह होस्ट ईमेल भेजने नहीं देता।', 'hinglish' => 'Password aur yeh code dono kho gaye to account wapas nahi milega. Email reset nahi hai, kyunki host email bhejne hi nahi deta.'),
+        'auth.code.copy'     => array('en' => 'Copy the code', 'hi' => 'कोड कॉपी करें', 'hinglish' => 'Code copy karo'),
+        'auth.code.copied'   => array('en' => 'Copied', 'hi' => 'कॉपी हो गया', 'hinglish' => 'Copy ho gaya'),
+        'auth.code.continue' => array('en' => 'I have written it down — continue', 'hi' => 'मैंने लिख लिया — आगे बढ़ें', 'hinglish' => 'Likh liya — aage chalo'),
+
+        'auth.field.name'             => array('en' => 'Your name', 'hi' => 'आपका नाम', 'hinglish' => 'Tumhara naam'),
+        'auth.field.email'            => array('en' => 'Email', 'hi' => 'ईमेल', 'hinglish' => 'Email'),
+        'auth.field.password'         => array('en' => 'Password', 'hi' => 'पासवर्ड', 'hinglish' => 'Password'),
+        'auth.field.new_password'     => array('en' => 'New password', 'hi' => 'नया पासवर्ड', 'hinglish' => 'Naya password'),
+        'auth.field.password_confirm' => array('en' => 'Password again', 'hi' => 'पासवर्ड दोबारा', 'hinglish' => 'Password phir se'),
+        'auth.field.code'             => array('en' => 'Recovery code', 'hi' => 'रिकवरी कोड', 'hinglish' => 'Recovery code'),
+        'auth.field.lang'             => array('en' => 'Reading language', 'hi' => 'पढ़ने की भाषा', 'hinglish' => 'Padhne ki bhasha'),
+        'auth.field.track'            => array('en' => 'Where to start', 'hi' => 'कहाँ से शुरू करें', 'hinglish' => 'Kahan se shuru karein'),
+
+        'auth.hint.password' => array('en' => 'At least 10 characters, with upper and lower case, a number and a symbol.', 'hi' => 'कम से कम 10 अक्षर, बड़े और छोटे अक्षर, एक अंक और एक चिह्न।', 'hinglish' => 'Kam se kam 10 characters, upper aur lower case, ek number aur ek symbol.'),
+        'auth.hint.track'    => array('en' => 'You can change this later without losing progress.', 'hi' => 'इसे बाद में बदल सकते हैं, प्रगति खोए बिना।', 'hinglish' => 'Baad mein change kar sakte ho, progress khoye bina.'),
+
+        'auth.track.beginner'     => array('en' => 'Beginner — chapters 2, 3, 12, 16, 18', 'hi' => 'शुरुआती — अध्याय 2, 3, 12, 16, 18', 'hinglish' => 'Beginner — chapter 2, 3, 12, 16, 18'),
+        'auth.track.intermediate' => array('en' => 'Intermediate — adds 4, 5, 6, 13, 14, 17', 'hi' => 'मध्यम — साथ में 4, 5, 6, 13, 14, 17', 'hinglish' => 'Intermediate — inke saath 4, 5, 6, 13, 14, 17'),
+        'auth.track.advanced'     => array('en' => 'Advanced — all eighteen chapters', 'hi' => 'उन्नत — सभी अठारह अध्याय', 'hinglish' => 'Advanced — poore atharah chapter'),
+
+        'auth.error.invalid'             => array('en' => 'That email and password do not match an account.', 'hi' => 'यह ईमेल और पासवर्ड किसी खाते से मेल नहीं खाते।', 'hinglish' => 'Yeh email aur password kisi account se match nahi karte.'),
+        'auth.error.email_taken'         => array('en' => 'There is already an account with that email. Try signing in, or recover it.', 'hi' => 'इस ईमेल से खाता पहले से है। साइन इन करें या रिकवर करें।', 'hinglish' => 'Is email se account pehle se hai. Sign in karo ya recover karo.'),
+        'auth.error.recover_invalid'     => array('en' => 'That email and recovery code do not match.', 'hi' => 'यह ईमेल और रिकवरी कोड मेल नहीं खाते।', 'hinglish' => 'Yeh email aur recovery code match nahi karte.'),
+        'auth.error.registration_closed' => array('en' => 'New accounts are closed at the moment. Reading is still open to everyone.', 'hi' => 'अभी नए खाते बंद हैं। पढ़ना सबके लिए खुला है।', 'hinglish' => 'Abhi naye account band hain. Padhna sabke liye khula hai.'),
+
+        'auth.logged_out' => array('en' => 'Signed out. Your bookmarks on this device are still here.', 'hi' => 'साइन आउट हो गया। इस डिवाइस पर आपके बुकमार्क अब भी यहीं हैं।', 'hinglish' => 'Sign out ho gaya. Is device par tumhare bookmark abhi bhi yahin hain.'),
+        'auth.merged'     => array('en' => 'Everything you saved before signing in has been added to your account.', 'hi' => 'साइन इन से पहले जो सेव किया था, वह आपके खाते में जुड़ गया है।', 'hinglish' => 'Sign in se pehle jo save kiya tha, woh account mein add ho gaya hai.'),
+        'auth.sign_out'   => array('en' => 'Sign out', 'hi' => 'साइन आउट', 'hinglish' => 'Sign out'),
+
+        'form.errors_heading' => array('en' => 'Please fix these first', 'hi' => 'पहले इन्हें ठीक करें', 'hinglish' => 'Pehle yeh theek karo'),
+        'form.required_note'  => array('en' => 'All fields are required.', 'hi' => 'सभी फ़ील्ड ज़रूरी हैं।', 'hinglish' => 'Saare fields zaroori hain.'),
+
+        // -------------------------------------------------------------
         // Offline
         // -------------------------------------------------------------
         'offline.badge'      => array('en' => 'Offline', 'hi' => 'ऑफ़लाइन', 'hinglish' => 'Offline'),
