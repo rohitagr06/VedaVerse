@@ -1,0 +1,89 @@
+# =====================================================================
+# VedaVerse — .htaccess (root)
+# ---------------------------------------------------------------------
+# PROVISIONAL. This is the minimum needed for the site to route requests
+# and for the sensitive folders to be unreachable. Step 15 of the build
+# order replaces it with the full version: compression, cache headers,
+# and the complete security header set.
+#
+# THE ONE RULE THAT MATTERS ON THIS HOST
+#   Every directive that depends on an Apache module is wrapped in an
+#   <IfModule> block. InfinityFree does not enable every module, and an
+#   unwrapped directive for a missing module does not get ignored — it
+#   returns HTTP 500 for the entire site, with no error message anywhere
+#   you can see it. That failure mode is the single most common way a
+#   working upload becomes a dead site, so wrap everything.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# Front controller
+# ---------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Send anything that is not a real file or directory to index.php.
+    # Real files (CSS, images, the service worker) are served directly.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Directory listings
+# ---------------------------------------------------------------------
+# Without this, a folder with no index file lists its contents to anyone.
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Files that must never be served
+# ---------------------------------------------------------------------
+# Belt and braces alongside the per-folder .htaccess files the installer
+# writes. A request for app/config/local.php should 403, not disclose
+# your database password.
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<FilesMatch "\.(sql|log|md|json|lock|ini|sh|bak|old|dist|example)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# manifest.webmanifest is JSON but must stay public, so it is exempted
+# from the rule above.
+<Files "manifest.webmanifest">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Allow from all
+    </IfModule>
+</Files>
+
+# ---------------------------------------------------------------------
+# Default character set
+# ---------------------------------------------------------------------
+# Devanagari renders as mojibake if the server declares latin1.
+AddDefaultCharset UTF-8
+
+# ---------------------------------------------------------------------
+# Error documents
+# ---------------------------------------------------------------------
+# Routed through the front controller so they are translated and styled
+# like the rest of the site.
+ErrorDocument 403 /index.php
+ErrorDocument 404 /index.php

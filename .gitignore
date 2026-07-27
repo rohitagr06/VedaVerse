@@ -1,0 +1,23 @@
+# =====================================================================
+# VedaVerse — repository root .gitignore
+# ---------------------------------------------------------------------
+# htdocs/ has its own .gitignore covering runtime state and secrets.
+# This file only handles things that live above it.
+# =====================================================================
+
+# Scratch folder used when files have to be moved rather than deleted.
+_to_delete/
+
+# Archives handed over between machines. The repo is the transport now.
+*.zip
+
+# Operating system noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Editors
+.idea/
+.vscode/
+*.sublime-*

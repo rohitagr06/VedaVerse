@@ -1,0 +1,58 @@
+# =====================================================================
+# VedaVerse — htdocs/.gitignore
+# ---------------------------------------------------------------------
+# The rule here is narrower than it looks. Runtime CONTENT is ignored;
+# the folders and their protective files are not.
+#
+# Every writable folder carries an .htaccess deny rule and a blank
+# index.php guard. Those two files are what stop storage/logs/ and
+# uploads/imports/ from being public URLs, so they must be in the repo
+# and must survive a fresh clone. Ignoring a whole folder would drop
+# them, and the gap would only show up in production — which is the
+# worst possible place to discover it.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# The only file with real secrets in it
+# ---------------------------------------------------------------------
+app/config/local.php
+
+# ---------------------------------------------------------------------
+# Runtime state — regenerated on demand, and full of user data
+# ---------------------------------------------------------------------
+storage/cache/**/*.cache
+storage/cache/**/*.tmp
+storage/logs/*.log
+storage/sessions/sess_*
+storage/backups/*.sql
+storage/backups/*.zip
+storage/temp/*
+!storage/temp/index.php
+!storage/temp/.gitkeep
+
+# Built by the admin panel, not by a developer
+assets/data/content-bundle.json
+
+# ---------------------------------------------------------------------
+# Anything a user uploaded, or that was generated for them
+# ---------------------------------------------------------------------
+uploads/certificates/*
+!uploads/certificates/index.php
+!uploads/certificates/.gitkeep
+
+uploads/imports/*
+!uploads/imports/index.php
+!uploads/imports/.htaccess
+!uploads/imports/.gitkeep
+
+uploads/avatars/*
+!uploads/avatars/index.php
+!uploads/avatars/.gitkeep
+
+# ---------------------------------------------------------------------
+# Operating system noise
+# ---------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*~
