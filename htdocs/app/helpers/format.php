@@ -16,15 +16,15 @@ if (!function_exists('lang_field')) {
      *
      *   lang_field($verse, 'translation')   -> translation_hi for a Hindi reader
      *
-     * Falls back to English when the requested language is empty, which
-     * is the normal state for a verse that is not yet curated in all
-     * three. Returns '' rather than null so a template can print it
-     * without a check.
+     * Falls back when the requested language is empty, which is the
+     * normal state for a verse that is not yet curated in all three.
+     * Returns '' rather than null so a template can print it without a
+     * check.
      *
-     * This is the single place that fallback rule lives. If it were
-     * inlined at each call site, some pages would fall back and others
-     * would show a blank, and nobody would notice which until a Hindi
-     * reader complained.
+     * The fallback ORDER is not simply "then English" — a Hindi reader
+     * is better served by the Hinglish text than by English, because it
+     * is the same words in a different script. I18nService::field() owns
+     * that chain; this stays as the short name templates call.
      *
      * @param array<string,mixed> $row
      * @param string              $field Base column name, without the suffix.
@@ -37,20 +37,34 @@ if (!function_exists('lang_field')) {
             return '';
         }
 
-        $lang     = $lang === null ? View::lang() : $lang;
-        $fallback = (string) Config::get('i18n.fallback', 'en');
+        return \VedaVerse\Services\I18nService::field($row, $field, $lang);
+    }
+}
 
-        $key = $field . '_' . $lang;
-        if (isset($row[$key]) && trim((string) $row[$key]) !== '') {
-            return (string) $row[$key];
+if (!function_exists('lang_field_attr')) {
+    /**
+     * The lang attribute for a field that may have fallen back.
+     *
+     *   <p<?php echo lang_field_attr($verse, 'translation'); ?>>
+     *
+     * A Hinglish reader shown the Hindi translation is looking at
+     * Devanagari inside a page marked en-IN. Without this the screen
+     * reader announces it with an English engine, which is noise. This
+     * is the same accessibility rule as the shloka's lang="sa", applied
+     * to the case where the language is decided at runtime.
+     *
+     * @param array<string,mixed> $row
+     * @param string              $field
+     * @param string|null         $lang
+     * @return string
+     */
+    function lang_field_attr($row, $field, $lang = null)
+    {
+        if (!is_array($row)) {
+            return '';
         }
 
-        $key = $field . '_' . $fallback;
-        if (isset($row[$key]) && trim((string) $row[$key]) !== '') {
-            return (string) $row[$key];
-        }
-
-        return '';
+        return lang_attr(\VedaVerse\Services\I18nService::fieldLang($row, $field, $lang));
     }
 }
 

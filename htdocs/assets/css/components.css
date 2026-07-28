@@ -325,6 +325,10 @@ select[aria-invalid="true"],
     font-size: calc(var(--vv-t-sm) * var(--vv-scale));
     text-decoration: none;
     cursor: pointer;
+    /* inline-flex collapses the whitespace between child elements, so a
+     * chip holding a label and a count renders them glued together
+     * without this. */
+    gap: var(--vv-s-2);
 }
 
 .chip[aria-pressed="true"], .chip.is-active {
@@ -762,4 +766,80 @@ select[aria-invalid="true"],
     background: var(--vv-surface-sunk);
     font-size: calc(var(--vv-t-xs) * var(--vv-scale));
     overflow-x: auto;
+}
+
+/* ---------------------------------------------------------------------
+ * The string review table — /styleguide/strings
+ * ---------------------------------------------------------------------
+ * Three languages side by side, so the register of the Hindi and the
+ * Hinglish can be judged by reading rather than by trusting. There is no
+ * general .table class in this product on purpose: this is the only
+ * table in the interface, and it is a review tool rather than a page a
+ * learner will ever see.
+ * ------------------------------------------------------------------- */
+
+.sg-strings { overflow-x: auto; }
+
+.sg-strings table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sg-strings th,
+.sg-strings td {
+    text-align: start;
+    vertical-align: top;
+    padding: var(--vv-s-2) var(--vv-s-3);
+    border-block-end: 1px solid var(--vv-line);
+}
+
+.sg-strings thead th { border-block-end: 2px solid var(--vv-line-strong); }
+
+.sg-strings tbody th {
+    width: 22%;
+    font-weight: var(--vv-weight-normal);
+}
+
+.sg-strings td { width: 26%; }
+.sg-strings code { font-size: 0.85em; }
+
+/* A row the checker flagged. Colour is not the only signal — the fault
+ * is also listed in full at the top of the page. */
+.sg-strings tr.is-flagged { background: var(--vv-warning-bg); }
+
+/* Placeholders, made obvious. A :n present in English and missing in
+ * Hindi is the single most common fault in a translated table, and it
+ * is invisible in running text. */
+.sg-ph {
+    font-family: var(--vv-font-mono);
+    font-size: 0.9em;
+    padding: 0 3px;
+    border-radius: var(--vv-radius-sm);
+    background: var(--vv-surface-sunk);
+    color: var(--vv-dawn-text);
+}
+
+.sg-pipe { color: var(--vv-text-faint); padding: 0 2px; }
+
+@media (max-width: 700px) {
+    /* Three languages will not fit side by side on a phone. Stack them,
+     * keeping the key as a heading above its own translations — taller,
+     * still reviewable, and the alternative is a horizontal scroll
+     * nobody uses. */
+    .sg-strings table,
+    .sg-strings thead,
+    .sg-strings tbody,
+    .sg-strings tr,
+    .sg-strings th,
+    .sg-strings td { display: block; width: auto; }
+
+    .sg-strings thead { display: none; }
+
+    .sg-strings tr {
+        padding-block: var(--vv-s-3);
+        border-block-end: 2px solid var(--vv-line-strong);
+    }
+
+    .sg-strings th,
+    .sg-strings td { border: 0; padding-inline: 0; }
 }

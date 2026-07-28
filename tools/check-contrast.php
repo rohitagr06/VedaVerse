@@ -106,7 +106,19 @@ function vv_ratio($a, $b)
 $light = vv_tokens($css);
 $dark  = array_merge($light, vv_tokens($css, '/:root\[data-theme="dark"\]\s*\{[^}]*\}/s'));
 
-// label, foreground token, background token, minimum ratio
+/**
+ * label, foreground token, background token, minimum ratio
+ *
+ * NAME THE CONCRETE TOKEN IN THE LIGHT LIST, NOT THE ALIAS.
+ *   --vv-text is declared as var(--vv-ink) in :root and as a literal
+ *   #FFF7EE inside the dark blocks. vv_tokens() only collects LITERAL
+ *   hex values, so the light map's --vv-text is the DARK one — the first
+ *   literal in the file. Writing '--vv-text' in a light pairing silently
+ *   checks cream against cream and reports 1.04:1.
+ *
+ *   The dark list may use the aliases, because the dark blocks define
+ *   them literally. Light uses --vv-ink, --vv-cloud and --vv-surface.
+ */
 $checks = array(
     'light' => array(
         array('body text on background',      '--vv-ink',           '--vv-cloud',        4.5),
@@ -125,6 +137,7 @@ $checks = array(
         array('error text',                   '--vv-danger',        '--vv-cloud',        4.5),
         array('error text on its own tint',   '--vv-danger',        '--vv-error-bg',     4.5),
         array('success text on its own tint', '--vv-peacock-text',  '--vv-success-bg',   4.5),
+        array('text on a warning tint',       '--vv-ink',           '--vv-warning-bg',   4.5),
         array('focus ring on background',     '--vv-krishna',       '--vv-cloud',        3.0),
         array('input border on a card',       '--vv-line-strong',   '--vv-surface',      3.0),
         array('sunk surface against card',    '--vv-surface-sunk',  '--vv-surface',      1.0),
@@ -142,6 +155,7 @@ $checks = array(
         array('error text',                   '--vv-danger-lift',   '--vv-bg',           4.5),
         array('error text on its own tint',   '--vv-danger-lift',   '--vv-error-bg',     4.5),
         array('success text on its own tint', '--vv-peacock',       '--vv-success-bg',   4.5),
+        array('text on a warning tint',       '--vv-text',          '--vv-warning-bg',   4.5),
         array('focus ring on background',     '--vv-krishna-lift',  '--vv-bg',           3.0),
         array('input border on a card',       '--vv-line-strong',   '--vv-surface',      3.0),
     ),

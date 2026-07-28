@@ -8,6 +8,12 @@ Homebrew packages and one command.
 
 ---
 
+> **Looking for a straight run-through rather than a reference?**
+> `docs/TEST_RUN.md` is the runbook: one linear session from cold start to
+> fully verified, covering Steps 1 to 4, with a tick-box checklist at the end.
+> This file is the manual behind it — every setting explained, and Part 6 has
+> every error message this project has actually produced.
+
 ## Contents
 
 - [Part 1 — One-time setup](#part-1--one-time-setup) (about fifteen minutes, once)
@@ -286,6 +292,9 @@ Add `?lang=hi` or `?lang=hinglish` to any URL.
   this product can spread.
 - The choice should stick as you click around, and an account's saved preference
   should apply on sign-in.
+- Since Step 4, `/styleguide/strings` shows every interface string in all three
+  languages side by side. That is the fastest way to judge the register, and
+  `php tools/check-strings.php` is the fastest way to prove nothing is missing.
 
 ### 4.4 Keyboard and screen reader
 
@@ -570,7 +579,39 @@ how to fetch them — about five minutes. Until then the site falls back to the
 system stack and looks reasonable; the shloka is the part that genuinely
 suffers.
 
-### Steps 4–15 ⏳ not started
+### Step 4 — The three-language string table ✅
+
+| What to test | How | Expected |
+|---|---|---|
+| The table is complete | `php tools/check-strings.php` | 626 keys, all three languages, "Clean." |
+| Side by side | open `/styleguide/strings` | every key in three columns, grouped |
+| Placeholders | look at the `:name` marks on that page | present in all three columns of any row that has one |
+| Language switch | `?lang=hi`, `?lang=hinglish` on any page | interface changes, and the choice sticks as you click |
+| Browser language | `curl -H "Accept-Language: hi-IN" .../login` | `<html lang="hi">` with no cookie set |
+| Hinglish is never guessed | `curl -H "Accept-Language: en-IN" .../login` | `<html lang="en">` — Hinglish is only ever chosen deliberately |
+| Nothing regressed | `bash tools/smoke-test.sh` | 51 passed, 0 failed |
+| Contrast | `php tools/check-contrast.php` | all 35 pairings pass AA |
+
+**The one thing worth doing by hand — and it is the most valuable half hour in
+this project so far.** Open `/styleguide/strings`, take the groups one at a time,
+and read the Hinglish column out loud.
+
+The test is not "is this correct Hinglish". It is "would I say this to a friend".
+Anything that reads as a translation with the Devanagari swapped for Latin
+letters is wrong even when every word is right, because the whole argument for
+that column is that it sounds like a person. `auth.code.warning`,
+`review.welcome_back` and `streak.forgiven` are the three worth reading hardest —
+they are what somebody sees at the moment they are most likely to give up.
+
+The Hindi column deserves the same pass from anybody who reads Hindi at home.
+The target is spoken Hindi, not the Hindi of a government form.
+
+**What the checker cannot tell you.** It proves every key exists in every
+language and that the `:placeholders` and the `|` plural forms agree. It has no
+opinion at all about whether the writing is any good. That is the whole reason
+the review page exists.
+
+### Steps 5–15 ⏳ not started
 
 This table grows as each one lands.
 
@@ -585,6 +626,8 @@ php -S 127.0.0.1:8080 -t htdocs tools/dev-router.php
 
 # Check
 php tools/dev-reset.php && bash tools/smoke-test.sh
+php tools/check-strings.php
+php tools/check-contrast.php
 
 # Watch the log
 tail -f htdocs/storage/logs/vedaverse-*.log

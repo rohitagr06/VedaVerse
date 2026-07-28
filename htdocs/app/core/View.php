@@ -40,6 +40,7 @@ namespace VedaVerse\Core;
 
 use Exception;
 use Throwable;
+use VedaVerse\Services\I18nService;
 
 class View
 {
@@ -354,6 +355,11 @@ class View
     /**
      * Look up an interface string in the current language.
      *
+     * The lookup itself lives in I18nService — this is the entry point
+     * templates use, kept because t() and et() call it from several
+     * hundred places and because a template should not be reaching into
+     * a service by name.
+     *
      * Falls back to the configured fallback language, then to the key
      * itself so a missing string is visible rather than blank.
      *
@@ -364,32 +370,21 @@ class View
      */
     public static function t($key, array $replacements = array(), $lang = null)
     {
-        $lang     = $lang === null ? self::$lang : $lang;
-        $fallback = (string) Config::get('i18n.fallback', 'en');
-        $strings  = Config::get('i18n.strings', array());
+        return I18nService::translate($key, $replacements, $lang === null ? self::$lang : $lang);
+    }
 
-        $text = null;
-        if (isset($strings[$key][$lang]) && $strings[$key][$lang] !== '') {
-            $text = $strings[$key][$lang];
-        } elseif (isset($strings[$key][$fallback])) {
-            $text = $strings[$key][$fallback];
-            if (Config::debug()) {
-                Logger::debug('Missing translation', array('key' => $key, 'lang' => $lang));
-            }
-        }
-
-        if ($text === null) {
-            if (Config::debug()) {
-                Logger::debug('Missing translation key entirely', array('key' => $key));
-            }
-            return $key;
-        }
-
-        if ($replacements !== array()) {
-            $text = strtr($text, $replacements);
-        }
-
-        return $text;
+    /**
+     * Singular or plural by count. See I18nService::choice().
+     *
+     * @param string      $key
+     * @param int         $count
+     * @param array       $replacements
+     * @param string|null $lang
+     * @return string
+     */
+    public static function choice($key, $count, array $replacements = array(), $lang = null)
+    {
+        return I18nService::choice($key, $count, $replacements, $lang === null ? self::$lang : $lang);
     }
 
     /**

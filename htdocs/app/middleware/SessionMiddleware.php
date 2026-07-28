@@ -34,6 +34,7 @@ use VedaVerse\Core\Session;
 use VedaVerse\Core\View;
 use VedaVerse\Repositories\SessionRepository;
 use VedaVerse\Repositories\ThrottleRepository;
+use VedaVerse\Services\I18nService;
 
 class SessionMiddleware extends Middleware
 {
@@ -79,90 +80,22 @@ class SessionMiddleware extends Middleware
     /**
      * Decide which language this request is in.
      *
-     * Order, first match wins:
-     *   1. ?lang= in the URL — so a shared link opens in the language it
-     *      was shared in, which is how Hinglish spreads.
-     *   2. The signed-in user's saved preference.
-     *   3. Whatever this session last chose.
-     *   4. The browser's Accept-Language header.
-     *   5. The site default.
-     *
-     * An explicit ?lang= is also remembered, so the choice survives the
-     * next click rather than reverting.
+     * The decision itself moved to I18nService in Step 4, where the rest
+     * of the language knowledge lives. What stays here is the wiring:
+     * middleware is the right place to ASK, and the wrong place to hold
+     * the answer, because the checker and the review page need the same
+     * rules without going through a request.
      *
      * @param Request $request
      * @return void
      */
     private function chooseLanguage(Request $request)
     {
-        $available = array_keys((array) Config::get('i18n.languages', array()));
-        $lang      = null;
-
-        $requested = $request->query('lang');
-        if (is_string($requested) && in_array($requested, $available, true)) {
-            $lang = $requested;
-            Session::setLang($lang);
-        }
-
-        if ($lang === null) {
-            $user = Session::user();
-            if ($user !== null && isset($user['preferred_lang']) && in_array($user['preferred_lang'], $available, true)) {
-                $lang = $user['preferred_lang'];
-            }
-        }
-
-        if ($lang === null) {
-            $stored = Session::lang();
-            if (is_string($stored) && in_array($stored, $available, true)) {
-                $lang = $stored;
-            }
-        }
-
-        if ($lang === null && Config::get('i18n.detection.accept_header', true)) {
-            $lang = $this->fromAcceptHeader($request, $available);
-        }
-
-        if ($lang === null) {
-            $lang = (string) Config::get('i18n.default', 'en');
-        }
+        $lang = I18nService::detect($request);
 
         View::setLang($lang);
         View::share('lang', $lang);
-    }
-
-    /**
-     * Read Accept-Language loosely.
-     *
-     * Only Hindi is detected this way. A browser asking for hi gets Hindi;
-     * everything else gets the default. Hinglish is deliberately NOT
-     * auto-selected — no browser advertises it, and guessing that an
-     * Indian visitor wants romanised Hindi would be presumptuous. It is
-     * offered in the language switcher and chosen deliberately.
-     *
-     * @param Request           $request
-     * @param array<int,string> $available
-     * @return string|null
-     */
-    private function fromAcceptHeader(Request $request, array $available)
-    {
-        $header = (string) $request->header('accept-language', '');
-        if ($header === '') {
-            return null;
-        }
-
-        foreach (explode(',', $header) as $entry) {
-            $code = strtolower(trim(explode(';', $entry)[0]));
-            $code = explode('-', $code)[0];
-
-            if ($code === 'hi' && in_array('hi', $available, true)) {
-                return 'hi';
-            }
-            if ($code === 'en' && in_array('en', $available, true)) {
-                return 'en';
-            }
-        }
-
-        return null;
+        View::share('html_lang', I18nService::htmlLang($lang));
     }
 
     /**

@@ -42,8 +42,8 @@ supernatural claims, medical/legal/financial advice.
 | 1 | `schema.sql`, `install.php`, `app/config/*`, `app/core/*` | **Done** |
 | 2 | `app/helpers/*`, middleware, `AuthService`, auth screens, anonymous merge | **Done** |
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
-| 4 | Complete three-language interface string table + `I18nService` | Next |
-| 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | |
+| 4 | Complete three-language interface string table + `I18nService` | **Done** |
+| 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | Next |
 | 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
@@ -135,6 +135,10 @@ after a colon, passed to the constructor.
 - **`app/middleware/SessionMiddleware.php`** — something has to start the
   session before CSRF, and doing it in `index.php` would put logic in a file
   that is meant to be routing only.
+- **`app/config/strings/*.php`** — the spec says the table lives in
+  `i18n.php`. Kept there it is ~2,500 lines at the end of Step 4 and keeps
+  growing to Step 13. Seven domain files hold exactly the same keys;
+  `i18n.php` merges them, so no caller sees the difference.
 - **Four tables beyond Section 7's list** — `login_attempts` (throttle),
   `sync_events` (makes `progress_sync.php` idempotent), `static_responses`
   (answers promoted out of AI review), `migrations`.
@@ -217,6 +221,28 @@ and escaped on output. `nohtml` was briefly on the name field and had to come
 off — it contradicted the stated principle and made acceptance test 7
 impossible to run.
 
+**`check-contrast.php` collects only literal hex values, so an alias resolves to
+the wrong theme.** `--vv-text` is `var(--vv-ink)` in `:root` and a literal
+`#FFF7EE` inside the dark blocks, which makes the light map's `--vv-text` the
+dark one. Name the concrete token — `--vv-ink`, `--vv-cloud`, `--vv-surface` —
+in every light pairing. A wrong pairing does not error; it quietly reports
+cream on cream at 1.04:1.
+
+**`inline-flex` eats the whitespace between children.** A chip holding a label
+and a count rendered as `admin104`. The fix is `gap` on the chip, not a
+`&nbsp;` at the call site.
+
+**A duplicated key inside one string file is invisible to every check that
+loads the file.** PHP collapses it while parsing the array literal, so
+`array_keys()` and the merged table both show one entry and the first
+definition is simply gone. `check-strings.php` reads the source as text to
+catch it — that is why it does something as crude as a regex over a file it
+has already required.
+
+**A placeholder present in English and missing in Hindi reads as a perfectly
+fluent Hindi sentence.** This is the whole reason `check-strings.php` exists.
+Nobody finds these by proofreading, because there is nothing visibly wrong.
+
 ---
 
 ## 6. Conventions
@@ -231,8 +257,12 @@ architecture. Non-obvious lines carry a plain-language reason — *why*, not
 content. `ejs()` for values inside `<script>`. `eattr()` for attribute lists.
 
 **Interface strings:** no hardcoded English in any view, ever. Every string is a
-key in `app/config/i18n.php` with all three languages. A key missing a language
-is a bug, not a fallback.
+key in `app/config/strings/<domain>.php` with all three languages; `i18n.php`
+merges the seven domain files and still answers `Config::get('i18n.strings')`
+with the whole table. A key missing a language is a bug, not a fallback.
+Read them with `t()` / `et()`, or `tc()` / `etc_()` when a count decides between
+a singular and a plural form written as `one|many`. Run
+`php tools/check-strings.php` before committing.
 
 **Naming:** `vv_` prefix on cookies and installer functions, `vedaverse-` on log
 files and cache versions, `vv:v1:` cache key prefix, `VEDAVERSE_` constants.
@@ -290,16 +320,18 @@ decisions needed before the next step. Prose, not bullet soup.
 | The merge runs on login as well as registration | Registration has no conflicts by definition; login is the case that actually happens and the only one with real conflicts |
 | CSP nonce rather than `'unsafe-inline'` | One copy button should not switch off the most valuable line in the policy |
 | `index.php` and root `.htaccess` shipped in Step 1 | Nothing boots or is testable without them; both marked provisional, Step 15 replaces the `.htaccess` |
+| Design tokens named `--vv-*` | Matches the namespace used everywhere else; decided before `tokens.css` existed, so it cost nothing |
+| Primary button uses ink text, not white | White on `--vv-dawn` is 2.84:1 and fails AA. Measured, not assumed. |
+| MIT for the software, CC BY-SA 4.0 for the content | The engineering is a gift; the writing is the product and ShareAlike stops it being closed |
+| String table split into `app/config/strings/*.php` | One file would be ~2,500 lines by Step 4 and still growing at Step 13; seven files mean a syntax error names its domain and two edits stop colliding |
+| Content fields fall back hi ↔ hinglish before English | Same words, different script — a Hindi reader is better served by the Hinglish text than by English. Interface strings still fall straight back to English. |
+| Hinglish is never chosen from `Accept-Language` | No browser advertises it, and inferring it from an Indian locale is a guess about a person rather than about their software |
+| Two plural forms, no CLDR rule table | English, Hindi and Hinglish all take one form for 1 and one for everything else. A six-form language would need real rules; none exists here. |
 
 ---
 
 ## 9. Open questions
 
-- **Design token names.** The spec calls them `--rc-dawn`, `--rc-marigold`.
-  Rename to `--vv-*`? Free to change until `tokens.css` exists in Step 3.
-- **Licence.** The repo is public with no licence, which means all rights
-  reserved and nobody can reuse it. Worth settling before Step 6 lands 108
-  verses of original prose.
 - **Live host.** No InfinityFree account yet. Deploying Step 1–2 there would
   cheaply settle three assumptions: whether `storage/` is really writable,
   whether the `.htaccess` survives, and what PHP version is actually running.
@@ -314,18 +346,24 @@ decisions needed before the next step. Prose, not bullet soup.
 RC1/
 ├── CLAUDE.md                 this file
 ├── README.md                 public-facing project overview
-├── docs/LOCAL_TESTING.md     how to run and test on the Mac; updated every step
+├── docs/
+│   ├── LOCAL_TESTING.md      the manual: every setting, every error message
+│   └── TEST_RUN.md           the runbook: one linear pass, Steps 1–4, checklist
 ├── spec/                     the master build prompt
 ├── tools/
 │   ├── dev-router.php        router for `php -S` (built-in server ignores .htaccess)
 │   ├── dev-reset.php         clears throttle counters, cache, logs, test accounts
 │   ├── smoke-test.sh         51 HTTP checks, exit 1 on any failure
-│   └── check-contrast.php    33 WCAG AA pairings read from tokens.css
+│   ├── check-contrast.php    35 WCAG AA pairings read from tokens.css
+│   └── check-strings.php     missing languages, placeholder drift, plural
+│                             drift, duplicate keys, undefined references
 └── htdocs/                   everything uploaded by FTP
     ├── index.php             front controller — routing only
     ├── install.php           browser installer, self-deleting
     ├── app/
     │   ├── config/           app, database, security, cache, ai, seo, pwa, i18n
+    │   │                     strings/ — common, errors, auth, content,
+    │   │                     learning, community, admin (626 keys × 3)
     │   │                     (+ local.php — generated, secret, never committed)
     │   ├── core/             Autoloader, Config, Session, Router, Request,
     │   │                     Response, View, Database, Cache, Logger,
@@ -333,7 +371,7 @@ RC1/
     │   ├── middleware/       Middleware (base), SecurityHeaders, Session,
     │   │                     Maintenance, Csrf, RateLimit, Auth, Admin
     │   ├── controllers/      Controller (base), Auth
-    │   ├── services/         AuthService
+    │   ├── services/         AuthService, I18nService
     │   ├── repositories/     Repository (base), User, Session, Setting, Throttle
     │   ├── helpers/          security, string, date, url, format
     │   └── views/            layouts, partials, pages, errors

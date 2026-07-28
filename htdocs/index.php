@@ -46,6 +46,7 @@ use VedaVerse\Core\Request;
 use VedaVerse\Core\Response;
 use VedaVerse\Core\Router;
 use VedaVerse\Core\View;
+use VedaVerse\Services\I18nService;
 
 Autoloader::register(__DIR__);
 
@@ -267,6 +268,34 @@ $router->get('/styleguide', function (Request $req) {
         'robots' => 'noindex, nofollow',
     ), 'layouts/app'));
 })->name('styleguide');
+
+/**
+ * The interface string table, three languages side by side.
+ *
+ * Same audience and same guard as the style guide, and for the same
+ * reason: it is a review tool, not a page in the product.
+ *
+ * It earns its place because tools/check-strings.php can prove the table
+ * is complete and cannot prove it is any good. Whether the Hinglish
+ * sounds like a person talking is a judgement, and a judgement needs the
+ * three languages next to each other on a screen.
+ */
+$router->get('/styleguide/strings', function (Request $req) {
+    $isLocal = Config::get('app.env') === 'local';
+
+    if (!$isLocal && !user_can('admin')) {
+        return ErrorHandler::page(404);
+    }
+
+    return Response::html(View::render('pages/strings', array(
+        'title'     => 'Interface strings',
+        'robots'    => 'noindex, nofollow',
+        'groups'    => I18nService::byDomain(),
+        'strings'   => I18nService::strings(),
+        'report'    => I18nService::audit(),
+        'languages' => I18nService::languages(),
+    ), 'layouts/app'));
+})->name('styleguide.strings');
 
 // ---------------------------------------------------------------------
 // 7. What to do when nothing matches

@@ -150,6 +150,46 @@ if (!function_exists('et')) {
     }
 }
 
+if (!function_exists('tc')) {
+    /**
+     * Translate with a count, picking the singular or plural form.
+     *
+     *   tc('review.due', $n)   ->  "1 verse ready" / "4 verses ready"
+     *
+     * :n is filled in from the count. See I18nService::choice() for how
+     * the two forms are written.
+     *
+     * @param string $key
+     * @param int    $count
+     * @param array  $replacements
+     * @return string
+     */
+    function tc($key, $count, array $replacements = array())
+    {
+        return View::choice($key, $count, $replacements);
+    }
+}
+
+if (!function_exists('etc_')) {
+    /**
+     * Translate with a count, then escape.
+     *
+     * The trailing underscore is not a typo: etc() reads as "et cetera"
+     * to every person who will ever open this file, and a helper whose
+     * name means something else entirely is a small trap. This is the
+     * escaping partner to tc().
+     *
+     * @param string $key
+     * @param int    $count
+     * @param array  $replacements
+     * @return string
+     */
+    function etc_($key, $count, array $replacements = array())
+    {
+        return e(View::choice($key, $count, $replacements));
+    }
+}
+
 // ---------------------------------------------------------------------
 // CSRF
 // ---------------------------------------------------------------------
