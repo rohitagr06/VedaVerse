@@ -158,19 +158,15 @@ The installer writes `htdocs/app/config/local.php`, which holds your database
 credentials and two generated secrets. It is in `.gitignore` and must never be
 committed.
 
-Finally, tell the application it is running locally, so error pages show you
-detail instead of hiding it. Open `htdocs/app/config/local.php` and change the
-`app` block to:
+Because you opened it on `127.0.0.1`, it configures itself for development —
+`env => 'local'` and `debug => true` — and says so on the last screen. That
+means error pages show you the exception, file and line instead of hiding them,
+and the scripts in `tools/` will run (`dev-reset.php` refuses unless `env` is
+`local`, so that it can never be pointed at a live site).
 
-```php
-'app' => array(
-    'env'   => 'local',
-    'debug' => true,
-),
-```
-
-`env => 'local'` is also what `tools/dev-reset.php` checks before it will touch
-anything, so this line is required for the development tooling to work.
+Opened on a real domain, it writes `production` and `debug => false` instead.
+If you ever install on a machine that answers on something other than
+`localhost`, `127.0.0.1`, `.local` or `.test`, check those two values by hand.
 
 ---
 
@@ -399,6 +395,19 @@ Almost always the host-pattern trap rather than a wrong password. MySQL treats
 `localhost` and `127.0.0.1` as different hosts, so a user created as
 `'vedaverse'@'%'` is still refused when the connection matches `localhost`.
 Create all three patterns, as the block in 1.4 does.
+
+### "Refusing to run: app.env is not 'local'"
+
+`tools/dev-reset.php` checks that value so it can never be pointed at a live
+site. Newer installs set it automatically; an install done before that change
+still says `production`. One command fixes it:
+
+```bash
+sed -i '' "s/'env'   => 'production'/'env'   => 'local'/; \
+           s/'debug' => false/'debug' => true/" htdocs/app/config/local.php
+```
+
+(The empty `''` after `-i` is required by macOS `sed` and is not a typo.)
 
 ### Every page redirects to /install.php
 

@@ -436,6 +436,14 @@ function vv_write_local_config(array $db)
     $pepper  = bin2hex(random_bytes(32));
     $signing = bin2hex(random_bytes(32));
 
+    // A local install is configured AS a local install.
+    //
+    // Defaulting to production and asking the developer to edit the file
+    // afterwards means they forget, and then error pages hide the very
+    // detail they need and the development tooling refuses to run. Both
+    // failures look like something else, and neither points at the cause.
+    $isLocal = vv_is_local_request();
+
     $php  = "<?php\n";
     $php .= "/**\n";
     $php .= " * VedaVerse — app/config/local.php\n";
@@ -454,8 +462,8 @@ function vv_write_local_config(array $db)
     $php .= " */\n\n";
     $php .= "return array(\n";
     $php .= "    'app' => array(\n";
-    $php .= "        'env'   => 'production',\n";
-    $php .= "        'debug' => false,\n";
+    $php .= "        'env'   => '" . ($isLocal ? 'local' : 'production') . "',\n";
+    $php .= "        'debug' => " . ($isLocal ? 'true' : 'false') . ",\n";
     $php .= "    ),\n";
     $php .= "    'database' => array(\n";
     $php .= "        'host'     => " . var_export($db['host'], true) . ",\n";
@@ -482,6 +490,44 @@ function vv_write_local_config(array $db)
     Config::init(VEDAVERSE_ROOT . '/app/config');
 
     return true;
+}
+
+/**
+ * Is this installer running on a development machine?
+ *
+ * Judged by the address the BROWSER used, not by the database host — a
+ * local site can legitimately point at a remote database, and a live site
+ * never answers on localhost.
+ *
+ * Getting this wrong in the cautious direction is harmless: a production
+ * install misread as local would show error detail, which is why the
+ * patterns below are exact rather than fuzzy. Nothing here matches a real
+ * domain. .test and .local are reserved for exactly this and can never be
+ * registered.
+ *
+ * @return bool
+ */
+function vv_is_local_request()
+{
+    $host = isset($_SERVER['HTTP_HOST']) ? strtolower((string) $_SERVER['HTTP_HOST']) : '';
+
+    // Drop the port.
+    $colon = strpos($host, ':');
+    if ($colon !== false) {
+        $host = substr($host, 0, $colon);
+    }
+
+    if (in_array($host, array('localhost', '127.0.0.1', '::1', '[::1]'), true)) {
+        return true;
+    }
+
+    foreach (array('.local', '.test', '.localhost') as $suffix) {
+        if (substr($host, -strlen($suffix)) === $suffix) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -1365,6 +1411,19 @@ function vv_steps($current)
             <button class="btn danger" type="submit">I have written the code down — delete install.php</button>
         </form>
     </div>
+
+    <?php if (vv_is_local_request()): ?>
+        <div class="card">
+            <h1>Configured for local development</h1>
+            <p>You opened this installer on <code><?php echo vv_e($_SERVER['HTTP_HOST']); ?></code>,
+               so <code>app/config/local.php</code> was written with
+               <code>env =&gt; 'local'</code> and <code>debug =&gt; true</code>. Error pages will
+               show you the exception, file and line instead of hiding them, and the scripts in
+               <code>tools/</code> will run.</p>
+            <p class="bad"><strong>If this is actually a live site, change both values now.</strong>
+               Debug output on a public site shows visitors your file paths and your SQL.</p>
+        </div>
+    <?php endif; ?>
 
     <div class="card">
         <h1>What comes next</h1>
