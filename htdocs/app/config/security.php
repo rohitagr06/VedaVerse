@@ -118,7 +118,16 @@ return array(
     // is blocked, which costs an attacker far more than it costs a human
     // who mistyped.
     'throttle' => array(
+        // Per identifier (an email), counting FAILURES only.
         'max_attempts'    => 5,
+
+        // Per address, counting ALL attempts. Much higher, because a
+        // shared address — an office, a college, a phone network behind
+        // carrier-grade NAT — has many legitimate people behind it, and a
+        // ceiling of five between all of them would lock out a building.
+        // See the header of RateLimitMiddleware for why both exist.
+        'ip_max_attempts' => 30,
+
         'window_seconds'  => 900,   // 15 minutes
         'lockout_seconds' => 900,
         'progressive_delay_ms' => array(0, 0, 250, 750, 1500),

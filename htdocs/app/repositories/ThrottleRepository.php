@@ -101,6 +101,59 @@ class ThrottleRepository extends Repository
     }
 
     /**
+     * How many attempts of ANY outcome inside the window.
+     *
+     * The per-email counter below counts failures only, because a person
+     * signing in successfully several times has done nothing wrong. The
+     * per-IP counter is different: it exists to catch somebody spraying
+     * one password across many accounts, where every individual attempt
+     * looks innocent and only the volume gives it away. So this one counts
+     * everything, and its ceiling is correspondingly higher.
+     *
+     * @param string $identifierHash
+     * @param string $scope
+     * @param int    $windowSeconds
+     * @return int
+     */
+    public function attemptCount($identifierHash, $scope, $windowSeconds = 900)
+    {
+        try {
+            return (int) $this->scalar(
+                'SELECT COUNT(*) FROM login_attempts
+                  WHERE identifier_hash = :id
+                    AND scope = :scope
+                    AND attempted_at > DATE_SUB(NOW(), INTERVAL :secs SECOND)',
+                array('id' => (string) $identifierHash, 'scope' => (string) $scope, 'secs' => (int) $windowSeconds)
+            );
+        } catch (Exception $e) {
+            // Fail closed, for the same reason as failureCount below.
+            return PHP_INT_MAX;
+        } catch (Throwable $e) {
+            return PHP_INT_MAX;
+        }
+    }
+
+    /**
+     * Has this address made too many attempts in this scope?
+     *
+     * Separate ceiling from isLocked(), because a shared address — an
+     * office, a college, a phone network behind carrier-grade NAT — has
+     * many legitimate people behind it, and five attempts between all of
+     * them in fifteen minutes would lock out a whole building.
+     *
+     * @param string $identifierHash
+     * @param string $scope
+     * @return bool
+     */
+    public function isAddressLimited($identifierHash, $scope)
+    {
+        $max    = (int) Config::get('security.throttle.ip_max_attempts', 30);
+        $window = (int) Config::get('security.throttle.window_seconds', 900);
+
+        return $this->attemptCount($identifierHash, $scope, $window) >= $max;
+    }
+
+    /**
      * Is this identifier currently locked out of this scope?
      *
      * @param string $identifierHash

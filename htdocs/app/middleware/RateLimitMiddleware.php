@@ -16,12 +16,23 @@
  *   notices nothing, because the first two attempts are not delayed at
  *   all.
  *
- * WHAT IT COUNTS
- *   The hashed IP, per scope. Raw addresses are never stored. AuthService
- *   ALSO throttles by hashed email, so an attacker rotating IPs against
- *   one account is caught by the second counter and an attacker trying
- *   many accounts from one address is caught by this one. Either alone
- *   leaves an obvious gap.
+ * TWO COUNTERS, AND THEY MEASURE DIFFERENT THINGS
+ *   This middleware counts REQUESTS from a hashed address, with a high
+ *   ceiling. AuthService counts FAILURES against a hashed email, with a
+ *   low one.
+ *
+ *   The reason they differ: an attacker spraying one common password
+ *   across five hundred accounts produces no repeated failures on any
+ *   single account, so the email counter never fires — only the volume
+ *   from one address gives it away. An attacker working through a
+ *   password list against one account from a rotating pool of addresses
+ *   produces no volume from any single address — only the failures on
+ *   that account give it away. Either counter alone leaves an obvious
+ *   gap, and the ceilings have to differ because a shared address (an
+ *   office, a college, carrier-grade NAT) has many legitimate people
+ *   behind it.
+ *
+ *   Raw addresses are never stored. Both counters hold peppered hashes.
  *
  * FAILING CLOSED
  *   If the counter cannot be read — a database problem — the repository
@@ -73,24 +84,40 @@ class RateLimitMiddleware extends Middleware
         }
 
         $throttle = new ThrottleRepository();
-        $key      = hash_value($request->ip(), 'throttle:' . $this->scope);
 
-        if ($throttle->isLocked($key, $this->scope)) {
-            $seconds = $throttle->secondsUntilUnlocked($key, $this->scope);
+        // The address counter lives in its own scope, prefixed 'ip:', so it
+        // cannot be confused with the per-email counter AuthService keeps
+        // under the same scope name. Two counters, two ceilings, one table.
+        $scope = 'ip:' . $this->scope;
+        $key   = hash_value($request->ip(), 'throttle');
+
+        if ($throttle->isAddressLimited($key, $scope)) {
+            $seconds = $throttle->secondsUntilUnlocked($key, $scope);
 
             Logger::warning('Rate limit reached', array(
-                'scope' => $this->scope,
+                'scope' => $scope,
                 'path'  => $request->path(),
             ));
 
-            return $this->tooMany($request, $seconds);
+            return $this->tooMany($request, $seconds > 0 ? $seconds : 900);
         }
+
+        // Record BEFORE handing on, not after.
+        //
+        // This middleware cannot tell success from failure — that is the
+        // service's business, and asking it to inspect the response would
+        // couple it to how every controller happens to redirect. So it
+        // counts requests rather than failures, which is the right measure
+        // for an address anyway. Recording first also means an attempt
+        // that crashes the controller still counts, rather than giving an
+        // attacker a free guess by finding an input that throws.
+        $throttle->record($key, $scope, false);
 
         // Stall before doing the work, not after. Delaying the response
         // once the attempt has already been processed costs the attacker
         // nothing, because they can abandon the connection and fire the
         // next guess immediately.
-        $delay = $throttle->delayFor($key, $this->scope);
+        $delay = $throttle->delayFor($key, $scope);
         if ($delay > 0) {
             usleep($delay * 1000);
         }

@@ -89,7 +89,9 @@ htdocs/                  Everything that gets uploaded by FTP
 └── assets/              CSS, JS, fonts, icons, offline content bundle
 
 spec/                    The master build prompt this is built against
-notes/
+tools/                   dev-router.php, dev-reset.php, smoke-test.sh
+docs/                    LOCAL_TESTING.md (Step 15 adds the other eight)
+CLAUDE.md                Project context — read first when picking this up
 ```
 
 The Cloudflare Worker lives in `htdocs/worker/` when it arrives at Step 9, and
@@ -150,12 +152,25 @@ inactivity. Sign in to the control panel occasionally.
 ### Running it locally
 
 ```bash
-php -S 127.0.0.1:8080 -t htdocs
+brew install php mariadb && brew services start mariadb
+php -S 127.0.0.1:8080 -t htdocs tools/dev-router.php
 ```
 
-Then open `http://127.0.0.1:8080/install.php`. Point it at any local MySQL or
-MariaDB. `/health` reports whether the database, the cache and the log directory
-are all working, which is the fastest way to know an upload is sound.
+Then open `http://127.0.0.1:8080/install.php`. The router file is needed because
+PHP's built-in server ignores `.htaccess`, so without it every route except the
+home page returns 404.
+
+`docs/LOCAL_TESTING.md` has the full walkthrough — setup, what to test by hand,
+what cannot be tested without the real host, and a per-step log of what exists.
+
+```bash
+php tools/dev-reset.php && bash tools/smoke-test.sh
+```
+
+Fifty-one checks over HTTP in about ten seconds: headers, error pages in three
+languages, CSRF, the password policy, registration, escaping, sign-in, the role
+gate, recovery and the brute-force lockout. Exits non-zero on any failure, so it
+can gate a commit.
 
 ---
 
