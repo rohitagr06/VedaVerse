@@ -113,7 +113,7 @@ class Database
         // charset, some honour the init command, and a mismatch is exactly
         // how Devanagari turns into ????. Set both.
         if (!empty($cfg['init_command'])) {
-            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = $cfg['init_command'];
+            $options[self::initCommandAttribute()] = $cfg['init_command'];
         }
 
         try {
@@ -134,6 +134,33 @@ class Database
             ));
             throw new Exception('The database is not reachable right now.');
         }
+    }
+
+    /**
+     * The PDO attribute for the connection's initial command.
+     *
+     * PHP 8.5 moved the MySQL-specific PDO constants into a `Pdo\Mysql`
+     * class and deprecated the old `PDO::MYSQL_*` names. Both resolve to
+     * the same integer, so this picks whichever the running version has.
+     *
+     * Written with defined() and constant() rather than a direct class
+     * reference because this codebase has to run on PHP 7.4, where
+     * `Pdo\Mysql` does not exist at all — naming it directly would be a
+     * fatal error there. Reading the old name through constant() also
+     * means the deprecation notice is never raised on 8.5, since that
+     * branch only runs on versions where the name is still current.
+     *
+     * Same treatment will be needed for any other PDO::MYSQL_* constant
+     * this project starts using.
+     *
+     * @return int
+     */
+    public static function initCommandAttribute()
+    {
+        if (defined('Pdo\Mysql::ATTR_INIT_COMMAND')) {
+            return (int) constant('Pdo\Mysql::ATTR_INIT_COMMAND');
+        }
+        return (int) constant('PDO::MYSQL_ATTR_INIT_COMMAND');
     }
 
     /**

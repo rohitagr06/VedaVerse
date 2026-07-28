@@ -185,6 +185,14 @@ derives its own title from the status, because `ErrorHandler` renders it from th
 shutdown handler too, where building a full data array is exactly the thing that
 fails a second time.
 
+**PHP 8.5 moved the MySQL-specific PDO constants** into a `Pdo\Mysql` class and
+deprecated `PDO::MYSQL_*`. Because the code must also run on 7.4, where that
+class does not exist, the resolution goes through
+`Database::initCommandAttribute()` using `defined()` and `constant()` rather
+than naming either directly. Any future `PDO::MYSQL_*` needs the same treatment.
+Note the knock-on: `ErrorHandler` promotes deprecations to exceptions, so on
+8.5 an unhandled one is a 500 page, not a quiet notice.
+
 **`display:none` honeypots get skipped by some bots.** Ours is positioned
 off-screen instead, with `tabindex="-1"` and `aria-hidden`.
 
@@ -320,3 +328,23 @@ RC1/
 
 **Local test credentials** (sandbox and the owner's Mac, never production):
 database `vedaverse_db`, user `vedaverse`, password `localdev`, host `127.0.0.1`.
+
+## 11. The owner's actual local environment
+
+Worth knowing, because it differs from the sandbox and has already produced
+four separate failures.
+
+- **PHP 8.5.8** (Homebrew). Newer than the 8.4 the sandbox runs. Surfaced the
+  `PDO::MYSQL_ATTR_INIT_COMMAND` deprecation.
+- **MariaDB 10.4.28 from XAMPP** at `/Applications/XAMPP/xamppfiles`, running
+  as `_mysql` on port 3306, started at boot. Older than the sandbox's 10.11 —
+  which is *good*, since it is closer to what InfinityFree runs. The schema
+  installs clean on it: 76 statements, 0 failures.
+- A Homebrew MariaDB 12.3 is also installed but **must stay stopped** — it
+  cannot bind to 3306 while XAMPP holds it.
+- The `mariadb` CLI is version 15.2 (from 12.3) and therefore **requires
+  `--skip-ssl`** against the 10.4 server. PDO is unaffected.
+- Grafana runs on this machine too. Do not assume port availability.
+
+When something fails on his machine but works in the sandbox, check this list
+first.

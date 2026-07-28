@@ -34,7 +34,35 @@ If that prints a path, skip to 1.2. If it prints nothing, install it from
 [brew.sh](https://brew.sh) and follow the two lines it prints at the end about
 adding Homebrew to your PATH.
 
-### 1.2 Install PHP and MariaDB
+### 1.2 Check whether you already have a database
+
+**Do this before installing anything.** A machine that has ever run XAMPP,
+MAMP, DBngin, Docker or the official MySQL installer already has a server on
+port 3306, and installing a second one produces a confusing failure: the new
+server starts, cannot bind, and dies — while Homebrew cheerfully reports
+"Successfully started".
+
+```bash
+sudo lsof -nP -iTCP:3306 -sTCP:LISTEN
+```
+
+Without `sudo` this shows nothing even when a server IS running, because the
+server usually runs as another user. Use `sudo`.
+
+If something is listed, you already have a database. Find out what and whether
+you can use it:
+
+```bash
+ps -p <PID> -o command= | tr ' ' '\n' | grep -E 'basedir|datadir|^/'
+mysql -h 127.0.0.1 -P 3306 -u root -e "SELECT VERSION();"
+```
+
+If that prints a version, **use it and skip installing MariaDB.** An older
+server is not a downgrade for this project — MariaDB 10.4 is *closer* to what
+InfinityFree runs than a current release, so it gives better fidelity to
+production.
+
+### 1.3 Install PHP and MariaDB (only if you have no database)
 
 macOS has not shipped with PHP since Monterey, so this is genuinely needed.
 MariaDB is MySQL — same protocol, same SQL, and it is what most shared hosts
@@ -60,17 +88,41 @@ Homebrew's PHP already includes everything VedaVerse needs: `pdo_mysql`,
 > already have MySQL installed, keep it — every command below works unchanged
 > except that you type `mysql` instead of `mariadb`.
 
-### 1.3 Create the database
+### 1.4 Create the database
 
 ```bash
-mariadb -u root <<'SQL'
+mariadb --skip-ssl -h 127.0.0.1 -P 3306 -u root <<'SQL'
 CREATE DATABASE IF NOT EXISTS vedaverse_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- BOTH host patterns, deliberately. MySQL treats 127.0.0.1 and localhost as
+-- different hosts even though they are the same machine, and which one a
+-- connection matches depends on whether name resolution is on. Creating only
+-- one of them produces an "Access denied" that looks exactly like a wrong
+-- password and wastes an afternoon.
 CREATE USER IF NOT EXISTS 'vedaverse'@'localhost' IDENTIFIED BY 'localdev';
+CREATE USER IF NOT EXISTS 'vedaverse'@'127.0.0.1' IDENTIFIED BY 'localdev';
+CREATE USER IF NOT EXISTS 'vedaverse'@'%'         IDENTIFIED BY 'localdev';
 GRANT ALL PRIVILEGES ON vedaverse_db.* TO 'vedaverse'@'localhost';
+GRANT ALL PRIVILEGES ON vedaverse_db.* TO 'vedaverse'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON vedaverse_db.* TO 'vedaverse'@'%';
 FLUSH PRIVILEGES;
 SQL
 ```
+
+Then confirm it worked, and confirm the character set:
+
+```bash
+mariadb --skip-ssl -h 127.0.0.1 -P 3306 -u vedaverse -plocaldev vedaverse_db \
+  -e "SELECT @@version, @@character_set_database, @@collation_database;"
+```
+
+**`--skip-ssl` is not optional if your client is newer than your server.**
+MariaDB clients from 11.4 onward demand TLS whenever a password is sent, and an
+older server (XAMPP, MAMP) has none configured, so the connection is refused
+with *"SSL is required, but the server does not support it"*. This affects the
+`mariadb` command-line client only — PHP's PDO uses mysqlnd and has no such
+default, so the site itself connects without it.
 
 The `utf8mb4` on the first line is not decoration. Create the database as plain
 `utf8` and every Devanagari character you store becomes `????` at write time,
@@ -79,7 +131,7 @@ which cannot be repaired afterwards by changing the display.
 The password `localdev` is fine because this database is reachable only from
 your own machine. Never reuse it anywhere.
 
-### 1.4 Run the installer
+### 1.5 Run the installer
 
 From the repository root (`~/Claude/Projects/Gita/RC1`):
 
@@ -127,9 +179,12 @@ anything, so this line is required for the development tooling to work.
 Every session, from the repository root:
 
 ```bash
-brew services start mariadb                              # if it is not already running
 php -S 127.0.0.1:8080 -t htdocs tools/dev-router.php
 ```
+
+If your database came with XAMPP, MAMP or a system installer it is already
+running and there is nothing to start. Only if you installed MariaDB through
+Homebrew in 1.3 do you also need `brew services start mariadb`.
 
 Then open **http://127.0.0.1:8080**. Stop the server with `Ctrl-C`.
 
@@ -154,7 +209,7 @@ account left behind by the automated check. It refuses to run unless
 To wipe everything and reinstall from scratch:
 
 ```bash
-mariadb -u vedaverse -plocaldev vedaverse_db < htdocs/database/DROP_ALL.sql
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db < htdocs/database/DROP_ALL.sql
 rm htdocs/app/config/local.php
 # then re-run install.php in the browser
 ```
@@ -299,6 +354,52 @@ testing belongs to that step.
 
 ## Part 6 — When something goes wrong
 
+### MariaDB will not start: "Bootstrap failed: 5" or it stops immediately
+
+Almost never a launchd problem. Read the real error:
+
+```bash
+tail -40 $(brew --prefix)/var/mysql/*.err
+```
+
+**"Address already in use ... another server running on port 3306"** means you
+already had a database — see 1.2. Use the existing one and leave Homebrew's
+stopped (`brew services stop mariadb`), or run yours on another port with
+`--port=3307` and add `'port' => 3307,` to the `database` block in
+`htdocs/app/config/local.php`.
+
+To see the real error rather than launchd's version of it, start the server in
+the foreground:
+
+```bash
+$(brew --prefix)/opt/mariadb/bin/mariadbd-safe --datadir=$(brew --prefix)/var/mysql
+```
+
+If it returns your prompt immediately, it crashed — and the log above says why.
+
+### "Can't connect to local server through socket '/tmp/mysql.sock'"
+
+The client is looking for a Unix socket that the running server does not
+create. Add `-h 127.0.0.1` to force a TCP connection instead. This is a
+different failure from the server being down, and the two look identical until
+you check with `sudo lsof -nP -iTCP:3306 -sTCP:LISTEN`.
+
+### "TLS/SSL error: SSL is required, but the server does not support it"
+
+Your `mariadb` client is newer than your server. Clients from 11.4 onward
+demand TLS whenever a password is sent; XAMPP and MAMP servers have none
+configured. Add `--skip-ssl`.
+
+The site itself is unaffected — PHP's PDO uses mysqlnd, which has no such
+default.
+
+### "Access denied for user 'vedaverse'@'localhost' (using password: YES)"
+
+Almost always the host-pattern trap rather than a wrong password. MySQL treats
+`localhost` and `127.0.0.1` as different hosts, so a user created as
+`'vedaverse'@'%'` is still refused when the connection matches `localhost`.
+Create all three patterns, as the block in 1.4 does.
+
 ### Every page redirects to /install.php
 
 `htdocs/app/config/local.php` is missing. Either run the installer, or you
@@ -314,7 +415,7 @@ brew services list        # should show mariadb as "started"
 ```
 
 If it is running, check the four values in `htdocs/app/config/local.php` against
-what you created in step 1.3.
+what you created in step 1.4.
 
 ### /login returns 404 but the home page works
 
@@ -324,7 +425,7 @@ command, including `tools/dev-router.php` at the end.
 ### Devanagari shows as ???? or as boxes
 
 `????` means the database was not created as `utf8mb4`. Drop it and recreate it
-with the command in 1.3 — the damage happens at write time, so existing rows
+with the command in 1.4 — the damage happens at write time, so existing rows
 cannot be repaired.
 
 Boxes mean your browser has no Devanagari font, which is a display problem on
@@ -397,7 +498,7 @@ curl -s -c /tmp/jar http://127.0.0.1:8080/ >/dev/null
 TOKEN=$(grep vv_anon /tmp/jar | awk '{print $7}')
 
 # 2. Give that guest some work.
-mariadb -u vedaverse -plocaldev vedaverse_db <<SQL
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db <<SQL
 INSERT INTO chapters (chapter_number,sanskrit_name,transliteration,title_en,title_hi,title_hinglish,published)
   VALUES (99,'सांख्ययोग','Sankhya','Test','परीक्षण','Test',1);
 SET @c = LAST_INSERT_ID();
@@ -409,7 +510,7 @@ INSERT INTO notes (session_id,verse_id,content) VALUES ('$TOKEN',@v,'मेर�
 SQL
 
 # 3. Register in that same browser, then confirm the rows moved.
-mariadb -u vedaverse -plocaldev vedaverse_db -e \
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db -e \
   "SELECT 'bookmarks' t, COUNT(*) n FROM bookmarks WHERE user_id IS NOT NULL
    UNION ALL SELECT 'left behind', COUNT(*) FROM bookmarks WHERE session_id='$TOKEN';"
 ```
@@ -420,7 +521,7 @@ behind, and the Devanagari note intact.
 **Testing maintenance mode.**
 
 ```bash
-mariadb -u vedaverse -plocaldev vedaverse_db -e \
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db -e \
   "UPDATE settings SET setting_value='1' WHERE setting_key='maintenance_mode';"
 php tools/dev-reset.php     # clears the settings cache so it takes effect now
 ```
@@ -456,9 +557,9 @@ php tools/dev-reset.php && bash tools/smoke-test.sh
 tail -f htdocs/storage/logs/vedaverse-*.log
 
 # Look in the database
-mariadb -u vedaverse -plocaldev vedaverse_db
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db
 
 # Start completely over
-mariadb -u vedaverse -plocaldev vedaverse_db < htdocs/database/DROP_ALL.sql
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -plocaldev vedaverse_db < htdocs/database/DROP_ALL.sql
 rm htdocs/app/config/local.php
 ```

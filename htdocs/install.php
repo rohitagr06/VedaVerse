@@ -346,13 +346,21 @@ function vv_connect(array $db)
 {
     $dsn = 'mysql:host=' . $db['host'] . ';dbname=' . $db['database'] . ';charset=utf8mb4';
 
-    return new PDO($dsn, $db['username'], $db['password'], array(
+    $options = array(
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false,
         PDO::ATTR_TIMEOUT            => 8,
-        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci',
-    ));
+    );
+
+    // PHP 8.5 moved the MySQL-specific PDO constants into a Pdo\Mysql class
+    // and deprecated the PDO::MYSQL_* names. Database::initCommandAttribute()
+    // picks whichever this PHP version has — see the comment there for why it
+    // is written with defined() rather than naming the class directly.
+    $options[VedaVerse\Core\Database::initCommandAttribute()] =
+        'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci';
+
+    return new PDO($dsn, $db['username'], $db['password'], $options);
 }
 
 /**
@@ -385,7 +393,15 @@ function vv_test_connection(array $db)
         // The three failures that account for almost every support
         // question, named in plain language.
         if (stripos($message, 'Access denied') !== false) {
-            return 'The database refused those details. Double-check the username and password — on InfinityFree the username usually starts with "if0_" and is NOT your control-panel login.';
+            return 'The database refused those details.<br><br>'
+                 . '<strong>On InfinityFree:</strong> check the username and password. The username '
+                 . 'usually starts with "if0_" and is NOT your control-panel login.<br><br>'
+                 . '<strong>Testing locally against XAMPP, MAMP or a system MySQL:</strong> the user '
+                 . 'probably exists for the wrong host. MySQL treats 127.0.0.1 and localhost as '
+                 . 'different hosts, so a user created as <code>\'name\'@\'%\'</code> is still '
+                 . 'refused when you connect to 127.0.0.1. Create it for localhost as well:<br>'
+                 . '<code>CREATE USER \'name\'@\'localhost\' IDENTIFIED BY \'password\';<br>'
+                 . 'GRANT ALL ON dbname.* TO \'name\'@\'localhost\';</code>';
         }
         if (stripos($message, 'Unknown database') !== false) {
             return 'That database name does not exist on the server. Create the database in your host control panel first, then copy its exact name here.';
