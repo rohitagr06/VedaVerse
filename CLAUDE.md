@@ -41,8 +41,8 @@ supernatural claims, medical/legal/financial advice.
 |---|---|---|
 | 1 | `schema.sql`, `install.php`, `app/config/*`, `app/core/*` | **Done** |
 | 2 | `app/helpers/*`, middleware, `AuthService`, auth screens, anonymous merge | **Done** |
-| 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | Next |
-| 4 | Complete three-language interface string table + `I18nService` | |
+| 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
+| 4 | Complete three-language interface string table + `I18nService` | Next |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | |
 | 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
@@ -193,6 +193,22 @@ than naming either directly. Any future `PDO::MYSQL_*` needs the same treatment.
 Note the knock-on: `ErrorHandler` promotes deprecations to exceptions, so on
 8.5 an unhandled one is a 500 page, not a quiet notice.
 
+**White on the brand orange fails WCAG AA at 2.84:1.** The primary button
+therefore uses ink text on `--vv-dawn` (6.51:1). Derived `-deep`, `-text` and
+`-lift` variants exist for the cases that genuinely need white text or a text
+colour on a light or dark surface. `tools/check-contrast.php` parses
+`tokens.css` and fails on any regression — run it after touching a colour.
+
+**A CSS grid places children in source order.** `<main>` comes before `<nav>` in
+the markup so assistive technology reaches content first, which meant the
+sidebar layout put the content in the 260px column. Fixed with explicit
+`grid-column` / `grid-row` on both. The DOM order serves the screen reader, the
+grid order serves the eye.
+
+**`[aria-invalid="true"]` (0,1,0) loses to `input[type="text"]` (0,1,1),** so the
+error border silently never rendered. Found by screenshotting the style guide,
+which is the only way that class of bug ever gets found — take screenshots.
+
 **`display:none` honeypots get skipped by some bots.** Ours is positioned
 off-screen instead, with `tabindex="-1"` and `aria-hidden`.
 
@@ -303,7 +319,8 @@ RC1/
 ├── tools/
 │   ├── dev-router.php        router for `php -S` (built-in server ignores .htaccess)
 │   ├── dev-reset.php         clears throttle counters, cache, logs, test accounts
-│   └── smoke-test.sh         51 HTTP checks, exit 1 on any failure
+│   ├── smoke-test.sh         51 HTTP checks, exit 1 on any failure
+│   └── check-contrast.php    33 WCAG AA pairings read from tokens.css
 └── htdocs/                   everything uploaded by FTP
     ├── index.php             front controller — routing only
     ├── install.php           browser installer, self-deleting
@@ -323,7 +340,10 @@ RC1/
     ├── database/             schema.sql (54 tables), DROP_ALL.sql, migrations/
     ├── storage/              cache, logs, sessions, backups, temp — web-blocked
     ├── uploads/              certificates, imports, avatars — web-blocked
-    └── assets/               css, js, fonts, icons, data
+    └── assets/
+        ├── css/              tokens, base, components, print, fonts
+        ├── js/               app.js — theme, text size, CSRF on fetch
+        └── fonts/            README only; the binaries are fetched, not committed
 ```
 
 **Local test credentials** (sandbox and the owner's Mac, never production):

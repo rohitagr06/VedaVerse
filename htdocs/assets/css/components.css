@@ -1,0 +1,765 @@
+/* =====================================================================
+ * VedaVerse — assets/css/components.css
+ * ---------------------------------------------------------------------
+ * Every reusable piece of interface. Load after tokens.css and base.css.
+ *
+ * NAMING
+ *   .block, .block-variant, .block__part. Flat and boring on purpose —
+ *   a beginner should be able to guess a class name and be right.
+ *
+ * NO RAW VALUES
+ *   Every colour, size, space and duration here is a token. If you find
+ *   yourself typing a hex code or a pixel value, the answer is a new
+ *   token in tokens.css, not a literal here.
+ *
+ * SEE THEM ALL AT ONCE
+ *   /styleguide renders every component on one page, in both themes, at
+ *   every state. Open it after any change to this file.
+ * ===================================================================== */
+
+/* =====================================================================
+ * BUTTONS
+ * ---------------------------------------------------------------------
+ * The tactile press is the point. A 4px solid bottom edge that
+ * compresses to 1px when held, so tapping feels like pressing a physical
+ * key rather than triggering an event. It is two lines of CSS and it is
+ * most of why this family of interface feels good to use.
+ *
+ * The label on a primary button is INK, not white. White on --vv-dawn
+ * measures 2.84:1 and fails WCAG AA; ink measures 6.51:1. This is the
+ * most-clicked element in the product and it is not going to be the one
+ * that fails. See the note at the top of tokens.css.
+ * ===================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--vv-s-2);
+    min-height: var(--vv-tap-min);
+    padding: var(--vv-s-3) var(--vv-s-5);
+    border: 0;
+    border-radius: var(--vv-radius);
+    background: var(--vv-dawn);
+    color: var(--vv-on-brand);
+    font-family: var(--vv-font-display);
+    font-size: calc(var(--vv-t-base) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 var(--vv-press-depth) 0 var(--vv-dawn-deep);
+    transition: transform var(--vv-fast) var(--vv-ease),
+                box-shadow var(--vv-fast) var(--vv-ease),
+                background var(--vv-fast) var(--vv-ease);
+}
+
+/* color-mix is a recent addition. Every use of it in this file is
+ * preceded by a plain fallback, so a browser that does not understand
+ * the second declaration simply keeps the first and the button still
+ * changes on hover — just less subtly. */
+.btn:hover {
+    background: var(--vv-dawn-deep);
+    background: color-mix(in srgb, var(--vv-dawn) 90%, var(--vv-ink));
+}
+
+.btn:active {
+    transform: translateY(calc(var(--vv-press-depth) - var(--vv-press-sunk)));
+    box-shadow: 0 var(--vv-press-sunk) 0 var(--vv-dawn-deep);
+}
+
+.btn[disabled], .btn[aria-disabled="true"] {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-block { display: flex; width: 100%; }
+
+.btn-secondary {
+    background: var(--vv-surface);
+    color: var(--vv-text);
+    box-shadow: 0 var(--vv-press-depth) 0 var(--vv-line-strong);
+    border: 2px solid var(--vv-line-strong);
+}
+.btn-secondary:hover { background: var(--vv-surface-sunk); }
+.btn-secondary:active { box-shadow: 0 var(--vv-press-sunk) 0 var(--vv-line-strong); }
+
+.btn-success {
+    background: var(--vv-peacock);
+    box-shadow: 0 var(--vv-press-depth) 0 var(--vv-peacock-deep);
+}
+.btn-success:hover {
+    background: var(--vv-peacock-deep);
+    background: color-mix(in srgb, var(--vv-peacock) 90%, var(--vv-ink));
+}
+.btn-success:active { box-shadow: 0 var(--vv-press-sunk) 0 var(--vv-peacock-deep); }
+
+.btn-reward {
+    background: var(--vv-marigold);
+    box-shadow: 0 var(--vv-press-depth) 0 var(--vv-marigold-deep);
+}
+.btn-reward:active { box-shadow: 0 var(--vv-press-sunk) 0 var(--vv-marigold-deep); }
+
+/* A destructive action looks destructive. White on --vv-danger measures
+ * above 4.5, so this one keeps a white label. */
+.btn-danger {
+    background: var(--vv-danger);
+    color: #FFFFFF;
+    box-shadow: 0 var(--vv-press-depth) 0 #7E1A15;
+}
+.btn-danger:active { box-shadow: 0 var(--vv-press-sunk) 0 #7E1A15; }
+
+/* No fill, no shadow, no press. For tertiary actions where a raised
+ * button would compete with the real one. */
+.btn-quiet {
+    background: transparent;
+    color: var(--vv-link);
+    box-shadow: none;
+    border: 0;
+    padding-inline: var(--vv-s-3);
+}
+.btn-quiet:hover { background: var(--vv-surface-sunk); }
+.btn-quiet:active { transform: none; box-shadow: none; }
+
+.btn-sm {
+    min-height: var(--vv-tap-min);   /* Still 44px. "Small" is padding,
+                                      * never a smaller tap target. */
+    padding: var(--vv-s-2) var(--vv-s-3);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+}
+
+.btn-lg {
+    min-height: 56px;
+    padding: var(--vv-s-4) var(--vv-s-6);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+}
+
+/* =====================================================================
+ * CARDS
+ * ===================================================================== */
+
+.card {
+    background: var(--vv-surface);
+    border: 1px solid var(--vv-line);
+    border-radius: var(--vv-radius-lg);
+    padding: var(--vv-s-5);
+    box-shadow: var(--vv-shadow-sm);
+}
+
+.card + .card { margin-block-start: var(--vv-s-4); }
+
+.card-raised { box-shadow: var(--vv-shadow); }
+
+/* A card that is a link. The whole thing is the target, which is worth
+ * doing on a phone where a text link is a small thing to hit. */
+.card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: transform var(--vv-normal) var(--vv-ease),
+                box-shadow var(--vv-normal) var(--vv-ease);
+}
+.card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--vv-shadow);
+}
+
+.card__title {
+    font-family: var(--vv-font-display);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    margin-block-end: var(--vv-s-2);
+}
+
+.card__meta {
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+/* =====================================================================
+ * FORMS
+ * ===================================================================== */
+
+.field { margin-block-end: var(--vv-s-4); }
+
+.field label,
+.label {
+    display: block;
+    font-weight: var(--vv-weight-bold);
+    margin-block-end: var(--vv-s-1);
+}
+
+/* A hint belongs to its field and is tied to it with aria-describedby —
+ * this class only makes it look secondary. */
+.hint {
+    display: block;
+    font-weight: var(--vv-weight-normal);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+    margin-block-start: 2px;
+}
+
+.input,
+input[type="text"], input[type="email"], input[type="password"],
+input[type="search"], input[type="number"], input[type="url"],
+textarea, select {
+    display: block;
+    width: 100%;
+    min-height: var(--vv-tap-min);
+    padding: var(--vv-s-3);
+    /* 16px minimum, or iOS Safari zooms the page on focus — which then
+     * strands the reader at the wrong scale with no obvious way back. */
+    font-size: max(16px, calc(var(--vv-t-base) * var(--vv-scale)));
+    font-family: var(--vv-font-body);
+    color: var(--vv-text);
+    background: var(--vv-surface);
+    border: 2px solid var(--vv-line-strong);
+    border-radius: var(--vv-radius);
+    transition: border-color var(--vv-fast) var(--vv-ease);
+}
+
+textarea { min-height: 8rem; resize: vertical; }
+
+.input:hover, input:hover, textarea:hover, select:hover {
+    border-color: var(--vv-text-faint);
+}
+
+.input:focus, input:focus, textarea:focus, select:focus {
+    border-color: var(--vv-focus);
+}
+
+/* The error state is a colour AND a message AND aria-invalid. Colour
+ * alone tells a colour-blind reader nothing.
+ *
+ * The element is named in each selector on purpose. A bare
+ * [aria-invalid="true"] scores 0,1,0 and loses to the input[type="text"]
+ * rule above it at 0,1,1 — so the error border silently never appeared.
+ * Found by looking at a screenshot, which is the only way that class of
+ * bug ever gets found. */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"],
+select[aria-invalid="true"],
+.input[aria-invalid="true"] {
+    border-color: var(--vv-error);
+    /* Two pixels of extra weight, so the state survives being printed in
+     * black and white or seen by somebody who cannot distinguish red. */
+    border-width: 2px;
+}
+
+.field-error {
+    display: block;
+    margin-block-start: var(--vv-s-1);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    font-weight: var(--vv-weight-medium);
+    color: var(--vv-error);
+}
+
+/* A honeypot: visible to a bot, unreachable for a person. Positioned
+ * off-screen rather than display:none, because some bots skip hidden
+ * fields — and paired with tabindex="-1" and aria-hidden in the markup
+ * so no keyboard or screen-reader user ever lands in it. */
+.honeypot {
+    position: absolute;
+    inset-inline-start: -9999px;
+    inset-block-start: -9999px;
+}
+
+/* =====================================================================
+ * ALERTS
+ * ---------------------------------------------------------------------
+ * Always paired with role="alert" or role="status" in the markup, so the
+ * message is announced rather than left to be noticed.
+ * ===================================================================== */
+
+.alert {
+    padding: var(--vv-s-3) var(--vv-s-4);
+    border-radius: var(--vv-radius);
+    border: 2px solid;
+    margin-block-end: var(--vv-s-4);
+}
+
+.alert ul { margin-block: var(--vv-s-1) 0; padding-inline-start: var(--vv-s-5); }
+.alert li:last-child { margin-block-end: 0; }
+
+.alert-success { background: var(--vv-success-bg); border-color: var(--vv-success); color: var(--vv-success); }
+.alert-error   { background: var(--vv-error-bg);   border-color: var(--vv-error);   color: var(--vv-error); }
+.alert-warning { background: var(--vv-warning-bg); border-color: var(--vv-warning); color: var(--vv-warning); }
+.alert-info    { background: var(--vv-info-bg);    border-color: var(--vv-info);    color: var(--vv-info); }
+
+/* Links inside an alert inherit its colour, or a blue link on a red
+ * background is both ugly and low-contrast. */
+.alert a { color: inherit; }
+
+/* =====================================================================
+ * BADGES AND CHIPS
+ * ===================================================================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vv-s-1);
+    padding: 2px var(--vv-s-2);
+    border-radius: var(--vv-radius-pill);
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    background: var(--vv-surface-sunk);
+    color: var(--vv-text-muted);
+}
+
+.badge-xp      { background: var(--vv-marigold); color: var(--vv-ink); }
+.badge-mastery { background: var(--vv-peacock);  color: var(--vv-ink); }
+.badge-new     { background: var(--vv-dawn);     color: var(--vv-ink); }
+
+/* A filter chip. Minimum 44px because it is tapped. */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--vv-tap-min);
+    padding: var(--vv-s-2) var(--vv-s-4);
+    border: 2px solid var(--vv-line-strong);
+    border-radius: var(--vv-radius-pill);
+    background: var(--vv-surface);
+    color: var(--vv-text);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.chip[aria-pressed="true"], .chip.is-active {
+    background: var(--vv-ink);
+    color: var(--vv-cloud);
+    border-color: var(--vv-ink);
+}
+
+/* =====================================================================
+ * PROGRESS
+ * ---------------------------------------------------------------------
+ * The visible bar is decorative; the real value is on the element as
+ * ARIA, so a screen reader reads a number rather than nothing.
+ * ===================================================================== */
+
+.progress {
+    height: 12px;
+    border-radius: var(--vv-radius-pill);
+    background: var(--vv-surface-sunk);
+    overflow: hidden;
+}
+
+.progress__fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--vv-grad-dawn);
+    transition: width var(--vv-slow) var(--vv-ease);
+}
+
+.progress-mastery .progress__fill { background: var(--vv-grad-peacock); }
+
+/* =====================================================================
+ * SKELETONS
+ * ---------------------------------------------------------------------
+ * Skeletons, not spinners. A spinner says "wait" and nothing else; a
+ * skeleton says what is arriving and where, so the page does not jump
+ * when it lands.
+ *
+ * aria-hidden in the markup — a screen reader should hear the loading
+ * status once, not a description of grey rectangles.
+ * ===================================================================== */
+
+.skeleton {
+    background: var(--vv-surface-sunk);
+    background: linear-gradient(
+        90deg,
+        var(--vv-surface-sunk) 25%,
+        color-mix(in srgb, var(--vv-surface-sunk) 60%, var(--vv-surface)) 50%,
+        var(--vv-surface-sunk) 75%
+    );
+    background-size: 200% 100%;
+    animation: vv-shimmer 1.4s infinite linear;
+    border-radius: var(--vv-radius-sm);
+}
+
+.skeleton-line { height: 1em; margin-block-end: var(--vv-s-2); }
+.skeleton-line:nth-child(3n) { width: 80%; }
+.skeleton-title { height: 1.6em; width: 60%; margin-block-end: var(--vv-s-3); }
+
+@keyframes vv-shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+/* Under reduced motion the shimmer stops and the skeleton is a plain
+ * block — still communicating shape, no movement. */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; background: var(--vv-surface-sunk); }
+}
+
+/* =====================================================================
+ * EMPTY STATES
+ * ---------------------------------------------------------------------
+ * An empty state invites an action. It never apologises — "no results
+ * found" tells the reader they failed; "try one of these" tells them
+ * what to do next.
+ * ===================================================================== */
+
+.empty {
+    text-align: center;
+    padding: var(--vv-s-7) var(--vv-s-4);
+}
+
+.empty__art {
+    width: 96px;
+    height: 96px;
+    margin-inline: auto;
+    margin-block-end: var(--vv-s-4);
+    border-radius: var(--vv-radius-pill);
+    background: var(--vv-grad-dawn);
+    opacity: .18;
+}
+
+.empty__title {
+    font-family: var(--vv-font-display);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    margin-block-end: var(--vv-s-2);
+}
+
+.empty__body { color: var(--vv-text-muted); margin-block-end: var(--vv-s-4); }
+
+/* =====================================================================
+ * BRAND MARK
+ * ===================================================================== */
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vv-s-3);
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--vv-font-display);
+    font-weight: var(--vv-weight-bold);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+}
+
+.brand__mark {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: var(--vv-radius);
+    background: var(--vv-grad-dawn);
+}
+
+/* =====================================================================
+ * NAVIGATION
+ * ---------------------------------------------------------------------
+ * Two forms of the same thing. Below 1024px a bottom tab bar, because a
+ * thumb reaches the bottom of a phone and not the top. At 1024px and
+ * above a sidebar, because a mouse does not care and the horizontal
+ * space is there.
+ *
+ * Both render from the same markup — only the CSS differs — so there is
+ * one nav in the HTML and no duplicated link list to fall out of step.
+ * ===================================================================== */
+
+.app-shell { min-height: 100vh; }
+
+.app-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--vv-z-sticky);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--vv-s-3);
+    padding: var(--vv-s-3) var(--vv-s-4);
+    background: var(--vv-bg);
+    background: color-mix(in srgb, var(--vv-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-block-end: 1px solid var(--vv-line);
+}
+
+.app-main {
+    /* Room for the tab bar, plus the iPhone home indicator. */
+    padding-block: var(--vv-s-5);
+    padding-block-end: calc(var(--vv-nav-height) + var(--vv-s-6) + env(safe-area-inset-bottom, 0px));
+}
+
+.nav {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--vv-z-nav);
+    display: flex;
+    justify-content: space-around;
+    padding-block-end: env(safe-area-inset-bottom, 0px);
+    background: var(--vv-surface);
+    border-block-start: 1px solid var(--vv-line);
+}
+
+.nav__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: var(--vv-nav-height);
+    padding: var(--vv-s-2) var(--vv-s-1);
+    color: var(--vv-text-muted);
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    font-weight: var(--vv-weight-medium);
+    text-decoration: none;
+    text-align: center;
+}
+
+.nav__item:hover { color: var(--vv-text); }
+
+/* The active tab is marked by colour AND weight AND a bar. Colour alone
+ * would leave a colour-blind reader with no idea where they are. */
+.nav__item[aria-current="page"] {
+    color: var(--vv-dawn-text);
+    font-weight: var(--vv-weight-bold);
+}
+
+.nav__item[aria-current="page"] .nav__icon {
+    background: var(--vv-dawn);
+    color: var(--vv-on-brand);
+}
+
+.nav__icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--vv-radius-pill);
+    font-size: 18px;
+    line-height: 1;
+    transition: background var(--vv-fast) var(--vv-ease);
+}
+
+@media (min-width: 1024px) {
+    .app-shell {
+        display: grid;
+        grid-template-columns: var(--vv-sidebar) 1fr;
+        grid-template-rows: auto 1fr;
+        gap: var(--vv-s-6);
+        max-width: calc(var(--vv-measure-wide) + var(--vv-sidebar) + var(--vv-s-6));
+        margin-inline: auto;
+    }
+
+    .app-header {
+        grid-column: 1 / -1;
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+    }
+
+    /* EXPLICIT PLACEMENT, and it has to be explicit.
+     *
+     * In the markup <main> comes BEFORE <nav>, so that a screen reader
+     * and a keyboard reach the content first — somebody landing on a
+     * verse wants the verse, not five tab stops before it.
+     *
+     * A grid places children in source order, so without these two rules
+     * the content lands in the 260px sidebar column and the navigation
+     * gets the whole page. Which is exactly what happened the first time.
+     *
+     * This is the good version of the reading-order problem: the DOM
+     * order serves assistive technology, the grid order serves the eye,
+     * and CSS reconciles them. */
+    .nav      { grid-column: 1; grid-row: 2; }
+    .app-main { grid-column: 2; grid-row: 2; padding-block-end: var(--vv-s-8); }
+
+    .nav {
+        position: sticky;
+        inset-block-start: var(--vv-s-5);
+        inset-inline: auto;
+        align-self: start;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: var(--vv-s-1);
+        padding: var(--vv-s-3);
+        border: 1px solid var(--vv-line);
+        border-radius: var(--vv-radius-lg);
+        height: fit-content;
+    }
+
+    .nav__item {
+        flex: none;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: var(--vv-s-3);
+        min-height: var(--vv-tap-min);
+        border-radius: var(--vv-radius);
+        font-size: calc(var(--vv-t-base) * var(--vv-scale));
+        text-align: start;
+    }
+
+    .nav__item[aria-current="page"] { background: var(--vv-surface-sunk); }
+}
+
+/* =====================================================================
+ * FOOTER
+ * ===================================================================== */
+
+.app-footer {
+    padding: var(--vv-s-6) var(--vv-s-4);
+    border-block-start: 1px solid var(--vv-line);
+    color: var(--vv-text-muted);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+}
+
+.app-footer a { color: var(--vv-text-muted); }
+
+/* =====================================================================
+ * THE RECOVERY CODE
+ * ---------------------------------------------------------------------
+ * Shown once, never again. Monospaced and generously spaced because it
+ * gets copied onto paper by somebody who is already anxious, and a
+ * misread character costs them the account.
+ * ===================================================================== */
+
+.code-block {
+    font-family: var(--vv-font-mono);
+    font-size: calc(var(--vv-t-lg) * var(--vv-scale));
+    letter-spacing: .12em;
+    text-align: center;
+    word-break: break-all;
+    padding: var(--vv-s-5);
+    border-radius: var(--vv-radius);
+    background: var(--vv-ink);
+    color: var(--vv-marigold);   /* 11.45:1 — deliberately the loudest
+                                  * pairing in the whole palette. */
+}
+
+/* =====================================================================
+ * UTILITIES
+ * ===================================================================== */
+
+.mt-0 { margin-block-start: 0; }
+.mt-4 { margin-block-start: var(--vv-s-4); }
+.mt-6 { margin-block-start: var(--vv-s-6); }
+.mb-0 { margin-block-end: 0; }
+.w-auto { width: auto; }
+.hidden { display: none; }
+
+/* =====================================================================
+ * SETTINGS MENU
+ * ---------------------------------------------------------------------
+ * Built on <details>, which gives open/close, keyboard support and the
+ * expanded state announcement for free. See the note in
+ * partials/settings_menu.php for why that beats a hand-built dropdown.
+ * ===================================================================== */
+
+.settings-menu { position: relative; }
+
+/* The default disclosure triangle would sit next to a button that does
+ * not otherwise look like a disclosure. */
+.settings-menu > summary { list-style: none; }
+.settings-menu > summary::-webkit-details-marker { display: none; }
+
+.settings-menu__panel {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + var(--vv-s-2));
+    z-index: var(--vv-z-overlay);
+    width: max-content;
+    max-width: min(20rem, calc(100vw - var(--vv-s-6)));
+    box-shadow: var(--vv-shadow-lg);
+}
+
+.settings-group {
+    border: 0;
+    padding: 0;
+    margin: 0 0 var(--vv-s-4) 0;
+}
+
+.settings-group:last-child { margin-block-end: 0; }
+
+.settings-group .label { margin-block-end: var(--vv-s-2); }
+
+/* A chip in this menu is a preference, not navigation, so it can be
+ * smaller than a primary tap target — but not below 44px, because it is
+ * still tapped with a thumb. */
+.settings-menu .chip {
+    min-height: var(--vv-tap-min);
+    padding-inline: var(--vv-s-3);
+}
+
+/* =====================================================================
+ * AUTH AND ERROR SHELLS
+ * ---------------------------------------------------------------------
+ * Both centre a narrow column vertically. On a phone, a sign-in form
+ * pinned to the top of a tall empty screen looks unfinished; centred, it
+ * looks deliberate. min-height rather than height so a long form — the
+ * registration one — still scrolls normally.
+ * ===================================================================== */
+
+.auth-shell,
+.error-shell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;   /* Accounts for mobile browser chrome. */
+    padding-block: var(--vv-s-6);
+}
+
+.auth-header { margin-block-end: var(--vv-s-5); }
+
+/* =====================================================================
+ * SMALL SCREENS
+ * ---------------------------------------------------------------------
+ * Everything must work at 320px — an iPhone SE, which is still very much
+ * in use in the audience this product is for. Nothing may overflow
+ * horizontally and no tap target may shrink.
+ * ===================================================================== */
+
+@media (max-width: 360px) {
+    .wrap { padding-inline: var(--vv-s-3); }
+    .card { padding: var(--vv-s-4); }
+    .code-block {
+        font-size: calc(var(--vv-t-md) * var(--vv-scale));
+        letter-spacing: .08em;
+        padding: var(--vv-s-4);
+    }
+    .nav__item { font-size: 11px; }
+    /* Two buttons side by side do not fit; stack them. */
+    .row > .btn { width: 100%; }
+}
+
+/* =====================================================================
+ * STYLE GUIDE
+ * ---------------------------------------------------------------------
+ * Only used by /styleguide. Kept here rather than in a separate file so
+ * there is one stylesheet to load and no chance of the guide drifting
+ * from the components it is documenting.
+ * ===================================================================== */
+
+.sg-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--vv-s-4);
+    margin-block: var(--vv-s-4);
+}
+
+.sg-swatch { display: flex; align-items: center; gap: var(--vv-s-3); }
+
+.sg-swatch__chip {
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border-radius: var(--vv-radius);
+    /* A border, or --vv-cloud is invisible against a white card. */
+    border: 1px solid var(--vv-line);
+}
+
+.sg-code {
+    margin-block: var(--vv-s-2) var(--vv-s-5);
+    padding: var(--vv-s-3);
+    border-radius: var(--vv-radius);
+    background: var(--vv-surface-sunk);
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    overflow-x: auto;
+}

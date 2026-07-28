@@ -2,21 +2,21 @@
 /**
  * VedaVerse — app/views/layouts/app.php
  * ---------------------------------------------------------------------
- * The main site shell.
- *
- * PROVISIONAL. Step 3 brings the real navigation — the bottom tab bar on
- * mobile, the sidebar above 1024px, the Chariot Path — and the design
- * system that goes with it. What is here now is the minimum that lets
- * Step 2's pages render, be navigated by keyboard, and be tested.
- *
- * WHAT IS ALREADY FINAL
- *   The document head. Every page emits its own title, description,
- *   canonical and robots directive, and the lang attribute is set from
- *   the interface language so a screen reader pronounces Devanagari
- *   correctly rather than reading it as English. Those are requirements
- *   from sections 13 and 16 of the specification, not placeholders.
+ * The main site shell: header, navigation, content, footer.
  *
  * Variables: $title, $description, $robots, $canonical, $bodyClass, $content.
+ *
+ * THE ORDER OF THINGS IN THE DOCUMENT
+ *   Skip link, header, main, nav, footer. The navigation comes AFTER the
+ *   main content in the markup even though it is painted at the bottom
+ *   of the screen, so a screen reader and a keyboard reach the content
+ *   first. Somebody arriving on a verse page wants the verse, not five
+ *   tab stops before it.
+ *
+ * WHAT THIS LAYOUT DOES NOT DO
+ *   It never queries the database. Everything it renders was passed in
+ *   by a controller or read from the already-loaded session. If you find
+ *   yourself wanting a repository here, the answer is a controller.
  */
 
 use VedaVerse\Core\Config;
@@ -27,56 +27,50 @@ $user = Session::user();
 ?><!doctype html>
 <html lang="<?php echo e(View::htmlLang()); ?>">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?php echo e($title); ?></title>
-<meta name="description" content="<?php echo e(isset($description) ? $description : ''); ?>">
-<meta name="robots" content="<?php echo e(isset($robots) ? $robots : Config::get('seo.robots_default')); ?>">
-<?php if (!empty($canonical)): ?>
-<link rel="canonical" href="<?php echo e($canonical); ?>">
-<?php endif; ?>
-<meta property="og:site_name" content="<?php echo e(Config::get('seo.open_graph.site_name')); ?>">
-<meta property="og:title" content="<?php echo e($title); ?>">
-<meta property="og:type" content="website">
-<meta name="theme-color" content="#FF6B2C">
-<?php echo csrf_meta(); ?>
-<?php echo View::partial('partials/provisional_css'); ?>
-<?php echo View::section('head'); ?>
+<?php echo View::partial('partials/head', get_defined_vars()); ?>
 </head>
 <body class="<?php echo e(isset($bodyClass) ? $bodyClass : ''); ?>">
 
-<a class="skip" href="#main"><?php echo et('common.skip_to_content'); ?></a>
+<a class="skip-link" href="#main"><?php echo et('common.skip_to_content'); ?></a>
 
-<div class="wrap wrap-wide">
+<div class="app-shell">
 
-    <header class="row">
+    <header class="app-header">
         <a class="brand" href="/">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-name"><?php echo e(Config::get('app.name')); ?></span>
+            <span class="brand__mark" aria-hidden="true"></span>
+            <span><?php echo e(Config::get('app.short_name')); ?></span>
         </a>
 
-        <nav aria-label="Account">
+        <div class="row">
             <?php if ($user !== null): ?>
-                <span class="small"><?php echo e($user['name']); ?></span>
-                <form method="post" action="/logout" style="display:inline">
-                    <?php echo csrf_field(); ?>
-                    <button type="submit" class="btn btn-secondary" style="width:auto;margin:0;min-height:44px">
-                        <?php echo et('auth.sign_out'); ?>
-                    </button>
-                </form>
-            <?php else: ?>
-                <a class="small" href="/login"><?php echo et('auth.login.title'); ?></a>
+                <span class="badge badge-xp" title="<?php echo et('profile.xp'); ?>">
+                    <span aria-hidden="true">✦</span>
+                    <?php echo e(number_short($user['xp'])); ?>
+                </span>
+                <?php if ((int) $user['streak_current'] > 0): ?>
+                    <span class="badge" title="<?php echo et('profile.streak'); ?>">
+                        <span aria-hidden="true">🔥</span>
+                        <?php echo e((int) $user['streak_current']); ?>
+                    </span>
+                <?php endif; ?>
             <?php endif; ?>
-        </nav>
+
+            <?php echo View::partial('partials/settings_menu'); ?>
+        </div>
     </header>
 
-    <main id="main">
+    <main class="app-main wrap wrap-wide" id="main">
         <?php echo View::partial('partials/flash'); ?>
         <?php echo $content; ?>
     </main>
 
+    <?php echo View::partial('partials/nav'); ?>
+
 </div>
 
+<?php echo View::partial('partials/footer'); ?>
+
+<script src="<?php echo e(asset('js/app.js')); ?>" defer></script>
 <?php echo View::section('scripts'); ?>
 </body>
 </html>

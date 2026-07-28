@@ -2,58 +2,52 @@
 /**
  * VedaVerse — app/views/layouts/auth.php
  * ---------------------------------------------------------------------
- * The shell for the sign-in, registration and recovery screens.
+ * The shell for sign-in, registration, recovery and the one-time code.
  *
- * Narrow and deliberately bare: no navigation, no footer links, nothing
- * to wander off to. Somebody on this page is trying to do one thing, and
- * every other link is a chance to fail at it.
+ * Narrow, and deliberately bare: no navigation, no footer links, nothing
+ * to wander off to. Somebody on one of these pages is trying to do a
+ * single thing, and every other link on the page is a chance for them to
+ * fail at it.
  *
- * PROVISIONAL STYLING. Step 3 replaces partials/provisional_css.php with
- * the real design system. The markup and the accessibility behaviour are
- * not provisional and should survive that change.
+ * The one link out is back to the home page, at the bottom, small — for
+ * the person who arrived here by accident and wants to keep reading
+ * without an account, which they are entitled to do.
  *
  * Variables: $title, $description, $robots, $canonical, $content.
  */
 
+use VedaVerse\Core\Config;
 use VedaVerse\Core\View;
 ?><!doctype html>
 <html lang="<?php echo e(View::htmlLang()); ?>">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?php echo e($title); ?></title>
-<meta name="description" content="<?php echo e(isset($description) ? $description : ''); ?>">
-<meta name="robots" content="<?php echo e(isset($robots) ? $robots : 'noindex, nofollow'); ?>">
-<?php if (!empty($canonical)): ?>
-<link rel="canonical" href="<?php echo e($canonical); ?>">
-<?php endif; ?>
-<meta name="theme-color" content="#FF6B2C">
-<?php echo csrf_meta(); ?>
-<?php echo View::partial('partials/provisional_css'); ?>
-<?php echo View::section('head'); ?>
+<?php echo View::partial('partials/head', get_defined_vars()); ?>
 </head>
-<body>
+<body class="auth-page">
 
-<a class="skip" href="#main"><?php echo et('common.skip_to_content'); ?></a>
+<a class="skip-link" href="#main"><?php echo et('common.skip_to_content'); ?></a>
 
-<div class="wrap">
+<div class="wrap auth-shell">
 
-    <a class="brand" href="/">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name"><?php echo e(\VedaVerse\Core\Config::get('app.name')); ?></span>
-    </a>
+    <header class="auth-header">
+        <a class="brand" href="/">
+            <span class="brand__mark" aria-hidden="true"></span>
+            <span><?php echo e(Config::get('app.name')); ?></span>
+        </a>
+    </header>
 
     <main id="main">
         <?php echo View::partial('partials/flash'); ?>
         <?php echo $content; ?>
     </main>
 
-    <p class="foot">
+    <p class="text-center mt-6">
         <a href="/"><?php echo et('common.home'); ?></a>
     </p>
 
 </div>
 
+<script src="<?php echo e(asset('js/app.js')); ?>" defer></script>
 <?php echo View::section('scripts'); ?>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Testing VedaVerse on your Mac
 
-**Covers the build through Step 2.** This document is updated at the end of every
+**Covers the build through Step 3.** This document is updated at the end of every
 step, so what it describes is always exactly what exists.
 
 You do not need Docker, a virtual machine, MAMP, or any hosting account. Two
@@ -540,11 +540,35 @@ A signed-out visitor gets a 503 with a `Retry-After` header. `/login` and
 `X-VedaVerse-Maintenance: on` header as the reminder that it is still closed.
 Set it back to `'0'` and reset again.
 
-### Step 3 — Design system ⏳ not started
+### Step 3 — Design system ✅
 
-Will add: `tokens.css`, `base.css`, `components.css`, the real layouts and
-navigation, and the component library. `partials/provisional_css.php` is deleted
-at that point.
+| What to test | How | Expected |
+|---|---|---|
+| Every component, one page | open `/styleguide` | the whole system, top to bottom |
+| Contrast | `php tools/check-contrast.php` | all 33 pairings pass AA |
+| Dark theme | gear menu → Dark | a real theme, not an inversion |
+| Follow the system | gear menu → Automatic | matches macOS appearance, and changing it live updates the page |
+| Text size | gear menu → the four A's | the whole page scales, not just body copy |
+| Language | gear menu → हिन्दी | interface switches and the choice sticks as you click |
+| 320px | responsive mode at 320 wide | nothing overflows sideways, tap targets stay 44px |
+| Keyboard | Tab from the top | skip link first, visible ring on everything, sensible order |
+| The tactile press | press and hold any button | the 4px bottom edge compresses to 1px |
+| Reduced motion | System Settings → Accessibility → Display → Reduce motion | the skeleton stops shimmering, nothing else moves |
+| Print | Cmd-P on `/styleguide` | no nav, no buttons, shloka keeps its treatment, links show their URLs |
+
+**The one thing worth doing by hand.** Open `/styleguide` and look at the shloka:
+
+> कर्मण्येवाधिकारस्ते मा फलेषु कदाचन
+
+If the conjuncts render as single joined forms, Devanagari is working. If you see
+separate letters with visible halant marks between them, a font loaded but its
+OpenType layout tables were stripped — which is not cosmetic, it makes it a
+different word. If you see rectangles, no Devanagari font is available.
+
+**Fonts are not in the repository.** `assets/fonts/README.md` explains why and
+how to fetch them — about five minutes. Until then the site falls back to the
+system stack and looks reasonable; the shloka is the part that genuinely
+suffers.
 
 ### Steps 4–15 ⏳ not started
 

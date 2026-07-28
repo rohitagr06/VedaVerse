@@ -1,0 +1,330 @@
+/* =====================================================================
+ * VedaVerse — assets/css/base.css
+ * ---------------------------------------------------------------------
+ * The reset, the typography, and the accessibility floor.
+ *
+ * LOAD ORDER: tokens.css, then this, then components.css. This file uses
+ * tokens and defines none.
+ *
+ * WHAT LIVES HERE
+ *   Element defaults only — html, body, headings, paragraphs, links,
+ *   lists, form elements. Anything with a class belongs in
+ *   components.css. The line is: if it needs a name, it is a component.
+ *
+ * THE ACCESSIBILITY RULES IN THIS FILE ARE NOT STYLE
+ *   Visible focus, 44px targets, respecting reduced motion, and correct
+ *   language handling for Devanagari are requirements. A future redesign
+ *   may change every colour and every spacing value in here. It may not
+ *   remove those four.
+ * ===================================================================== */
+
+/* ---------------------------------------------------------------------
+ * Reset
+ * ------------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Anchor links and the skip link land below the sticky header
+     * rather than underneath it. */
+    scroll-padding-top: var(--vv-s-7);
+}
+
+body {
+    min-height: 100vh;
+    background: var(--vv-bg);
+    color: var(--vv-text);
+    font-family: var(--vv-font-body);
+    font-size: calc(var(--vv-t-base) * var(--vv-scale));
+    line-height: var(--vv-lh-normal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+img, picture, svg, video, canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+/* Long words — a Sanskrit transliteration, a URL in a note — should wrap
+ * rather than push the layout sideways on a 320px screen. */
+p, h1, h2, h3, h4, li, dd, figcaption {
+    overflow-wrap: break-word;
+}
+
+/* ---------------------------------------------------------------------
+ * Typography
+ * ---------------------------------------------------------------------
+ * Headings use the display face; body text does not. Every size comes
+ * from the scale and multiplies by --vv-scale, so the reader's text-size
+ * preference moves the whole page together instead of only the parts
+ * somebody remembered to make relative.
+ * ------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--vv-font-display);
+    font-weight: var(--vv-weight-bold);
+    line-height: var(--vv-lh-tight);
+    /* Keeps a heading from being left alone at the bottom of a column. */
+    text-wrap: balance;
+}
+
+/* h1 uses clamp so it steps down on a phone without needing a media
+ * query. At 34px a long title takes three lines on a 390px screen, which
+ * pushes the actual content below the fold before the reader has seen
+ * anything. The floor is the next size down the scale, never smaller. */
+h1 {
+    font-size: calc(var(--vv-t-xl) * var(--vv-scale));
+    font-size: clamp(
+        calc(var(--vv-t-lg) * var(--vv-scale)),
+        calc(var(--vv-t-md) * var(--vv-scale)) + 2.2vw,
+        calc(var(--vv-t-xl) * var(--vv-scale))
+    );
+    margin-block-end: var(--vv-s-3);
+}
+h2 { font-size: calc(var(--vv-t-lg)   * var(--vv-scale)); margin-block: var(--vv-s-6) var(--vv-s-3); }
+h3 { font-size: calc(var(--vv-t-md)   * var(--vv-scale)); margin-block: var(--vv-s-5) var(--vv-s-2); }
+h4 { font-size: calc(var(--vv-t-base) * var(--vv-scale)); margin-block: var(--vv-s-4) var(--vv-s-2); }
+
+p { margin-block-end: var(--vv-s-4); }
+p:last-child { margin-block-end: 0; }
+
+ul, ol { margin-block-end: var(--vv-s-4); padding-inline-start: var(--vv-s-5); }
+li { margin-block-end: var(--vv-s-2); }
+
+small { font-size: calc(var(--vv-t-sm) * var(--vv-scale)); }
+
+strong, b { font-weight: var(--vv-weight-bold); }
+
+code, kbd, samp, pre {
+    font-family: var(--vv-font-mono);
+    font-size: 0.92em;
+}
+
+code {
+    padding: 2px 6px;
+    border-radius: var(--vv-radius-sm);
+    background: var(--vv-surface-sunk);
+}
+
+hr {
+    border: 0;
+    border-block-start: 1px solid var(--vv-line);
+    margin-block: var(--vv-s-6);
+}
+
+blockquote {
+    margin-block-end: var(--vv-s-4);
+    padding-inline-start: var(--vv-s-4);
+    border-inline-start: 3px solid var(--vv-line-strong);
+    color: var(--vv-text-muted);
+}
+
+/* ---------------------------------------------------------------------
+ * THE SHLOKA
+ * ---------------------------------------------------------------------
+ * The one serious object on the screen.
+ *
+ * Everything else in this product is rounded, bright and playful. The
+ * verse is a serif, larger, with double line height, on a quiet inset
+ * surface. That contrast is the design's whole argument — the app is an
+ * app, and the text it teaches is not.
+ *
+ * The line height is 2 rather than the usual 1.6 because Devanagari
+ * stacks conjuncts above and below the baseline. At 1.6 they collide
+ * with the line above, which does not look tight, it looks broken.
+ *
+ * Always mark it lang="sa". Without it a screen reader reads Devanagari
+ * with an English speech engine and produces noise.
+ * ------------------------------------------------------------------- */
+
+.shloka {
+    font-family: var(--vv-font-shloka);
+    font-size: calc(var(--vv-t-lg) * var(--vv-scale));
+    line-height: var(--vv-lh-shloka);
+    font-weight: var(--vv-weight-normal);
+    text-align: center;
+    padding: var(--vv-s-5) var(--vv-s-4);
+    background: var(--vv-surface-sunk);
+    border-radius: var(--vv-radius-lg);
+    /* One hairline of dawn down the side: present, not shouting. */
+    border-inline-start: 3px solid var(--vv-dawn);
+}
+
+.transliteration {
+    font-style: italic;
+    color: var(--vv-text-muted);
+    text-align: center;
+    margin-block-start: var(--vv-s-3);
+}
+
+/* Devanagari anywhere else in the interface still needs the extra
+ * leading, just less of it than the shloka does. */
+:lang(hi), :lang(sa) { line-height: var(--vv-lh-loose); }
+
+/* ---------------------------------------------------------------------
+ * Links
+ * ------------------------------------------------------------------- */
+
+a {
+    color: var(--vv-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+a:hover { color: var(--vv-link-hover); }
+
+/* Underlines stay. Removing them leaves colour as the only signal that
+ * something is a link, which fails for anyone who cannot distinguish
+ * blue from black — and colour alone is never an acceptable signal. */
+a:not([class]) { text-decoration: underline; }
+
+/* ---------------------------------------------------------------------
+ * FOCUS — do not touch this without reading the comment
+ * ---------------------------------------------------------------------
+ * A keyboard user who cannot see where they are cannot use the site.
+ * outline: none is the single most damaging line in web CSS.
+ *
+ * :focus-visible rather than :focus, so the ring appears for keyboard
+ * and assistive navigation but not on a mouse click — which is what
+ * makes people want to remove it in the first place.
+ * ------------------------------------------------------------------- */
+
+:focus-visible {
+    outline: var(--vv-focus-width) solid var(--vv-focus);
+    outline-offset: var(--vv-focus-offset);
+    border-radius: var(--vv-radius-sm);
+}
+
+/* Older engines with no :focus-visible support still get a ring. */
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---------------------------------------------------------------------
+ * Skip link
+ * ---------------------------------------------------------------------
+ * The first thing in the tab order on every page. Off-screen until
+ * focused, then visible — hiding it with display:none would take it out
+ * of the tab order and defeat the point.
+ * ------------------------------------------------------------------- */
+
+.skip-link {
+    position: absolute;
+    inset-inline-start: -9999px;
+    inset-block-start: 0;
+    z-index: var(--vv-z-toast);
+    padding: var(--vv-s-3) var(--vv-s-4);
+    background: var(--vv-ink);
+    color: var(--vv-cloud);
+    border-radius: 0 0 var(--vv-radius) 0;
+    font-weight: var(--vv-weight-bold);
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    inset-inline-start: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Screen-reader-only text
+ * ---------------------------------------------------------------------
+ * For labels and context that a sighted reader gets from layout and a
+ * screen reader would otherwise miss. Never display:none — that hides it
+ * from assistive technology too, which is the opposite of the intent.
+ * ------------------------------------------------------------------- */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Selection
+ * ------------------------------------------------------------------- */
+
+::selection {
+    background: var(--vv-marigold);
+    color: var(--vv-ink);
+}
+
+/* ---------------------------------------------------------------------
+ * Layout containers
+ * ------------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--vv-measure);
+    margin-inline: auto;
+    padding-inline: var(--vv-s-4);
+}
+
+.wrap-wide { max-width: var(--vv-measure-wide); }
+
+.stack > * + * { margin-block-start: var(--vv-s-4); }
+.stack-lg > * + * { margin-block-start: var(--vv-s-6); }
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vv-s-3);
+    align-items: center;
+}
+
+.row-between { justify-content: space-between; }
+
+.text-muted { color: var(--vv-text-muted); }
+.text-faint { color: var(--vv-text-faint); }
+.text-center { text-align: center; }
+.lead {
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+/* ---------------------------------------------------------------------
+ * REDUCED MOTION
+ * ---------------------------------------------------------------------
+ * For a person with a vestibular disorder, movement is not decoration —
+ * it causes nausea. When the operating system says to reduce motion,
+ * everything collapses to near-instant. Opacity changes survive because
+ * a fade carries no motion.
+ *
+ * 0.01ms rather than 0 so that transitionend and animationend still
+ * fire; setting it to zero silently breaks any code waiting on them.
+ * ------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------------------------------------------------------------------
+ * High contrast
+ * ---------------------------------------------------------------------
+ * Some readers turn contrast up because they need it. Honour it rather
+ * than overriding it with brand colours.
+ * ------------------------------------------------------------------- */
+
+@media (prefers-contrast: more) {
+    :root {
+        --vv-text-muted: var(--vv-text);
+        --vv-text-faint: var(--vv-text);
+        --vv-line: var(--vv-line-strong);
+    }
+}

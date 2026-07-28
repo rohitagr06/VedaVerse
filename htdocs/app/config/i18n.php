@@ -242,6 +242,50 @@ return array(
         'form.required_note'  => array('en' => 'All fields are required.', 'hi' => 'सभी फ़ील्ड ज़रूरी हैं।', 'hinglish' => 'Saare fields zaroori hain.'),
 
         // -------------------------------------------------------------
+        // Navigation
+        // -------------------------------------------------------------
+        // Short, because a tab-bar label has about eight characters
+        // before it wraps on a 320px screen. "Path" not "Learning Path",
+        // "Sarathi" not "Ask Sarathi".
+        'nav.primary' => array('en' => 'Main navigation', 'hi' => 'मुख्य नेविगेशन', 'hinglish' => 'Main navigation'),
+        'nav.path'    => array('en' => 'Path', 'hi' => 'रास्ता', 'hinglish' => 'Path'),
+        'nav.review'  => array('en' => 'Review', 'hi' => 'दोहराएँ', 'hinglish' => 'Review'),
+        'nav.sarathi' => array('en' => 'Sarathi', 'hi' => 'सारथी', 'hinglish' => 'Sarathi'),
+        'nav.explore' => array('en' => 'Explore', 'hi' => 'खोजें', 'hinglish' => 'Explore'),
+        'nav.profile' => array('en' => 'You', 'hi' => 'आप', 'hinglish' => 'Tum'),
+
+        // -------------------------------------------------------------
+        // Display settings
+        // -------------------------------------------------------------
+        'settings.open'          => array('en' => 'Display settings', 'hi' => 'प्रदर्शन सेटिंग', 'hinglish' => 'Display settings'),
+        'settings.theme'         => array('en' => 'Appearance', 'hi' => 'रंग-रूप', 'hinglish' => 'Look'),
+        'settings.theme.light'   => array('en' => 'Light', 'hi' => 'उजला', 'hinglish' => 'Light'),
+        'settings.theme.dark'    => array('en' => 'Dark', 'hi' => 'गहरा', 'hinglish' => 'Dark'),
+        'settings.theme.system'  => array('en' => 'Automatic', 'hi' => 'अपने आप', 'hinglish' => 'Apne aap'),
+        'settings.size'          => array('en' => 'Text size', 'hi' => 'अक्षरों का आकार', 'hinglish' => 'Text ka size'),
+        'settings.size.step'     => array('en' => 'Text size :n of 4', 'hi' => '4 में से :n आकार', 'hinglish' => 'Size :n of 4'),
+        'settings.language'      => array('en' => 'Language', 'hi' => 'भाषा', 'hinglish' => 'Bhasha'),
+        'settings.account'       => array('en' => 'Account', 'hi' => 'खाता', 'hinglish' => 'Account'),
+
+        // -------------------------------------------------------------
+        // Profile and progress
+        // -------------------------------------------------------------
+        'profile.xp'     => array('en' => 'Experience points', 'hi' => 'अनुभव अंक', 'hinglish' => 'XP'),
+        'profile.streak' => array('en' => 'Day streak', 'hi' => 'लगातार दिन', 'hinglish' => 'Streak'),
+        'profile.level'  => array('en' => 'Level :n', 'hi' => 'स्तर :n', 'hinglish' => 'Level :n'),
+
+        // -------------------------------------------------------------
+        // Footer
+        // -------------------------------------------------------------
+        // The claim that matters legally and editorially: every word of
+        // translation, explanation and example here is original writing.
+        'footer.original_work' => array(
+            'en'       => 'Every translation and example here is original writing.',
+            'hi'       => 'यहाँ का हर अनुवाद और उदाहरण मौलिक लेखन है।',
+            'hinglish' => 'Yahan ka har translation aur example original likha gaya hai.',
+        ),
+
+        // -------------------------------------------------------------
         // Offline
         // -------------------------------------------------------------
         'offline.badge'      => array('en' => 'Offline', 'hi' => 'ऑफ़लाइन', 'hinglish' => 'Offline'),

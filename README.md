@@ -20,7 +20,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 |---|---|---|
 | 1 | Schema, installer, config, core classes | **Done** |
 | 2 | Helpers, middleware, auth, anonymous merge | **Done** |
-| 3 | Design system, layouts, component library | Not started |
+| 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | Not started |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | Not started |
 | 6 | 108 curated verses, all seed content | Not started |
@@ -164,7 +164,8 @@ home page returns 404.
 what cannot be tested without the real host, and a per-step log of what exists.
 
 ```bash
-php tools/dev-reset.php && bash tools/smoke-test.sh
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 51 HTTP checks
+php tools/check-contrast.php                          # 33 WCAG AA pairings
 ```
 
 Fifty-one checks over HTTP in about ten seconds: headers, error pages in three

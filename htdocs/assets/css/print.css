@@ -1,0 +1,159 @@
+/* =====================================================================
+ * VedaVerse — assets/css/print.css
+ * ---------------------------------------------------------------------
+ * Print reading mode, and what a page looks like on paper.
+ *
+ * Loaded with media="print", so none of it affects the screen.
+ *
+ * WHO PRINTS A WEBSITE IN 2026
+ *   People studying. A learner working through a chapter with a pen, a
+ *   teacher handing out a verse to a class, somebody who wants the
+ *   Sanskrit without a screen in front of them. Print is one of the six
+ *   reading modes in the specification for exactly that reason, and it
+ *   is cheap to do properly.
+ *
+ * THE PRINCIPLE
+ *   Paper has no navigation, no buttons and no dark mode. Remove
+ *   everything interactive, force the light palette, and let the content
+ *   have the page.
+ * ===================================================================== */
+
+@page {
+    margin: 18mm 16mm;
+}
+
+/* Force the light theme. A dark background wastes an entire cartridge
+ * and prints the text as a white hole. */
+:root, :root[data-theme="dark"] {
+    --vv-bg:           #FFFFFF;
+    --vv-surface:      #FFFFFF;
+    --vv-surface-sunk: #F4F4F4;
+    --vv-text:         #000000;
+    --vv-text-muted:   #333333;
+    --vv-text-faint:   #555555;
+    --vv-line:         #CCCCCC;
+    --vv-line-strong:  #999999;
+    --vv-shadow-sm:    none;
+    --vv-shadow:       none;
+    --vv-shadow-lg:    none;
+}
+
+body {
+    background: #FFFFFF;
+    color: #000000;
+    font-size: 11pt;
+    line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------
+ * Remove everything that cannot be used on paper
+ * ------------------------------------------------------------------- */
+
+.nav,
+.app-header,
+.app-footer,
+.skip-link,
+.btn,
+.chip,
+.skeleton,
+.theme-toggle,
+form,
+[data-print="hide"] {
+    display: none !important;
+}
+
+.app-shell { display: block; }
+.app-main  { padding: 0; }
+
+.wrap, .wrap-wide {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
+
+.card {
+    border: 1px solid #CCCCCC;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 0 8pt 0;
+    margin-block-end: 8pt;
+    border-inline: 0;
+    border-block-start: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * The shloka keeps its treatment
+ * ---------------------------------------------------------------------
+ * It is the reason somebody printed the page. Generous leading matters
+ * more on paper than on screen, because this is what gets annotated.
+ * ------------------------------------------------------------------- */
+
+.shloka {
+    font-size: 15pt;
+    line-height: 2;
+    background: none;
+    border: 0;
+    border-inline-start: 2pt solid #000000;
+    padding: 6pt 0 6pt 10pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* ---------------------------------------------------------------------
+ * Show where links point
+ * ---------------------------------------------------------------------
+ * A printed link is useless without its destination. Absolute URLs are
+ * appended; in-page anchors and javascript: are not, because "#top"
+ * after every heading is noise.
+ * ------------------------------------------------------------------- */
+
+a { color: #000000; text-decoration: underline; }
+
+a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    word-break: break-all;
+}
+
+a[href^="/"]::after {
+    content: " (vedaverse" attr(href) ")";
+    font-size: 9pt;
+}
+
+/* ---------------------------------------------------------------------
+ * Page breaks
+ * ------------------------------------------------------------------- */
+
+h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+/* Never leave a single line stranded at the top or bottom of a page. */
+p, li, blockquote {
+    orphans: 3;
+    widows: 3;
+}
+
+img, figure, table, .alert {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* ---------------------------------------------------------------------
+ * Attribution
+ * ---------------------------------------------------------------------
+ * A printed sheet that circulates should say where it came from. Added
+ * to the end of the content rather than as a running footer, because
+ * @page margin boxes are unevenly supported.
+ * ------------------------------------------------------------------- */
+
+.app-main::after {
+    content: "VedaVerse — The Gita, Decoded";
+    display: block;
+    margin-block-start: 12pt;
+    padding-block-start: 6pt;
+    border-block-start: 1px solid #CCCCCC;
+    font-size: 9pt;
+    color: #555555;
+}

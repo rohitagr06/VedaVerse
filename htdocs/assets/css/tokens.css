@@ -1,0 +1,332 @@
+/* =====================================================================
+ * VedaVerse — assets/css/tokens.css
+ * ---------------------------------------------------------------------
+ * Every colour, size, space and duration in the product, defined once.
+ *
+ * NOTHING ELSE IN THE CODEBASE MAY CONTAIN A RAW VALUE.
+ *   No #FF6B2C in a component, no 24px in a layout, no 200ms in an
+ *   animation. If a value is needed and no token fits, add a token. That
+ *   is the entire discipline, and it is what makes a restyle a change to
+ *   one file rather than an archaeology project.
+ *
+ * THE CONTRAST NUMBERS ARE MEASURED, NOT ASSUMED
+ *   Every pairing below carries its real WCAG contrast ratio, computed
+ *   from the hex values. They are checked by tools/check-contrast.php,
+ *   which fails if any drops below the threshold — so a "small tweak" to
+ *   a colour cannot quietly break accessibility.
+ *
+ *   The important finding: white text on --vv-dawn is 2.84:1, which fails
+ *   AA badly. The primary button is the most-clicked element in the
+ *   product, so it uses INK text on dawn (6.51:1) instead. Plenty of
+ *   apps in this visual family ship white-on-bright and fail; we do not.
+ *
+ * THE PALETTE COMES FROM THE BATTLEFIELD, NOT FROM A SWATCH LIBRARY
+ *   Dawn is the light at Kurukshetra before the fighting starts.
+ *   Marigold is the flower on every doorway in India. Krishna is the blue
+ *   of the charioteer. Peacock is the feather in his crown. Ink is the
+ *   text of the manuscript, cloud is its paper. That is why the names are
+ *   what they are, and why nothing here is called "primary-500".
+ * ===================================================================== */
+
+:root {
+
+    /* -----------------------------------------------------------------
+     * BRAND COLOURS
+     * ----------------------------------------------------------------- */
+
+    --vv-dawn:     #FF6B2C;  /* Primary. Buttons, active states.        */
+    --vv-marigold: #FFC22E;  /* XP, streaks, rewards.                   */
+    --vv-krishna:  #2D5BFF;  /* Secondary. Links, chat, information.    */
+    --vv-peacock:  #00B5A5;  /* Success, mastery, correct answers.      */
+    --vv-ink:      #14121F;  /* Text on light. Base of the dark theme.  */
+    --vv-cloud:    #FFF7EE;  /* Light background.                       */
+
+    /* -----------------------------------------------------------------
+     * ACCESSIBLE VARIANTS
+     * ---------------------------------------------------------------
+     * Derived by darkening the brand colour in HLS — same hue, same
+     * saturation, less lightness — until the pairing reaches 4.5:1. So
+     * they read as the same colour, just deeper.
+     *
+     * -deep  a SURFACE that white text can sit on
+     * -text  a TEXT colour that can sit on a light surface
+     * -lift  a TEXT colour that can sit on the dark theme
+     * ----------------------------------------------------------------- */
+
+    --vv-dawn-deep:     #D74000;  /* white on it: 4.54  ✓ AA            */
+    --vv-peacock-deep:  #008478;  /* white on it: 4.59  ✓ AA            */
+    --vv-marigold-deep: #9A6D00;  /* white on it: 4.60  ✓ AA            */
+
+    --vv-dawn-text:     #CE3E00;  /* on --vv-cloud: 4.59  ✓ AA         */
+    --vv-peacock-text:  #008175;  /* on --vv-cloud: 4.50  ✓ AA         */
+    --vv-marigold-text: #936800;  /* on --vv-cloud: 4.69  ✓ AA         */
+
+    --vv-krishna-lift:  #557AFF;  /* on dark surface: 4.50  ✓ AA       */
+
+    /* Danger has no brand equivalent, so it is chosen rather than
+     * derived. Measured at 5.94:1 on cloud and 5.42:1 on the dark
+     * surface, so the same pair works in both themes. */
+    --vv-danger:      #B3261E;
+    --vv-danger-lift: #FF8A80;
+
+    /* -----------------------------------------------------------------
+     * SEMANTIC COLOURS — light theme
+     * ---------------------------------------------------------------
+     * Components reference THESE, never the brand names above. That
+     * indirection is what makes the dark theme a redefinition of six
+     * variables rather than a second stylesheet.
+     * ----------------------------------------------------------------- */
+
+    --vv-bg:            var(--vv-cloud);
+    --vv-surface:       #FFFFFF;
+    --vv-surface-sunk:  #F6EFE6;   /* Inset areas: code blocks, wells.  */
+    --vv-text:          var(--vv-ink);            /* 17.42:1 on bg  ✓  */
+    --vv-text-muted:    #5C5568;   /* 7.24:1 on bg   ✓ AA              */
+    --vv-text-faint:    #766F83;   /* 4.53:1 on bg   ✓ AA              */
+    --vv-line:          #E7DFD4;
+    /* Borders that CARRY MEANING — an input outline, a selected state —
+     * need 3:1 like any other non-text signal. A hairline that only the
+     * designer can see is not a border, it is a decoration. Use
+     * --vv-line for purely decorative rules, which have no threshold. */
+    --vv-line-strong:   #A49279;   /* 3.01:1 on a card  ✓ AA non-text  */
+
+    --vv-link:          var(--vv-krishna);        /* 4.88:1 on bg   ✓  */
+    --vv-link-hover:    #1E45D6;
+
+    --vv-success:       var(--vv-peacock-text);
+    --vv-success-bg:    #F2FBFA;   /* success text on it: 4.54  ✓ AA   */
+    --vv-warning:       var(--vv-marigold-text);
+    --vv-warning-bg:    #FFF3D6;
+    --vv-error:         var(--vv-danger);
+    --vv-error-bg:      #FCEBEA;
+    --vv-info:          var(--vv-krishna);
+    --vv-info-bg:       #E8EDFF;
+
+    /* Text that sits ON a brand-coloured surface. Ink, not white — see
+     * the note at the top of this file. */
+    --vv-on-brand:      var(--vv-ink);
+
+    /* The focus ring. Never removed, never made subtle. A keyboard user
+     * who cannot see where they are cannot use the site at all. */
+    --vv-focus:         var(--vv-krishna);
+    --vv-focus-width:   3px;
+    --vv-focus-offset:  2px;
+
+    /* -----------------------------------------------------------------
+     * GRADIENTS
+     * ---------------------------------------------------------------
+     * Two, used with restraint. A gradient behind text is a contrast
+     * problem that changes across its own width, so text on either of
+     * these is always --vv-on-brand, and both endpoints are checked.
+     * ----------------------------------------------------------------- */
+
+    --vv-grad-dawn:    linear-gradient(135deg, var(--vv-dawn), var(--vv-marigold));
+    --vv-grad-peacock: linear-gradient(135deg, var(--vv-peacock), var(--vv-krishna));
+
+    /* -----------------------------------------------------------------
+     * TYPEFACES
+     * ---------------------------------------------------------------
+     * Baloo 2 for display and interface: rounded, friendly, and it ships
+     * Devanagari, so a heading looks like the same design in all three
+     * languages instead of falling back to something unrelated.
+     *
+     * Mukta for body text, chosen for Latin and Devanagari that sit
+     * together at the same optical weight.
+     *
+     * Noto Serif Devanagari for the shloka, and ONLY the shloka. The
+     * whole interface is rounded and playful except the verse. That
+     * contrast is the design's entire argument: everything around it is
+     * an app, and the verse is the one serious object on the screen.
+     *
+     * See assets/fonts/README.md — the files are not in the repository
+     * and the fallbacks below are what renders until they are added.
+     * ----------------------------------------------------------------- */
+
+    --vv-font-display: "Baloo 2", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --vv-font-body:    "Mukta", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --vv-font-shloka:  "Noto Serif Devanagari", "Tiro Devanagari Hindi", Georgia, serif;
+    --vv-font-mono:    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* -----------------------------------------------------------------
+     * TYPE SCALE — 13 / 15 / 17 / 20 / 26 / 34 / 44
+     * ---------------------------------------------------------------
+     * Seven sizes, no others. Body is 17px rather than the usual 16
+     * because Devanagari carries more detail per character and needs the
+     * extra pixel to stay legible at the same reading distance.
+     * ----------------------------------------------------------------- */
+
+    --vv-t-xs:   13px;
+    --vv-t-sm:   15px;
+    --vv-t-base: 17px;
+    --vv-t-md:   20px;
+    --vv-t-lg:   26px;
+    --vv-t-xl:   34px;
+    --vv-t-2xl:  44px;
+
+    --vv-lh-tight:  1.25;
+    --vv-lh-normal: 1.6;
+    --vv-lh-loose:  1.75;
+    /* The shloka needs far more room than Latin text: Devanagari stacks
+     * conjuncts above and below the baseline, and at 1.6 they collide. */
+    --vv-lh-shloka: 2;
+
+    --vv-weight-normal: 400;
+    --vv-weight-medium: 500;
+    --vv-weight-bold:   700;
+
+    /* Reader-adjustable text size. app.js sets --vv-scale on <html> at
+     * one of four steps; every font size multiplies by it. */
+    --vv-scale: 1;
+
+    /* -----------------------------------------------------------------
+     * SPACING — 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64
+     * ---------------------------------------------------------------
+     * No arbitrary values. If a gap needs 18px, the answer is 16 or 24.
+     * ----------------------------------------------------------------- */
+
+    --vv-s-1:  4px;
+    --vv-s-2:  8px;
+    --vv-s-3: 12px;
+    --vv-s-4: 16px;
+    --vv-s-5: 24px;
+    --vv-s-6: 32px;
+    --vv-s-7: 48px;
+    --vv-s-8: 64px;
+
+    /* -----------------------------------------------------------------
+     * SHAPE
+     * ----------------------------------------------------------------- */
+
+    --vv-radius-sm:   8px;
+    --vv-radius:     12px;
+    --vv-radius-lg:  20px;   /* Cards. */
+    --vv-radius-pill: 999px;
+
+    /* The tactile press. A button carries a 4px solid bottom edge that
+     * compresses to 1px when held, so tapping feels like pressing a real
+     * thing. It is the single detail that makes this family of interface
+     * satisfying, and it costs two lines. */
+    --vv-press-depth: 4px;
+    --vv-press-sunk:  1px;
+
+    /* Shadows are warm-tinted, never grey. Grey shadows on a cream
+     * background read as dirt. */
+    --vv-shadow-sm: 0 1px 2px rgba(255, 107, 44, .08);
+    --vv-shadow:    0 4px 16px rgba(255, 107, 44, .10);
+    --vv-shadow-lg: 0 10px 32px rgba(255, 107, 44, .14);
+
+    /* -----------------------------------------------------------------
+     * LAYOUT
+     * ----------------------------------------------------------------- */
+
+    --vv-measure:      36rem;   /* Reading width. ~70 characters.       */
+    --vv-measure-wide: 64rem;
+    --vv-tap-min:      44px;    /* Minimum tap target. Not negotiable.  */
+    --vv-nav-height:   64px;    /* Bottom tab bar.                      */
+    --vv-sidebar:     260px;
+
+    --vv-bp-sidebar: 1024px;    /* Documentation only — a media query
+                                 * cannot read a custom property. Change
+                                 * both together. */
+
+    /* -----------------------------------------------------------------
+     * MOTION
+     * ---------------------------------------------------------------
+     * Minimal and purposeful. Under prefers-reduced-motion everything
+     * below collapses to opacity — see base.css.
+     * ----------------------------------------------------------------- */
+
+    --vv-fast:   120ms;
+    --vv-normal: 200ms;
+    --vv-slow:   400ms;
+    --vv-ease:   cubic-bezier(.2, .8, .2, 1);
+
+    --vv-z-nav:     100;
+    --vv-z-sticky:  200;
+    --vv-z-overlay: 300;
+    --vv-z-toast:   400;
+}
+
+/* =====================================================================
+ * DARK THEME
+ * ---------------------------------------------------------------------
+ * A real theme, not an inversion. The background is the ink of the
+ * palette rather than black, surfaces are lifted with a violet cast that
+ * matches the ink's hue, and the two colours that fail on a dark
+ * background — krishna and danger — swap to their lifted variants.
+ *
+ * Dawn, marigold and peacock are left alone: they were measured against
+ * ink at 6.51, 11.45 and 7.18, so they already pass.
+ *
+ * Two ways in. The media query follows the operating system. The
+ * [data-theme] attribute is set by app.js when the reader chooses
+ * explicitly, and wins because an explicit choice should.
+ * ===================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --vv-bg:           #14121F;
+        --vv-surface:      #1E1B2B;
+        --vv-surface-sunk: #100E19;
+        --vv-text:         #FFF7EE;   /* 17.42:1 on bg  ✓ */
+        --vv-text-muted:   #B3ACC0;   /* 8.94:1  on bg  ✓ */
+        --vv-text-faint:   #8F87A0;   /* 5.51:1  on bg  ✓ */
+        --vv-line:         #2F2A3D;
+        --vv-line-strong:  #6D628B;   /* 3.02:1 on a card  ✓ */
+
+        --vv-link:       var(--vv-krishna-lift);
+        --vv-link-hover: #7C99FF;
+
+        --vv-success:    var(--vv-peacock);
+        --vv-success-bg: #0A2E2B;
+        --vv-warning:    var(--vv-marigold);
+        --vv-warning-bg: #33280A;
+        --vv-error:      var(--vv-danger-lift);
+        --vv-error-bg:   #341614;
+        --vv-info:       var(--vv-krishna-lift);
+        --vv-info-bg:    #151C3A;
+
+        --vv-focus:      var(--vv-krishna-lift);
+
+        /* Warm shadows do almost nothing on a dark background; depth
+         * comes from the surface lift instead. */
+        --vv-shadow-sm: 0 1px 2px rgba(0, 0, 0, .40);
+        --vv-shadow:    0 4px 16px rgba(0, 0, 0, .45);
+        --vv-shadow-lg: 0 10px 32px rgba(0, 0, 0, .55);
+    }
+}
+
+:root[data-theme="dark"] {
+    --vv-bg:           #14121F;
+    --vv-surface:      #1E1B2B;
+    --vv-surface-sunk: #100E19;
+    --vv-text:         #FFF7EE;
+    --vv-text-muted:   #B3ACC0;
+    --vv-text-faint:   #8F87A0;
+    --vv-line:         #2F2A3D;
+    --vv-line-strong:  #6D628B;   /* 3.02:1 on a card  ✓ */
+
+    --vv-link:       var(--vv-krishna-lift);
+    --vv-link-hover: #7C99FF;
+
+    --vv-success:    var(--vv-peacock);
+    --vv-success-bg: #0A2E2B;
+    --vv-warning:    var(--vv-marigold);
+    --vv-warning-bg: #33280A;
+    --vv-error:      var(--vv-danger-lift);
+    --vv-error-bg:   #341614;
+    --vv-info:       var(--vv-krishna-lift);
+    --vv-info-bg:    #151C3A;
+
+    --vv-focus:      var(--vv-krishna-lift);
+
+    --vv-shadow-sm: 0 1px 2px rgba(0, 0, 0, .40);
+    --vv-shadow:    0 4px 16px rgba(0, 0, 0, .45);
+    --vv-shadow-lg: 0 10px 32px rgba(0, 0, 0, .55);
+}
+
+/* Reader-chosen text size, four steps. Applied by app.js. */
+:root[data-size="1"] { --vv-scale: 0.9; }
+:root[data-size="2"] { --vv-scale: 1; }
+:root[data-size="3"] { --vv-scale: 1.15; }
+:root[data-size="4"] { --vv-scale: 1.3; }

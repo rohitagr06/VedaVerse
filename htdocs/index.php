@@ -247,6 +247,27 @@ $router->get('/admin', function (Request $req) {
         . 'role check has something to protect.</p></body></html>');
 })->middleware(array('auth', 'role:admin'))->name('admin');
 
+/**
+ * The design system, on one page.
+ *
+ * Visible on a local install, and to administrators on a live site. Not
+ * secret — but it is not part of the product either, and a stray link to
+ * it from a search result would be odd. noindex on the page, and the
+ * check below on the route.
+ */
+$router->get('/styleguide', function (Request $req) {
+    $isLocal = Config::get('app.env') === 'local';
+
+    if (!$isLocal && !user_can('admin')) {
+        return ErrorHandler::page(404);
+    }
+
+    return Response::html(View::render('pages/styleguide', array(
+        'title'  => 'Design system',
+        'robots' => 'noindex, nofollow',
+    ), 'layouts/app'));
+})->name('styleguide');
+
 // ---------------------------------------------------------------------
 // 7. What to do when nothing matches
 // ---------------------------------------------------------------------
