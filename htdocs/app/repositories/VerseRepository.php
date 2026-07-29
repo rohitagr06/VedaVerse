@@ -247,7 +247,19 @@ class VerseRepository extends Repository
     }
 
     /**
-     * The explanation at one depth.
+     * The explanation at one depth, falling back to the nearest depth
+     * that actually exists.
+     *
+     * WHY THE FALLBACK IS NOT OPTIONAL
+     *   Not every verse gets all three depths written on the same day.
+     *   Without a fallback, a verse whose only explanation is
+     *   intermediate renders an empty section for the default reader —
+     *   which looks like a broken page rather than an unwritten one, and
+     *   the reader has no way to discover that the writing exists.
+     *
+     *   The returned row carries its own `level`, so the caller can
+     *   report which depth was actually shown instead of the one asked
+     *   for. Never assume the two match.
      *
      * @param int    $verseId
      * @param string $level beginner | intermediate | advanced
@@ -260,10 +272,25 @@ class VerseRepository extends Repository
             $level = 'beginner';
         }
 
-        return $this->selectOne(
-            'SELECT * FROM verse_explanations WHERE verse_id = :id AND level = :lvl LIMIT 1',
-            array('id' => (int) $verseId, 'lvl' => $level)
+        // Nearest first: one step of depth is a smaller surprise than two.
+        $order = array(
+            'beginner'     => array('beginner', 'intermediate', 'advanced'),
+            'intermediate' => array('intermediate', 'beginner', 'advanced'),
+            'advanced'     => array('advanced', 'intermediate', 'beginner'),
         );
+
+        foreach ($order[$level] as $try) {
+            $row = $this->selectOne(
+                'SELECT * FROM verse_explanations WHERE verse_id = :id AND level = :lvl LIMIT 1',
+                array('id' => (int) $verseId, 'lvl' => $try)
+            );
+
+            if ($row !== null) {
+                return $row;
+            }
+        }
+
+        return null;
     }
 
     /**

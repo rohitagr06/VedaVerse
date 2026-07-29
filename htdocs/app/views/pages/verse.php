@@ -182,6 +182,14 @@ $returnField = '<input type="hidden" name="return" value="' . e($withQuery(array
          ============================================================ -->
     <?php if (!empty($verse['explanation'])): ?>
         <?php $x = $verse['explanation']; ?>
+        <?php /*
+         * The repository falls back when the requested depth has not
+         * been written for this verse, so the chip that is highlighted
+         * has to be the depth actually on screen — not the one in the
+         * query string. Highlighting the requested one would tell the
+         * reader they are looking at something they are not.
+         */ ?>
+        <?php $shownLevel = isset($x['level']) ? (string) $x['level'] : $level; ?>
         <section class="card">
             <h2 class="mt-0"><?php echo et('content.explanation'); ?></h2>
 
@@ -189,9 +197,9 @@ $returnField = '<input type="hidden" name="return" value="' . e($withQuery(array
                 <div class="row" role="group" aria-label="<?php echo et('content.level'); ?>">
                     <?php foreach (array('beginner', 'intermediate', 'advanced') as $option): ?>
                         <?php if (!in_array($option, $verse['levels'], true)) { continue; } ?>
-                        <a class="chip <?php echo $level === $option ? 'is-active' : ''; ?>"
+                        <a class="chip <?php echo $shownLevel === $option ? 'is-active' : ''; ?>"
                            href="<?php echo e($withQuery(array('level' => $option))); ?>"
-                           <?php echo $level === $option ? 'aria-current="true"' : ''; ?>>
+                           <?php echo $shownLevel === $option ? 'aria-current="true"' : ''; ?>>
                             <?php echo et('content.level.' . $option); ?>
                         </a>
                     <?php endforeach; ?>

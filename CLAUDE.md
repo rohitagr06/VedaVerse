@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — ch2 batch A done (12 of 18) |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 20 verses: ch2 batch A (12 of 18), ch3 complete (8 of 8) |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -264,10 +264,28 @@ Found by screenshot; invisible in the markup.
 
 **A trailing comma before `UNION ALL` in a seed file is a syntax error that
 names the wrong line.** MariaDB reports it at the UNION, not at the comma, so
-the eye goes to the line that is fine. It has bitten twice now, in
-`seed_sample.sql` and `seed_ch02.sql`. The fix is mechanical — scan forward
-past blank and comment lines, and if the next real line starts `UNION ALL
-SELECT`, strip the comma. Run that over any seed file before loading it.
+the eye goes to the line that is fine. It has bitten three times now, in
+`seed_sample.sql`, `seed_ch02.sql` and `seed_ch03.sql`. The fix is mechanical
+— scan forward past blank and comment lines, and if the next real line starts
+`UNION ALL SELECT`, strip the comma. Run that over any seed file before
+loading it.
+
+**A `UNION ALL` derived table needs the SAME number of columns in every arm,
+and MariaDB says so in a way that does not tell you which arm.** In
+`seed_ch03.sql` the first arm of the cross-reference block declared
+`sort_order` in position four and the later arms also repeated it at the end,
+so arm one had eight columns and the rest had nine. The error is
+`ERROR 1222 … different number of columns` and it names the whole statement.
+Count the values in the first arm and in one other before hunting.
+
+**A verse without an explanation at the reader's depth renders an empty
+section, which reads as a broken page rather than an unfinished one.** Three
+seeded verses had only an intermediate or advanced explanation, so the
+default beginner got a heading and nothing under it — with no way to discover
+that the writing existed at another depth. `VerseRepository::explanation()`
+now falls back to the nearest depth that exists, and the verse view
+highlights the depth actually shown rather than the one in the query string.
+Asserted by `smoke-test.sh` on 2.50, which is the verse seeded that way.
 
 **A write action must check that its target exists BEFORE writing.**
 `POST /verse/{id}/note` did not. `notes` has a foreign key to `verses`, so a

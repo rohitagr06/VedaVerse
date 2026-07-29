@@ -418,6 +418,36 @@ case "$CHAPTERS" in
     # A stale or invented mode must open the page, not break it.
     check "an unknown reading mode still renders" 200 "$(status anon '/chapter/2/verse/47?mode=nonsense')"
 
+    # THE EXPLANATION FALLBACK
+    #   Not every verse has all three depths written on the same day.
+    #   Without the fallback in VerseRepository::explanation(), a verse
+    #   whose only explanation is intermediate renders an EMPTY
+    #   explanation section for the default reader — a page that looks
+    #   broken rather than unfinished, and no way for that reader to
+    #   discover that the writing exists at another depth. 2.50 is
+    #   seeded intermediate-only, so it is the verse worth asserting on.
+    contains "a verse with no beginner depth still explains itself" \
+      '<h3>What was happening</h3>' \
+      "$(req anon "$BASE/chapter/2/verse/50?level=beginner")"
+
+    # CHAPTER 3, AND THE ONE SENTENCE IN IT THAT IS NOT OPTIONAL
+    #   3.35 has been used for centuries to argue that the circumstances
+    #   of somebody's birth are their duty. The explanation refuses that
+    #   reading in as many words. If a future edit softens or drops that
+    #   sentence, the verse quietly becomes a defence of something the
+    #   rest of the chapter argues against — so it is asserted here
+    #   rather than left to a reviewer to notice.
+    if [ "$(status anon /chapter/3/verse/35)" = "200" ]; then
+      contains "3.35 refuses the birth reading in as many words" \
+        'ties svadharma to birth' \
+        "$(req anon "$BASE/chapter/3/verse/35")"
+      contains "  and the word gloss says so too" \
+        'not &quot;inherited&quot;' \
+        "$(req anon "$BASE/chapter/3/verse/35?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 3 not seeded — load database/seed_ch03.sql to test 3.35"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

@@ -125,14 +125,31 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 2 batch A — run AFTER seed_sample.sql
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch02.sql
+
+# Step 6, chapter 3 — also AFTER seed_sample.sql
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch03.sql
 ```
 
-Both are safe to re-run — they update rather than duplicating. It adds all 18 chapters,
-14 topics and their graph, and Chapter 2 verses 13, 14, 47, 62 and 70 with
-word meanings, explanations, twenty modern examples, memory hooks,
-reflections and practices, all in three languages.
+All three are safe to re-run — they update rather than duplicating.
+Together they add all 18 chapters, 14 topics and their graph, and twenty
+fully-written verses with word meanings, explanations, modern examples,
+memory hooks, reflections, practices and cross-references, all in three
+languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63 and
+70, and chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37.
 
-Step 6 adds the other 103 verses. Nothing in this file gets thrown away.
+Order matters. `seed_ch02.sql` and `seed_ch03.sql` both join to the chapters
+and topics that `seed_sample.sql` creates, so running either first inserts
+nothing and reports no error.
+
+Step 6 adds the other 88 verses. Nothing in these files gets thrown away.
+
+**Chapter 3 has one verse that needs reading rather than skimming.** 3.35 —
+"better your own dharma than another's" — has been used for centuries to tell
+people that the circumstances of their birth are their duty. Its explanation
+refuses that reading in as many words, and the word gloss on `svadharma` says
+the word means *own*, not *inherited*. `smoke-test.sh` asserts both, so an
+edit that softens either one fails the suite rather than shipping quietly.
 
 ---
 
@@ -189,7 +206,7 @@ pages Steps 5 to 13 will build. It is never a failure.
 real hex values out of `tokens.css`, so it cannot drift out of date. Change a
 colour, run this, know.
 
-**4. `smoke-test.sh`** — `79 passed, 0 failed`. It registers a real account,
+**4. `smoke-test.sh`** — `82 passed, 0 failed`. It registers a real account,
 signs in and out, merges anonymous work, checks the role gate, exercises
 account recovery, and confirms the brute-force lockout fires.
 
@@ -328,7 +345,7 @@ Everything, in order. Tick as you go.
 | 2 | Health | open `/health` | `"ok":true`, all three checks true |
 | 3 | Strings | `php tools/check-strings.php` | 628 keys × 3, `Clean.` |
 | 4 | Contrast | `php tools/check-contrast.php` | all 35 pairings pass |
-| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 79 passed, 0 failed |
+| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 82 passed, 0 failed |
 | 6 | Log | `tail -20 htdocs/storage/logs/vedaverse-*.log` | no ERROR lines |
 
 ### By hand — Step 1, the foundation
