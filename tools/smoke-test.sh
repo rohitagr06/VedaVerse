@@ -501,6 +501,27 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 16 not seeded — load database/seed_ch16.sql to test 16.4 and 16.5"
     fi
 
+    # CHAPTER 18, AND THE SENTENCE THE PRODUCT RESTS ON
+    #   18.63 is the last thing said before the closing exchange: I have
+    #   told you all of it, think it over completely, then do as you
+    #   wish. Not obey. Not accept. Do as you wish.
+    #
+    #   That line is why this product can teach the text to somebody
+    #   with no background and no belief without either side pretending.
+    #   It is asserted here not because anybody is likely to attack it,
+    #   but because it is the sentence everything else leans on and it
+    #   should not be able to drift out quietly.
+    if [ "$(status anon /chapter/18/verse/63)" = "200" ]; then
+      contains "18.63 hands the decision back to the reader" \
+        'hands the decision back' \
+        "$(req anon "$BASE/chapter/18/verse/63")"
+      contains "  and the gloss keeps 'do', not 'obey'" \
+        'Not obey, not follow, not surrender' \
+        "$(req anon "$BASE/chapter/18/verse/63?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 18 not seeded — load database/seed_ch18.sql to test 18.63"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

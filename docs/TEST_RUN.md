@@ -137,29 +137,40 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 16 — also AFTER seed_sample.sql
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch16.sql
+
+# Step 6, chapter 18 — also AFTER seed_sample.sql. Completes the beginner track.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch18.sql
 ```
 
-All five are safe to re-run — they update rather than duplicating.
+All six are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-thirty-six fully-written verses with word meanings, explanations, modern
-examples, memory hooks, reflections, practices and cross-references, all in
-three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
-and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 12 verses
-5, 8, 12, 13, 15, 16, 18 and 19; and chapter 16 verses 1, 3, 4, 5, 10, 13, 16
-and 21.
+**forty-four fully-written verses** with word meanings, explanations, 139
+modern examples, memory hooks, reflections, practices and cross-references,
+all in three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50,
+62, 63 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 12
+verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1, 3, 4, 5, 10, 13,
+16 and 21; and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 
-Order matters. The four chapter files all join to the chapters and topics
+**That is the whole beginner track.** `/` now renders eleven clusters across
+five chapters, and a reader who works through it meets the argument of the
+book from 2.13 to 18.63 without a gap.
+
+Order matters. The five chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 72 verses. Nothing in these files gets thrown away.
+Step 6 adds the other 64 verses — the intermediate and advanced tracks, plus
+chapter 2 batch B. Nothing in these files gets thrown away.
 
 ## The verses the suite guards
 
-Five sentences across four verses each refuse a specific misreading that the
-verse has a documented history of being put to. `smoke-test.sh` asserts every
-one of them by literal string. **If one of those checks ever fails, find out
-what changed in the content — do not update the expected string.**
+Seven sentences across five verses. Six of them refuse a specific misreading
+that the verse has a documented history of being put to; the seventh, on
+18.63, is there for the opposite reason — it is the sentence the product's
+whole stance rests on. `smoke-test.sh` asserts every one of them by literal
+string. **If one of those checks ever fails, find out what changed in the
+content — do not update the expected string.**
 
 **3.35** — "better your own dharma than another's" — has been used for
 centuries to tell people that the circumstances of their birth are their
@@ -189,6 +200,14 @@ a gloss — maps either list onto a group, a profession, a party, a region or
 a community. Two of the examples show the same person facing both directions
 inside one week. That is the reading the chapter supports and it is the
 strongest available answer to the other one.
+
+**18.63** is the last verse of the beginner track and the one the product
+leans on hardest. After seven hundred verses of argument the speaker says: I
+have told you all of it, think it over completely, then do as you wish. Not
+obey, not accept — do as you wish. That permission is why this text can be
+taught to somebody with no background and no belief without either side
+pretending, and it is in the book rather than being a modern accommodation.
+The explanation says so directly and the word gloss keeps *do*, not *obey*.
 
 ---
 
@@ -245,7 +264,7 @@ pages Steps 5 to 13 will build. It is never a failure.
 real hex values out of `tokens.css`, so it cannot drift out of date. Change a
 colour, run this, know.
 
-**4. `smoke-test.sh`** — `88 passed, 0 failed`. It registers a real account,
+**4. `smoke-test.sh`** — `90 passed, 0 failed`. It registers a real account,
 signs in and out, merges anonymous work, checks the role gate, exercises
 account recovery, and confirms the brute-force lockout fires.
 
@@ -384,7 +403,7 @@ Everything, in order. Tick as you go.
 | 2 | Health | open `/health` | `"ok":true`, all three checks true |
 | 3 | Strings | `php tools/check-strings.php` | 628 keys × 3, `Clean.` |
 | 4 | Contrast | `php tools/check-contrast.php` | all 35 pairings pass |
-| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 88 passed, 0 failed |
+| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 90 passed, 0 failed |
 | 6 | Log | `tail -20 htdocs/storage/logs/vedaverse-*.log` | no ERROR lines |
 
 ### By hand — Step 1, the foundation

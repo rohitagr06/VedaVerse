@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 36 verses: ch2 batch A (12 of 18), ch3, ch12, ch16 (8 each) |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 44 verses. **Beginner track complete**: ch2 batch A (12 of 18), ch3, ch12, ch16, ch18 (8 each) |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -297,11 +297,13 @@ then `SELECT COUNT(*)` for that chapter after loading. They have to match.
 The one deliberate exception is `seed_sample.sql`'s 2.13 → 4.7, which points
 outside the seeded set on purpose and carries a NULL target.
 
-**The safeguard sentences in 3.35, 12.13, 12.16, 16.4 and 16.5 are content,
-not commentary.** Each one refuses a specific misreading that the verse has
-a documented history of being put to. `smoke-test.sh` asserts all of them by
-literal string. If one of those checks fails, the correct response is to
-find out what changed in the content — never to update the expected string.
+**The safeguard sentences in 3.35, 12.13, 12.16, 16.4, 16.5 and 18.63 are
+content, not commentary.** Each one refuses a specific misreading that the
+verse has a documented history of being put to — except 18.63, which is
+there for the opposite reason: it is the sentence the product's whole stance
+rests on. `smoke-test.sh` asserts all of them by literal string. If one of
+those checks fails, the correct response is to find out what changed in the
+content — never to update the expected string.
 
 **A write action must check that its target exists BEFORE writing.**
 `POST /verse/{id}/note` did not. `notes` has a foreign key to `verses`, so a
@@ -444,13 +446,14 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
 - **4 modern examples per verse against the specified 8–12.** Step 6 tops
   them up; nothing written so far is thrown away. Chapters 3 and 12 carry 3
   each, so they need the same pass.
-- **10 of the 36 curated verses have no beginner-level explanation** — 2.50,
-  3.16, 3.27, four of the eight in chapter 12 and three in chapter 16.
+- **14 of the 44 curated verses have no beginner-level explanation** — 2.50,
+  3.16, 3.27, four in chapter 12, three in chapter 16 and four in chapter 18.
   Nothing renders empty: `VerseRepository::explanation()` falls back to the
   nearest depth that exists and the level chip shows the depth actually on
   screen. But serving intermediate writing to a beginner-track reader on
   nearly a third of the corpus is a content gap rather than a display one,
-  and the beginner depth for those ten wants writing before Step 6 closes.
+  and the beginner depth for those fourteen wants writing before Step 6
+  closes. This is now the largest single piece of unfinished content work.
 - **`install.php` does not offer to load `seed_sample.sql`.** A fresh install
   lands on an empty path. The empty state is handled properly, so this is
   cosmetic until Step 6 — but it is a poor first five minutes.
