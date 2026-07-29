@@ -205,6 +205,31 @@ class VerseRepository extends Repository
         );
     }
 
+    /**
+     * Every curated verse, in reading order. For the register review
+     * page and, later, the offline bundle builder.
+     *
+     * @param int|null $chapterNumber Limit to one chapter, or null for all.
+     * @return array<int,array<string,mixed>>
+     */
+    public function allCurated($chapterNumber = null)
+    {
+        $sql = 'SELECT v.*, c.chapter_number
+                  FROM verses v JOIN chapters c ON c.id = v.chapter_id
+                 WHERE v.published = 1 AND v.is_curated = 1 AND c.published = 1';
+
+        $bindings = array();
+
+        if ($chapterNumber !== null) {
+            $sql .= ' AND c.chapter_number = :cn';
+            $bindings['cn'] = (int) $chapterNumber;
+        }
+
+        $sql .= ' ORDER BY v.global_order ASC';
+
+        return $this->select($sql, $bindings);
+    }
+
     // -----------------------------------------------------------------
     // The parts of a verse
     // -----------------------------------------------------------------

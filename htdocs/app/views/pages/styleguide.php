@@ -296,8 +296,12 @@ $demo = function ($html) {
        tera, outcome tera nahi.</p>
     <p class="hint">Each block carries its own <code>lang</code> attribute. Without it a
        screen reader reads Devanagari with an English speech engine and produces noise.</p>
-    <p class="mt-4"><a class="btn btn-secondary w-auto" href="/styleguide/strings">Read every
-       interface string in all three languages</a></p>
+    <p class="mt-4">
+        <a class="btn btn-secondary w-auto" href="/styleguide/strings">Read every
+           interface string in all three languages</a>
+        <a class="btn btn-secondary w-auto" href="/styleguide/content">Read every
+           word of the content</a>
+    </p>
     <p class="hint mb-0">That page is where the register actually gets judged. A checker can
        prove the table is complete; only a person reading the Hinglish column out loud can
        tell whether it sounds like a friend talking or like a translation.</p>

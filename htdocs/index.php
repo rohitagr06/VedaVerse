@@ -335,6 +335,58 @@ $router->get('/styleguide', function (Request $req) {
 })->name('styleguide');
 
 /**
+ * The CONTENT, three languages side by side.
+ *
+ * The companion to /styleguide/strings, and the more important of the
+ * two from Step 6 on. That page reviews 628 interface labels; this one
+ * reviews the writing — translations, explanations, modern examples,
+ * hooks, reflections.
+ *
+ * It exists because reviewing a chapter batch by clicking through
+ * eighteen verse pages, each behind a mode switcher and a level
+ * switcher, is a review nobody finishes. One page, one scroll.
+ *
+ * ?chapter=2 limits it to one chapter, which is how a Step 6 batch gets
+ * reviewed.
+ */
+$router->get('/styleguide/content', function (Request $req) {
+    $isLocal = Config::get('app.env') === 'local';
+
+    if (!$isLocal && !user_can('admin')) {
+        return ErrorHandler::page(404);
+    }
+
+    $chapter = $req->query('chapter');
+    $chapter = ($chapter === null || $chapter === '') ? null : (int) $chapter;
+
+    $repo    = new VedaVerse\Repositories\VerseRepository();
+    $service = new VedaVerse\Services\ContentService();
+
+    // Assembled through the same service the real page uses, in research
+    // mode so every section is present. A review that read the tables
+    // directly could pass while the page a reader sees is broken.
+    $verses = array();
+    foreach ($repo->allCurated($chapter) as $row) {
+        $full = $service->verse(
+            (int) $row['chapter_number'],
+            (int) $row['verse_number'],
+            'research'
+        );
+        if ($full !== null) {
+            $verses[] = $full;
+        }
+    }
+
+    return Response::html(View::render('pages/content_review', array(
+        'title'         => 'Content review',
+        'robots'        => 'noindex, nofollow',
+        'verses'        => $verses,
+        'languages'     => I18nService::languages(),
+        'chapterFilter' => $chapter,
+    ), 'layouts/app'));
+})->name('styleguide.content');
+
+/**
  * The interface string table, three languages side by side.
  *
  * Same audience and same guard as the style guide, and for the same
