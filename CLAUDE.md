@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | Next |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — ch2 batch A done (12 of 18) |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -261,6 +261,13 @@ already in it.** Writing `'... LIMIT ' . $this->limit($n)` produces
 segments broke because node height depends on whether a summary line wraps
 and on the reader's text-size setting. Stretch between two offsets instead.
 Found by screenshot; invisible in the markup.
+
+**A trailing comma before `UNION ALL` in a seed file is a syntax error that
+names the wrong line.** MariaDB reports it at the UNION, not at the comma, so
+the eye goes to the line that is fine. It has bitten twice now, in
+`seed_sample.sql` and `seed_ch02.sql`. The fix is mechanical — scan forward
+past blank and comment lines, and if the next real line starts `UNION ALL
+SELECT`, strip the comma. Run that over any seed file before loading it.
 
 **A write action must check that its target exists BEFORE writing.**
 `POST /verse/{id}/note` did not. `notes` has a foreign key to `verses`, so a

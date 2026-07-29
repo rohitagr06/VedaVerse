@@ -121,9 +121,13 @@ Without this every page Step 5 built renders an empty state.
 ```bash
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_sample.sql
+
+# Step 6, chapter 2 batch A — run AFTER seed_sample.sql
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch02.sql
 ```
 
-Safe to re-run — it updates rather than duplicating. It adds all 18 chapters,
+Both are safe to re-run — they update rather than duplicating. It adds all 18 chapters,
 14 topics and their graph, and Chapter 2 verses 13, 14, 47, 62 and 70 with
 word meanings, explanations, twenty modern examples, memory hooks,
 reflections and practices, all in three languages.
