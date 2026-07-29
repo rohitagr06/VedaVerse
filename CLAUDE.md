@@ -43,8 +43,8 @@ supernatural claims, medical/legal/financial advice.
 | 2 | `app/helpers/*`, middleware, `AuthService`, auth screens, anonymous merge | **Done** |
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
-| 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | Next |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | |
+| 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | Next |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -239,9 +239,51 @@ definition is simply gone. `check-strings.php` reads the source as text to
 catch it — that is why it does something as crude as a regex over a file it
 has already required.
 
+**`View::capture()` extracts template data with EXTR_SKIP, so a data key
+matching one of its own locals is SILENTLY DROPPED.** A controller passing
+`'path'` got the template's filename; one passing `'level'` got an
+output-buffer depth. Both rendered a page, neither warned, and `level` is an
+entirely reasonable key name. Fixed at the source in Step 5 — every local in
+that method is now `__vv_`-prefixed, so the collision is impossible rather
+than merely documented. Do not add an unprefixed local to it.
+
+**Route placeholders arrive on the Request, not as controller arguments.**
+`Router::dispatch()` calls `$request->setParams()` and then invokes the
+action with the Request alone. A controller signed
+`chapter(Request $r, $number)` throws ArgumentCountError. Read
+`$request->param('number')`.
+
+**`Repository::limit()` returns `' LIMIT n OFFSET m'`, with the keyword
+already in it.** Writing `'... LIMIT ' . $this->limit($n)` produces
+`LIMIT LIMIT 20 OFFSET 0`.
+
+**A CSS connector line cannot have a fixed height.** The Chariot Path's
+segments broke because node height depends on whether a summary line wraps
+and on the reader's text-size setting. Stretch between two offsets instead.
+Found by screenshot; invisible in the markup.
+
+**A write action must check that its target exists BEFORE writing.**
+`POST /verse/{id}/note` did not. `notes` has a foreign key to `verses`, so a
+guessable URL produced an integrity-constraint violation and a 500 page.
+`bookmarks` has no such key — `target_id` is polymorphic — so the same request
+there wrote a bookmark pointing at nothing, silently. One shared guard,
+`ContentController::publishedVerse()`, now covers all three.
+
 **A placeholder present in English and missing in Hindi reads as a perfectly
 fluent Hindi sentence.** This is the whole reason `check-strings.php` exists.
 Nobody finds these by proofreading, because there is nothing visibly wrong.
+
+**A test tool that reports 48 failures for one missing precondition is worse
+than no tool.** `smoke-test.sh` ran with the web server stopped and printed
+48 red lines, every one of them `got: 000`, with nothing anywhere saying
+"nothing is listening". It now checks four preconditions first — is anything
+on the port, is the site installed, is the database answering — and stops with
+one sentence naming the actual cause.
+
+**`curl -w '%{http_code}'` already prints `000` on a refused connection, then
+exits non-zero.** So `$(curl … || echo 000)` yields `000000` and any
+comparison against `000` silently never matches. Found only by pointing the
+preflight at a dead port — which is the only way it would ever have been.
 
 ---
 
@@ -326,11 +368,51 @@ decisions needed before the next step. Prose, not bullet soup.
 | String table split into `app/config/strings/*.php` | One file would be ~2,500 lines by Step 4 and still growing at Step 13; seven files mean a syntax error names its domain and two edits stop colliding |
 | Content fields fall back hi ↔ hinglish before English | Same words, different script — a Hindi reader is better served by the Hinglish text than by English. Interface strings still fall straight back to English. |
 | Hinglish is never chosen from `Accept-Language` | No browser advertises it, and inferring it from an Indian locale is a guess about a person rather than about their software |
+| Step 5 ships `seed_sample.sql` — 5 real verses, not fixtures | The path, the verse page and life-problem navigation are unjudgeable empty. These are final-quality and become part of Step 6's 108. |
+| Content fields fall back hi ↔ hinglish before English | Same words, different script. Interface strings still fall straight to English. |
+| A 'locked' path node is dimmed, never barred | Every verse is readable by anybody at any time, including a guest. The dimming shows distance, not permission. |
+| Track lists live in `app/config/app.php`, not the database | An editorial judgement about pedagogy, not data an admin edits at 2am. |
+| `/topics` and `/problems` are separate routes and templates | Different audiences. The problem page leads with an example because its reader has a problem, not an interest in scripture. |
+| Progress in Step 5 is read-and-mark only | XP, streaks, mastery and SM-2 are Step 7. Half-implementing them now would leave Step 7 fixing a temporary file. |
+| `/profile` built in Step 5, not later | The nav had linked to it since Step 3 and it 404'd, and acceptance test 5 could only be verified in SQL without it |
+| Data export and account deletion ship with the profile | §12 requires both. They are the promise the anonymous-first design rests on, not a feature to schedule. |
+| Account deletion anonymises forum authorship | §12. The FKs are already `ON DELETE SET NULL`; orphaning a thread punishes the people who replied to it. |
+| Focus mode is a body class, not a second layout | Two shells means two places to keep the skip link and focus order right, and the second one rots. |
 | Two plural forms, no CLDR rule table | English, Hindi and Hinglish all take one form for 1 and one for everything else. A six-form language would need real rules; none exists here. |
 
 ---
 
-## 9. Open questions
+## 9. Known gaps, deliberately deferred
+
+Found in the Step 5 audit. None is a defect; each is scheduled or argued.
+
+- **Fonts are not vendored.** `assets/fonts/` has only the README, so the
+  shloka falls back to a system stack. §15 requires self-hosted woff2 subsets
+  and acceptance test 2 leans on it. Five minutes of work, needs doing before
+  anyone judges the typography.
+- **No illustrations or icons.** Nav icons are emoji placeholders; chapter
+  milestones have no distinct art. §15 and §9.2 both want them; §20 assigns
+  them to no step. Needs a home — probably alongside Step 6.
+- **`user_profiles` / `user_settings` are written once and never read.**
+  Theme and text size are localStorage only. Syncing them across devices is
+  the point of those tables and nothing does it yet.
+- **`verse_commentaries` has no rows**, so Research mode's commentary
+  comparison has never rendered with data. The query and the template exist.
+  Step 6.
+- **8 of the ~18 life problems in §9.3 are seeded.** Step 6.
+- **4 modern examples per verse against the specified 8–12.** Step 6 tops
+  them up; nothing written so far is thrown away.
+- **`install.php` does not offer to load `seed_sample.sql`.** A fresh install
+  lands on an empty path. The empty state is handled properly, so this is
+  cosmetic until Step 6 — but it is a poor first five minutes.
+- **Swipeable example cards** (§15) render as a plain stacked list.
+- **`migrations` table and `database/migrations/`** exist and nothing uses
+  them; schema versioning goes through `settings.schema_version` instead.
+  Pick one and delete the other.
+
+---
+
+## 10. Open questions
 
 - **Live host.** No InfinityFree account yet. Deploying Step 1–2 there would
   cheaply settle three assumptions: whether `storage/` is really writable,
@@ -340,7 +422,7 @@ decisions needed before the next step. Prose, not bullet soup.
 
 ---
 
-## 10. Where things are
+## 11. Where things are
 
 ```
 RC1/
@@ -353,7 +435,7 @@ RC1/
 ├── tools/
 │   ├── dev-router.php        router for `php -S` (built-in server ignores .htaccess)
 │   ├── dev-reset.php         clears throttle counters, cache, logs, test accounts
-│   ├── smoke-test.sh         51 HTTP checks, exit 1 on any failure
+│   ├── smoke-test.sh         79 HTTP checks, exit 1 on any failure
 │   ├── check-contrast.php    35 WCAG AA pairings read from tokens.css
 │   └── check-strings.php     missing languages, placeholder drift, plural
 │                             drift, duplicate keys, undefined references
@@ -370,12 +452,18 @@ RC1/
     │   │                     ErrorHandler, Validator
     │   ├── middleware/       Middleware (base), SecurityHeaders, Session,
     │   │                     Maintenance, Csrf, RateLimit, Auth, Admin
-    │   ├── controllers/      Controller (base), Auth
-    │   ├── services/         AuthService, I18nService
-    │   ├── repositories/     Repository (base), User, Session, Setting, Throttle
+    │   ├── controllers/      Controller (base), Auth, Content, Topic, Path,
+    │   │                     Profile
+    │   ├── services/         AuthService, I18nService, ContentService,
+    │   │                     PathService
+    │   ├── repositories/     Repository (base), User, Session, Setting,
+    │   │                     Throttle, Chapter, Verse, Topic, Progress,
+    │   │                     Bookmark
     │   ├── helpers/          security, string, date, url, format
     │   └── views/            layouts, partials, pages, errors
-    ├── database/             schema.sql (54 tables), DROP_ALL.sql, migrations/
+    ├── database/             schema.sql (54 tables), DROP_ALL.sql,
+    │                         seed_sample.sql (18 chapters, 14 topics,
+    │                         5 curated verses), migrations/
     ├── storage/              cache, logs, sessions, backups, temp — web-blocked
     ├── uploads/              certificates, imports, avatars — web-blocked
     └── assets/
@@ -387,7 +475,7 @@ RC1/
 **Local test credentials** (sandbox and the owner's Mac, never production):
 database `vedaverse_db`, user `vedaverse`, password `localdev`, host `127.0.0.1`.
 
-## 11. The owner's actual local environment
+## 12. The owner's actual local environment
 
 Worth knowing, because it differs from the sandbox and has already produced
 four separate failures.

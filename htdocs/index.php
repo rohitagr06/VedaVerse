@@ -189,21 +189,18 @@ $router->get('/health', function (Request $req) {
 })->name('health');
 
 /**
- * Home.
+ * Home IS the Chariot Path.
  *
- * A placeholder until Step 5 builds the Chariot Path. It renders through
- * the real view layer and the real layout, so the account header, the
- * flash messages, escaping and the language attribute are all exercised
- * rather than assumed.
+ * Not a landing page that links to it — the path itself. A returning
+ * reader should land on the road they are walking, and a first-time
+ * visitor should see what the road is before being asked for anything.
+ * The nav's first tab points at / for the same reason.
+ *
+ * /path is kept as a second address for it, because the flash redirects
+ * after switching track have somewhere honest to go and because a link
+ * to "the path" reads better than a link to "/".
  */
-$router->get('/', function (Request $req) {
-    return Response::html(View::render('pages/home', array(
-        'title'       => Config::get('app.name'),
-        'description' => Config::get('seo.description_default'),
-        'robots'      => Config::get('seo.robots_default'),
-        'canonical'   => $req->url('/'),
-    ), 'layouts/app'));
-})->name('home');
+$router->get('/', array('VedaVerse\\Controllers\\PathController', 'path'))->name('home');
 
 /**
  * Accounts.
@@ -235,6 +232,74 @@ $router->post('/recover', array('VedaVerse\\Controllers\\AuthController', 'recov
 // looked up again by anybody, including an administrator.
 $router->get('/recovery-code', array('VedaVerse\\Controllers\\AuthController', 'showRecoveryCode'))
        ->name('recovery-code');
+
+/**
+ * The scripture.
+ *
+ * Every one of these is open to a guest, deliberately and permanently.
+ * Reading is free and anonymous; so are saving, noting and marking
+ * progress, because a guest's work is tagged with their year-long token
+ * and merges into an account if they ever make one. Adding 'auth' to any
+ * route in this block would quietly break the product's central promise.
+ *
+ * ORDER MATTERS BELOW. /chapter/{chapter}/verse/{verse} is registered
+ * before /chapter/{number}, because the router takes the first pattern
+ * that matches and a single-segment pattern would otherwise swallow the
+ * longer address.
+ */
+$router->get('/chapters', array('VedaVerse\\Controllers\\ContentController', 'chapters'))->name('chapters');
+
+$router->get('/chapter/{chapter}/verse/{verse}', array('VedaVerse\\Controllers\\ContentController', 'verse'))
+       ->name('verse');
+
+$router->get('/chapter/{number}', array('VedaVerse\\Controllers\\ContentController', 'chapter'))->name('chapter');
+
+/**
+ * What a reader can do TO a verse.
+ *
+ * All POST, all CSRF-checked by the global middleware, all redirecting
+ * back to where the reader was. None of them answer JSON: these have to
+ * keep working when a script has not loaded, which on an Indian mobile
+ * connection is a normal Tuesday rather than an edge case.
+ */
+$router->post('/verse/{id}/read',     array('VedaVerse\\Controllers\\ContentController', 'markRead'));
+$router->post('/verse/{id}/bookmark', array('VedaVerse\\Controllers\\ContentController', 'toggleBookmark'));
+$router->post('/verse/{id}/note',     array('VedaVerse\\Controllers\\ContentController', 'saveNote'));
+
+/**
+ * The two doors.
+ *
+ * /topics is for somebody studying the book. /problems is for somebody
+ * who has a problem and has very likely never opened it — and the
+ * specification is explicit that the second is often the real front
+ * door. Separate routes, separate templates, separate copy.
+ */
+$router->get('/topics',          array('VedaVerse\\Controllers\\TopicController', 'topics'))->name('topics');
+$router->get('/topic/{slug}',    array('VedaVerse\\Controllers\\TopicController', 'topic'))->name('topic');
+$router->get('/problems',        array('VedaVerse\\Controllers\\TopicController', 'problems'))->name('problems');
+$router->get('/problem/{slug}',  array('VedaVerse\\Controllers\\TopicController', 'problem'))->name('problem');
+
+/**
+ * The Chariot Path — the primary navigation — and the other ways in.
+ */
+$router->get('/path',        array('VedaVerse\\Controllers\\PathController', 'path'))->name('path');
+$router->post('/path/track', array('VedaVerse\\Controllers\\PathController', 'setTrack'));
+$router->get('/explore',     array('VedaVerse\\Controllers\\PathController', 'explore'))->name('explore');
+
+/**
+ * The reader's own work, and the controls over their own data.
+ *
+ * Open to guests on purpose. A guest has bookmarks, notes and progress —
+ * all tagged with their year-long token — and this is the page on which
+ * the merge at registration becomes visible, which is acceptance test 5.
+ *
+ * Deletion is the exception: it needs an account, because there is
+ * nothing else to delete.
+ */
+$router->get('/profile',         array('VedaVerse\\Controllers\\ProfileController', 'show'))->name('profile');
+$router->get('/profile/export',  array('VedaVerse\\Controllers\\ProfileController', 'export'))->name('profile.export');
+$router->post('/profile/delete', array('VedaVerse\\Controllers\\ProfileController', 'destroy'))
+       ->middleware('auth');
 
 /**
  * A placeholder for the admin panel, so the role check has something to

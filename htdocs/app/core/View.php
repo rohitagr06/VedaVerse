@@ -178,9 +178,26 @@ class View
      */
     private static function capture($template, array $data)
     {
-        $path = self::path($template);
+        // WHY EVERY LOCAL IN THIS METHOD IS PREFIXED __vv_
+        //
+        //   extract() below turns the data array into local variables.
+        //   Any key matching a local this method still needs would clobber
+        //   it, so EXTR_SKIP silently drops that key instead — the
+        //   template then sees THIS method's variable rather than the one
+        //   the controller passed, with no error anywhere.
+        //
+        //   That cost two debugging rounds in Step 5. A controller passing
+        //   'path' got the template's filename; one passing 'level' got an
+        //   output-buffer nesting depth. Both rendered a page, neither
+        //   raised a warning, and 'level' is an entirely reasonable name
+        //   for a controller to choose.
+        //
+        //   The prefix makes the collision impossible rather than merely
+        //   documented. EXTR_SKIP stays as a backstop. Do NOT introduce an
+        //   unprefixed local below this line.
+        $__vv_path = self::path($template);
 
-        if ($path === null) {
+        if ($__vv_path === null) {
             // In production this becomes a 500 page. In development the
             // template name is the only useful part of the message, so it
             // is included either way — a template name is our own string,
@@ -190,26 +207,24 @@ class View
         }
 
         // Shared values first so a page can override one deliberately.
-        $vars = array_merge(self::$shared, $data);
+        $__vv_vars = array_merge(self::$shared, $data);
 
-        // EXTR_SKIP means a key called 'path' or 'vars' cannot clobber the
-        // local variables this method needs to finish its own job.
-        extract($vars, EXTR_SKIP);
+        extract($__vv_vars, EXTR_SKIP);
 
-        $level = ob_get_level();
+        $__vv_level = ob_get_level();
         ob_start();
 
         try {
-            include $path;
+            include $__vv_path;
         } catch (Exception $e) {
             // Unwind any buffers the template opened before it failed, or
             // its half-rendered output would leak into the error page.
-            while (ob_get_level() > $level) {
+            while (ob_get_level() > $__vv_level) {
                 ob_end_clean();
             }
             throw $e;
         } catch (Throwable $e) {
-            while (ob_get_level() > $level) {
+            while (ob_get_level() > $__vv_level) {
                 ob_end_clean();
             }
             throw $e;

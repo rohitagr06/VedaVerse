@@ -85,6 +85,91 @@ echo "Target: $BASE"
 echo "Run id: $STAMP"
 
 # ---------------------------------------------------------------------
+# PREFLIGHT — is anything listening at all?
+# ---------------------------------------------------------------------
+# Without this, forgetting to start `php -S` produces 48 red lines that
+# all say "got: 000", and the real cause — nothing is listening on that
+# port — is nowhere in the output. Diagnosing that from the failure list
+# takes longer than the whole test run.
+#
+# 000 is curl's code for "the connection never happened". It is not an
+# HTTP status; no server ever answered.
+
+# No `|| echo 000` fallback here: curl already PRINTS 000 on a refused
+# connection and then exits 7, so the fallback would append a second 000
+# and the comparison below would never match. Caught by testing this
+# against a dead port, which is the only way it would ever have been.
+PREFLIGHT="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$BASE/health" 2>/dev/null)"
+PREFLIGHT="${PREFLIGHT:-000}"
+
+if [ "$PREFLIGHT" = "000" ]; then
+  printf '\n\033[31mNothing is listening on %s\033[0m\n\n' "$BASE"
+  echo "The site has to be running before this script can test it. In another"
+  echo "terminal tab, from the repository root:"
+  echo
+  echo "    php -S 127.0.0.1:8080 -t htdocs tools/dev-router.php"
+  echo
+  echo "Leave that running, then run this script again. The dev-router.php"
+  echo "argument is not optional — the built-in server ignores .htaccess, so"
+  echo "without it every URL except / returns 404."
+  echo
+  echo "If the site is running on a different port, pass its address:"
+  echo
+  echo "    bash tools/smoke-test.sh http://127.0.0.1:9000"
+  echo
+  exit 1
+fi
+
+# The site is up but the installer has not run. index.php answers that
+# case with a redirect to install.php, or a 503 when install.php is gone
+# too. Both are worth naming plainly rather than letting every check
+# downstream fail against a site that has no database.
+#
+# The Location HEADER is what gets inspected, not the body — a redirect
+# has an empty body, so matching on body text finds nothing and this
+# whole branch silently never fires.
+if [ "$PREFLIGHT" = "503" ] || [ "$PREFLIGHT" = "302" ] || [ "$PREFLIGHT" = "301" ]; then
+  PRE_HDRS="$(curl -s -D- -o /dev/null --max-time 5 "$BASE/health")"
+  PRE_BODY="$(curl -s --max-time 5 "$BASE/health")"
+  case "$PRE_HDRS$PRE_BODY" in
+    *install.php*|*"has not been set up"*)
+      printf '\n\033[31mThe site is running but not installed\033[0m\n\n'
+      echo "app/config/local.php is missing, so there is no database to test"
+      echo "against — every request is redirecting to the installer."
+      echo
+      echo "Open $BASE/install.php and work through the five screens, then run"
+      echo "this script again."
+      echo
+      exit 1
+      ;;
+  esac
+fi
+
+# The site is up and installed, but the database is not answering —
+# almost always because the database server is not running. Fifteen
+# checks fail downstream from this one cause, and none of them says
+# "the database is down".
+PRE_HEALTH="$(curl -s --max-time 5 "$BASE/health")"
+case "$PRE_HEALTH" in
+  *'"database":false'*)
+    printf '\n\033[31mThe database is not answering\033[0m\n\n'
+    echo "The site is running and configured, but it cannot reach MySQL."
+    echo "Start the database server and run this again:"
+    echo
+    echo "    sudo /Applications/XAMPP/xamppfiles/bin/mysql.server start"
+    echo
+    echo "Then confirm it answers — the --skip-ssl is required, because the"
+    echo "MariaDB client demands TLS and the 10.4 server has none:"
+    echo
+    echo "    mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p -e 'SELECT 1'"
+    echo
+    echo "The exact driver error is in htdocs/storage/logs/."
+    echo
+    exit 1
+    ;;
+esac
+
+# ---------------------------------------------------------------------
 head_ "1. The site is up"
 # ---------------------------------------------------------------------
 
@@ -201,7 +286,12 @@ contains "the code screen carries the loud warning" 'class="alert alert-error"' 
 check "the code cannot be viewed twice" 303 "$(status main /recovery-code)"
 
 HOME="$(req main "$BASE/")"
-contains "signed in after registering" "Signed in as" "$HOME"
+# The account NAME, not an English label. This account registers in
+# Hinglish, so the old assertion only passed while the home page carried
+# hardcoded English — which was itself a bug. A name is
+# language-independent, and it is the stronger claim anyway: it proves
+# the right person is signed in, not that some string exists.
+contains "signed in after registering" "Smoke Tester" "$HOME"
 contains "chosen language is applied"  'lang="en-IN"' "$HOME"
 
 # ---------------------------------------------------------------------
@@ -236,7 +326,7 @@ req main -o /dev/null -X POST \
   "$BASE/login"
 SESSION_AFTER="$(grep vv_session "$JAR_DIR/main" 2>/dev/null | awk '{print $7}')"
 
-contains "sign in works" "Signed in as" "$(req main "$BASE/")"
+contains "sign in works" "Smoke Tester" "$(req main "$BASE/")"
 if [ "$SESSION_BEFORE" != "$SESSION_AFTER" ]; then
   ok "session id changes on sign-in (defeats fixation)"
 else
@@ -296,10 +386,107 @@ T="$(token main /login)"
 req main -o /dev/null -X POST \
   --data-urlencode "_csrf=$T" --data-urlencode "email=$EMAIL" --data-urlencode "password=$NEWPASSWORD" \
   "$BASE/login"
-contains "the new password signs in" "Signed in as" "$(req main "$BASE/")"
+contains "the new password signs in" "Smoke Tester" "$(req main "$BASE/")"
 
 # ---------------------------------------------------------------------
-head_ "10. Brute force"
+head_ "10. Content"
+# ---------------------------------------------------------------------
+# Needs database/seed_sample.sql loaded. Without it these are all empty
+# states rather than failures, so the first check says which it is
+# instead of reporting eight mysterious misses.
+
+CHAPTERS="$(req anon "$BASE/chapters")"
+
+case "$CHAPTERS" in
+  *"Chapter 2"*)
+    ok "chapter index lists chapters"
+
+    check "chapter page renders"      200 "$(status anon /chapter/2)"
+    check "verse page renders"        200 "$(status anon /chapter/2/verse/47)"
+    check "an absent chapter is 404"  404 "$(status anon /chapter/99)"
+    check "an absent verse is 404"    404 "$(status anon /chapter/2/verse/999)"
+
+    VERSE="$(req anon "$BASE/chapter/2/verse/47")"
+    contains "  the Sanskrit is marked lang=sa" 'lang="sa"' "$VERSE"
+    contains "  the translation is present"     'The work is yours' "$VERSE"
+    contains "  modern examples are shown"      'example__lesson' "$VERSE"
+
+    # Study mode adds the word-by-word gloss; Learn mode must not.
+    contains "study mode adds the word gloss" 'class="glossary"' "$(req anon "$BASE/chapter/2/verse/47?mode=study")"
+    absent   "learn mode leaves it out"       'class="glossary"' "$VERSE"
+
+    # A stale or invented mode must open the page, not break it.
+    check "an unknown reading mode still renders" 200 "$(status anon '/chapter/2/verse/47?mode=nonsense')"
+
+    contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
+    contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
+
+    PROBLEM="$(req anon "$BASE/problem/anger")"
+    contains "a problem page carries the disclaimer" 'not therapy' "$PROBLEM"
+    contains "  and leads with an example"           'class="card example"' "$PROBLEM"
+
+    # A topic reached through the wrong door redirects rather than
+    # rendering two URLs with the same content.
+    check "a concept under /problem redirects" 301 "$(status anon /problem/desire)"
+    check "a life problem under /topic redirects" 301 "$(status anon /topic/anger)"
+
+    # Reading and saving are open to guests. This is the product's
+    # central promise and the easiest thing to break by adding one
+    # middleware.
+    VID="$(printf '%s' "$VERSE" | grep -oE 'action="/verse/[0-9]+/read"' | head -1 | grep -oE '[0-9]+')"
+    if [ -n "$VID" ]; then
+      T="$(token anon '/chapter/2/verse/47')"
+      req anon -o /dev/null -X POST --data-urlencode "_csrf=$T" \
+        --data-urlencode "return=/chapter/2/verse/47" "$BASE/verse/$VID/read"
+      contains "a guest can mark a verse read" 'badge-success' "$(req anon "$BASE/chapter/2/verse/47")"
+
+      T="$(token anon '/chapter/2/verse/47')"
+      req anon -o /dev/null -X POST --data-urlencode "_csrf=$T" \
+        --data-urlencode "return=/chapter/2/verse/47" "$BASE/verse/$VID/bookmark"
+      contains "a guest can save a verse" 'Remove from saved' "$(req anon "$BASE/chapter/2/verse/47")"
+
+      # An unvalidated redirect target is an open redirect, which is a
+      # real phishing primitive.
+      T="$(token anon '/chapter/2/verse/47')"
+      LOC="$(req anon -o /dev/null -D- -X POST --data-urlencode "_csrf=$T" \
+             --data-urlencode "return=//evil.example/x" "$BASE/verse/$VID/bookmark" | grep -i '^location:')"
+      case "$LOC" in
+        *evil.example*) bad "an off-site return is refused" "a local path" "$LOC" ;;
+        *)              ok  "an off-site return is refused" ;;
+      esac
+    else
+      bad "a guest can mark a verse read" "a verse id in the form" "none found"
+    fi
+    ;;
+  *)
+    printf '  \033[33m—\033[0m %s\n' "no content seeded — load database/seed_sample.sql to test this section"
+    ;;
+esac
+
+# ---------------------------------------------------------------------
+head_ "11. Your own data"
+# ---------------------------------------------------------------------
+
+check "the profile page is open to guests" 200 "$(status anon /profile)"
+
+EXPORT_H="$(req anon -o /tmp/vv-export.$$ -D- "$BASE/profile/export")"
+contains "the export downloads as JSON" 'application/json'  "$EXPORT_H"
+contains "  as an attachment"           'attachment;'       "$EXPORT_H"
+contains "  and is never cached"        'no-store'          "$EXPORT_H"
+
+EXPORT_BODY="$(cat /tmp/vv-export.$$ 2>/dev/null)"
+rm -f /tmp/vv-export.$$
+contains "  it is real JSON"            '"bookmarks"'       "$EXPORT_BODY"
+absent   "  it leaks no password hash"  'password_hash'     "$EXPORT_BODY"
+absent   "  it leaks no recovery hash"  'recovery_code_hash' "$EXPORT_BODY"
+
+# Deletion is POST-only and behind the auth middleware. A GET must not
+# reach it at all — an account deletion that can be triggered by a URL
+# is one <img> tag away from being triggered by somebody else's page.
+check "account deletion refuses GET" 405 "$(status anon /profile/delete)"
+
+# ---------------------------------------------------------------------
+head_ "12. Brute force"
 # ---------------------------------------------------------------------
 
 T="$(token main /)"

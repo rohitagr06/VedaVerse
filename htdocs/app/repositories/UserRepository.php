@@ -298,6 +298,122 @@ class UserRepository extends Repository
     }
 
     /**
+     * Change which track a reader is following.
+     *
+     * A track decides what the Chariot Path lays out in front of
+     * somebody. It is not a permission and it is not a gate — every
+     * chapter stays readable by everybody — so switching it costs no
+     * progress and needs no audit entry.
+     *
+     * The value is checked against the enum here rather than trusted,
+     * because MySQL's response to an unknown enum value in a non-strict
+     * mode is to store an empty string, and an empty track would send
+     * PathService to its fallback for a reader who thought they had
+     * chosen something.
+     *
+     * @param int    $userId
+     * @param string $track
+     * @return int
+     */
+    public function updateTrack($userId, $track)
+    {
+        $allowed = array('beginner', 'intermediate', 'advanced');
+
+        if (!in_array($track, $allowed, true)) {
+            return 0;
+        }
+
+        return $this->updateRows(
+            array('track' => $track),
+            'id = :id',
+            array('id' => (int) $userId)
+        );
+    }
+
+    /**
+     * Delete an account and everything personal attached to it.
+     *
+     * WHAT GOES AND WHAT STAYS
+     *   Progress, bookmarks, notes, recent views, sessions, chats and
+     *   the user row itself go. Forum threads and replies STAY, with
+     *   their author set to NULL by the schema's ON DELETE SET NULL.
+     *
+     *   Section 12 requires that: orphaning a conversation punishes the
+     *   people who replied to it, and a thread that vanishes mid-argument
+     *   is a worse outcome for everybody than one signed "a removed
+     *   account". Deletion is about the person's identity and their
+     *   private material, not about erasing a discussion other people
+     *   took part in.
+     *
+     * WHY THE CHILD DELETES ARE EXPLICIT
+     *   Most of them would cascade anyway. Naming them means the set is
+     *   auditable in one place, and a table added later without a
+     *   cascade cannot silently survive a deletion.
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteAccount($userId)
+    {
+        $userId = (int) $userId;
+
+        if ($userId <= 0) {
+            return false;
+        }
+
+        $repo = $this;
+
+        return (bool) $this->transaction(function () use ($repo, $userId) {
+            foreach (array(
+                'user_progress', 'bookmarks', 'notes', 'recent_views',
+                'sessions', 'user_reviews', 'user_achievements',
+                'saved_searches', 'password_resets',
+                'user_profiles', 'user_settings',
+            ) as $table) {
+                $repo->deleteForUser($table, $userId);
+            }
+
+            $repo->deleteRow($userId);
+
+            return true;
+        });
+    }
+
+    /**
+     * Delete one user's rows from one table.
+     *
+     * The table name is interpolated because a table name cannot be a
+     * bound parameter. It comes only from the hard-coded list above and
+     * goes through Database::identifier, never from a request.
+     *
+     * @param string $table
+     * @param int    $userId
+     * @return int
+     */
+    public function deleteForUser($table, $userId)
+    {
+        try {
+            return $this->execute(
+                'DELETE FROM `' . Database::identifier($table) . '` WHERE user_id = :uid',
+                array('uid' => (int) $userId)
+            );
+        } catch (\Exception $e) {
+            // A table that does not exist on an older schema must not
+            // block the deletion of everything else.
+            return 0;
+        }
+    }
+
+    /**
+     * @param int $userId
+     * @return int
+     */
+    public function deleteRow($userId)
+    {
+        return $this->execute('DELETE FROM users WHERE id = :uid', array('uid' => (int) $userId));
+    }
+
+    /**
      * Change a role. Always audited by the caller — a silent privilege
      * change is exactly the event an audit log exists for.
      *

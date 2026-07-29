@@ -95,6 +95,58 @@ return array(
         'entry_chapter' => 2,
     ),
 
+    // ---------------------------------------------------------------
+    // The three tracks
+    // ---------------------------------------------------------------
+    // Which chapters each track walks, in the order it walks them.
+    //
+    // WHY THIS IS CONFIG AND NOT DATA
+    //   It is an editorial judgement about how to teach the book, not
+    //   something a reader or an administrator edits. Putting it in the
+    //   database would invite somebody to change it at 2am with no
+    //   review, and every learner's path would silently rearrange.
+    //
+    // WHY THE ORDER IS NOT ASCENDING
+    //   Each track begins at chapter 2 and ends at 18. Chapter 1 is
+    //   scene-setting — Arjuna's collapse — and reads far better once
+    //   you know what the argument is going to be, so it is deliberately
+    //   late rather than absent. Chapter 18 is the summary and belongs
+    //   last in every track.
+    //
+    // A track is a VIEW, never a restriction. Every chapter is readable
+    // by anybody at any time; the track decides what the Chariot Path
+    // lays out in front of you, and switching tracks never costs
+    // progress.
+    'tracks' => array(
+        'beginner' => array(
+            'chapters' => array(2, 3, 12, 16, 18),
+        ),
+        'intermediate' => array(
+            'chapters' => array(2, 3, 4, 5, 6, 12, 13, 14, 16, 17, 18),
+        ),
+        'advanced' => array(
+            'chapters' => array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1, 18),
+        ),
+    ),
+
+    // ---------------------------------------------------------------
+    // The Chariot Path
+    // ---------------------------------------------------------------
+    'path' => array(
+        // Verses per node. The specification says clusters of 3 to 5;
+        // four is the middle and divides a chapter tidily.
+        //
+        // A node is one sitting. Make it larger and people stop
+        // finishing one, which is the only unit of progress that
+        // matters.
+        'cluster_size' => 4,
+
+        // How many nodes ahead of the current one stay visible. Future
+        // nodes are dim but present, so progress feels finite — that is
+        // the whole reason the path is a path and not a list.
+        'lookahead' => 6,
+    ),
+
     // XP and levelling. Level = floor(sqrt(xp / 50)) + 1.
     'xp' => array(
         'lesson'         => 10,

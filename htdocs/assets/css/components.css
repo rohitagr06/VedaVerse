@@ -734,6 +734,371 @@ select[aria-invalid="true"],
 }
 
 /* =====================================================================
+ * STEP 5 — CONTENT
+ * ---------------------------------------------------------------------
+ * The Chariot Path, the verse page, and the cards that list content.
+ *
+ * NO NEW COLOURS. Everything here comes from the token set, so
+ * tools/check-contrast.php still covers every pairing on these pages
+ * without a single new entry.
+ * ===================================================================== */
+
+/* ---------------------------------------------------------------------
+ * Layout helpers
+ * ------------------------------------------------------------------- */
+
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: var(--vv-s-4);
+    margin-block-end: var(--vv-s-6);
+}
+
+.badge-success { background: var(--vv-peacock); color: var(--vv-ink); }
+
+/* A real <progress>, styled. Assistive technology announces it as a
+ * progress bar with a value, which a div with a width does not — and it
+ * still renders something sensible if this CSS never loads. */
+.meter {
+    display: block;
+    width: 100%;
+    height: 10px;
+    margin-block: var(--vv-s-3) var(--vv-s-2);
+    border: 0;
+    border-radius: var(--vv-radius-pill);
+    background: var(--vv-surface-sunk);
+    appearance: none;
+    -webkit-appearance: none;
+    overflow: hidden;
+}
+.meter::-webkit-progress-bar { background: var(--vv-surface-sunk); border-radius: var(--vv-radius-pill); }
+.meter::-webkit-progress-value { background: var(--vv-grad-dawn); border-radius: var(--vv-radius-pill); }
+.meter::-moz-progress-bar { background: var(--vv-dawn); border-radius: var(--vv-radius-pill); }
+
+/* ---------------------------------------------------------------------
+ * Breadcrumb
+ * ------------------------------------------------------------------- */
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--vv-s-2);
+    margin-block-end: var(--vv-s-4);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+.breadcrumb a { color: var(--vv-text-muted); }
+.breadcrumb [aria-current="page"] { color: var(--vv-text); font-weight: var(--vv-weight-bold); }
+
+/* =====================================================================
+ * THE CHARIOT PATH
+ * ---------------------------------------------------------------------
+ * A vertical trail. The connector is a pseudo-element on each node
+ * rather than a background on the list, so a node can colour its own
+ * segment — which is what makes the finished part of the road read as
+ * one continuous filled line instead of a series of dots.
+ *
+ * THE STATES ARE NEVER COLOUR ALONE. Each node also carries a text
+ * label — "Finished", "You are here", "Still ahead" — because colour on
+ * its own is not an acceptable signal for anything.
+ * ===================================================================== */
+
+.path {
+    list-style: none;
+    margin: 0 0 var(--vv-s-6);
+    padding: 0;
+}
+
+.path__milestone {
+    margin-block: var(--vv-s-6) var(--vv-s-4);
+}
+
+.path__milestone a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--vv-s-3) var(--vv-s-4);
+    border-radius: var(--vv-radius-lg);
+    background: var(--vv-surface-sunk);
+    text-decoration: none;
+    color: inherit;
+    /* One hairline of dawn down the side, the same signature the shloka
+     * carries — a milestone is a landmark, not a node. */
+    border-inline-start: 3px solid var(--vv-dawn);
+}
+
+.path__milestone-number {
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--vv-text-muted);
+}
+
+.path__milestone-title {
+    font-family: var(--vv-font-display);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+}
+
+.path__node { position: relative; }
+
+.path__node-link {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--vv-s-4);
+    padding: var(--vv-s-3) var(--vv-s-4) var(--vv-s-3) 0;
+    text-decoration: none;
+    color: inherit;
+    min-height: var(--vv-tap-min);
+}
+
+/* The marker, and the connector below it. */
+.path__marker {
+    position: relative;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin-block-start: 2px;
+    margin-inline-start: 11px;
+    border-radius: 50%;
+    border: 3px solid var(--vv-line-strong);
+    background: var(--vv-surface);
+}
+
+/* The line to the next node.
+ *
+ * Anchored to the NODE, not to the marker, and stretched between two
+ * offsets rather than given a height. A fixed height cannot work here:
+ * a node's height depends on whether it has a summary line and on the
+ * reader's text-size setting, so any constant is wrong at some setting
+ * and leaves a visible gap in the road. Screenshotting is the only way
+ * this gets noticed — it looks fine in the markup.
+ *
+ * 22px is the marker's centre: 11px of margin plus half of its 22px
+ * width. */
+.path__node:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 40px;
+    inset-block-end: -2px;
+    inset-inline-start: 22px;
+    width: 3px;
+    transform: translateX(-50%);
+    background: var(--vv-line);
+}
+
+.path__node-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.path__node-label {
+    font-weight: var(--vv-weight-bold);
+}
+
+.path__node-state {
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+.path__node-summary {
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+/* --- done --- */
+.path__node.is-done .path__marker {
+    background: var(--vv-peacock);
+    border-color: var(--vv-peacock);
+}
+.path__node.is-done::after { background: var(--vv-peacock); }
+
+/* --- current --- */
+.path__node.is-current .path__marker {
+    background: var(--vv-dawn);
+    border-color: var(--vv-dawn);
+    /* A ring rather than a shadow, so it survives forced-colours mode. */
+    outline: 3px solid var(--vv-dawn);
+    outline-offset: 3px;
+}
+
+.path__node.is-current .path__node-label {
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+}
+
+.path__node.is-current .path__node-state {
+    color: var(--vv-dawn-text);
+    font-weight: var(--vv-weight-bold);
+}
+
+/* The pulse is the one piece of motion in the product, and it stops
+ * dead when the reader has asked for reduced motion — base.css handles
+ * that globally, which is why there is no media query here. */
+@keyframes vv-path-pulse {
+    0%, 100% { outline-offset: 3px; }
+    50%      { outline-offset: 7px; }
+}
+
+.path__node.is-current .path__marker {
+    animation: vv-path-pulse 2.4s ease-in-out infinite;
+}
+
+/* --- ahead and locked --- */
+.path__node.is-locked .path__node-link { opacity: 0.55; }
+
+/* ---------------------------------------------------------------------
+ * Chapter, topic and verse cards
+ * ------------------------------------------------------------------- */
+
+.chapter-card__link,
+.topic-card__link,
+.verse-card__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.chapter-card.is-entry { border-color: var(--vv-dawn); }
+
+.chapter-card__number,
+.verse-card__ref {
+    font-size: calc(var(--vv-t-xs) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--vv-text-muted);
+    margin-block-end: var(--vv-s-1);
+}
+
+.chapter-card__title,
+.topic-card__title {
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    margin-block: 0 var(--vv-s-2);
+}
+
+.chapter-card__sanskrit {
+    font-family: var(--vv-font-shloka);
+    color: var(--vv-text-muted);
+    margin-block-end: var(--vv-s-2);
+}
+
+.chapter-card__meta,
+.verse-card__body { margin-block-end: var(--vv-s-3); }
+
+/* ---------------------------------------------------------------------
+ * The verse list on a chapter page
+ * ------------------------------------------------------------------- */
+
+.verse-list { list-style: none; margin: 0; padding: 0; }
+
+.verse-list__item { margin: 0; border-block-end: 1px solid var(--vv-line); }
+.verse-list__item:last-child { border-block-end: 0; }
+
+.verse-list__item a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--vv-s-3);
+    padding-block: var(--vv-s-3);
+    min-height: var(--vv-tap-min);
+    text-decoration: none;
+    color: inherit;
+}
+
+.verse-list__ref {
+    flex: none;
+    min-width: 3.5rem;
+    font-family: var(--vv-font-mono);
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+.verse-list__body { flex: 1 1 auto; min-width: 0; }
+.verse-list__flags { flex: none; }
+.verse-list__item.is-stub .verse-list__body { color: var(--vv-text-muted); }
+
+/* ---------------------------------------------------------------------
+ * The verse page
+ * ------------------------------------------------------------------- */
+
+.verse__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--vv-s-3);
+    margin-block-end: var(--vv-s-4);
+}
+
+.verse__reference {
+    margin: 0;
+    font-size: calc(var(--vv-t-sm) * var(--vv-scale));
+    color: var(--vv-text-muted);
+}
+
+.verse__simple { margin-block-start: var(--vv-s-3); }
+
+/* Word-by-word gloss. A definition list, because that is exactly what
+ * it is, and screen readers pair the terms with their meanings for
+ * free. */
+.glossary {
+    display: grid;
+    grid-template-columns: minmax(6rem, 12rem) 1fr;
+    gap: var(--vv-s-2) var(--vv-s-4);
+    margin: 0;
+}
+
+.glossary dt { font-weight: var(--vv-weight-bold); }
+.glossary dd { margin: 0; }
+.glossary em { display: block; font-size: calc(var(--vv-t-sm) * var(--vv-scale)); }
+
+@media (max-width: 30rem) {
+    /* Two columns at 320px leaves about eight characters each. */
+    .glossary { grid-template-columns: 1fr; gap: 0; }
+    .glossary dd { margin-block-end: var(--vv-s-3); }
+}
+
+/* A modern example. Separated by a rule rather than nested cards —
+ * twelve cards inside a card is a stack of boxes nobody can parse. */
+.example {
+    padding-block: var(--vv-s-5);
+    border-block-start: 1px solid var(--vv-line);
+}
+
+.example:first-of-type { border-block-start: 0; padding-block-start: 0; }
+
+.example__title { margin-block: 0 var(--vv-s-2); }
+.example__meta  { display: flex; flex-wrap: wrap; gap: var(--vv-s-2); align-items: center; }
+
+.example__lesson {
+    padding-inline-start: var(--vv-s-4);
+    border-inline-start: 3px solid var(--vv-marigold);
+    font-weight: var(--vv-weight-bold);
+}
+
+.commentary {
+    padding-block: var(--vv-s-4);
+    border-block-start: 1px solid var(--vv-line);
+}
+
+.commentary:first-of-type { border-block-start: 0; padding-block-start: 0; }
+
+/* The line the learner should still have in a year. Deliberately the
+ * loudest block on the page after the shloka. */
+.remember { border-color: var(--vv-marigold); }
+
+.remember__hook {
+    font-family: var(--vv-font-display);
+    font-size: calc(var(--vv-t-md) * var(--vv-scale));
+    font-weight: var(--vv-weight-bold);
+    line-height: var(--vv-lh-tight);
+}
+
+/* =====================================================================
  * STYLE GUIDE
  * ---------------------------------------------------------------------
  * Only used by /styleguide. Kept here rather than in a separate file so
@@ -842,4 +1207,32 @@ select[aria-invalid="true"],
 
     .sg-strings th,
     .sg-strings td { border: 0; padding-inline: 0; }
+}
+
+/* ---------------------------------------------------------------------
+ * Focus mode — /chapter/x/verse/y?mode=focus
+ * ---------------------------------------------------------------------
+ * The verse and its explanation, nothing else. Set by a body class from
+ * the controller rather than a second layout, because two shells means
+ * two places to keep the skip link, the language attribute and the
+ * focus order correct — and the second one always rots.
+ *
+ * The skip link STAYS. A page with no navigation still needs a keyboard
+ * user to be able to reach its content, and hiding the one control that
+ * guarantees that would be the exact opposite of the intent.
+ * ------------------------------------------------------------------- */
+
+.is-focus .app-header,
+.is-focus .nav,
+.is-focus .app-footer,
+.is-focus .breadcrumb { display: none; }
+
+.is-focus .app-main {
+    padding-block: var(--vv-s-6);
+    /* The shell is a grid that reserves column 1 for the sidebar. With
+     * the sidebar gone that column would stay reserved and leave 260px
+     * of nothing down the left, so the main column is moved across. */
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-inline: auto;
 }

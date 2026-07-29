@@ -611,7 +611,23 @@ language and that the `:placeholders` and the `|` plural forms agree. It has no
 opinion at all about whether the writing is any good. That is the whole reason
 the review page exists.
 
-### Steps 5–15 ⏳ not started
+### Step 5 — Content pages and the Chariot Path ✅
+
+Load `database/seed_sample.sql` first — see `docs/TEST_RUN.md` §2.4.
+
+| What to test | How | Expected |
+|---|---|---|
+| The whole surface | `bash tools/smoke-test.sh` | 71 passed, 0 failed |
+| The path | `/` | milestone, nodes, one marked current |
+| A verse | `/chapter/2/verse/47` | every section, in the taught order |
+| Reading modes | the four chips | Study adds the gloss, Research the cross-references |
+| Life problems | `/problem/anger` | disclaimer, example, then verses |
+| Wrong door | `/topic/anger` | 301 to `/problem/anger` |
+| Guest writes | mark read, bookmark, note — signed out | all three persist |
+
+Full tick-list in `docs/TEST_RUN.md` §5.
+
+### Steps 6–15 ⏳ not started
 
 This table grows as each one lands.
 

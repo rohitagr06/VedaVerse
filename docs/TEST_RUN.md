@@ -1,4 +1,4 @@
-# Testing VedaVerse — Steps 1 to 4
+# Testing VedaVerse — Steps 1 to 5
 
 **One session, start to finish.** Follow this top to bottom and you will have
 exercised everything built so far. It takes about 25 minutes the first time and
@@ -113,6 +113,23 @@ only as a hash. Nobody can look it up afterwards, including you.
 Do **not** click "delete the installer" on a local install — you will want it
 again.
 
+### 2.4 Load the sample content — Step 5 onwards
+
+Five fully-written verses, so the content pages have something real in them.
+Without this every page Step 5 built renders an empty state.
+
+```bash
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_sample.sql
+```
+
+Safe to re-run — it updates rather than duplicating. It adds all 18 chapters,
+14 topics and their graph, and Chapter 2 verses 13, 14, 47, 62 and 70 with
+word meanings, explanations, twenty modern examples, memory hooks,
+reflections and practices, all in three languages.
+
+Step 6 adds the other 103 verses. Nothing in this file gets thrown away.
+
 ---
 
 ## 3. The four automated checks
@@ -142,10 +159,10 @@ php tools/dev-reset.php && bash tools/smoke-test.sh
 **2. `check-strings.php`**
 
 ```
-Keys     : 626
-  en        626
-  hi        626
-  hinglish  626
+Keys     : 628
+  en        628
+  hi        628
+  hinglish  628
 
 All keys present in all three languages.
 Placeholders and plural forms agree across languages.
@@ -168,9 +185,15 @@ pages Steps 5 to 13 will build. It is never a failure.
 real hex values out of `tokens.css`, so it cannot drift out of date. Change a
 colour, run this, know.
 
-**4. `smoke-test.sh`** — `51 passed, 0 failed`. It registers a real account,
+**4. `smoke-test.sh`** — `79 passed, 0 failed`. It registers a real account,
 signs in and out, merges anonymous work, checks the role gate, exercises
 account recovery, and confirms the brute-force lockout fires.
+
+**The site has to be running in another tab.** The script checks first and
+stops with one plain sentence if it is not — `Nothing is listening on
+http://127.0.0.1:8080` — rather than reporting 48 failures whose real cause is
+that you closed the server. It does the same for a site that is up but not
+installed, and for one whose database is not answering.
 
 `dev-reset.php` must run first. It clears the throttle counters that the
 previous run's lockout test deliberately tripped — without it the next run
@@ -198,7 +221,7 @@ is any good, and no tool can do them for you.
 <http://127.0.0.1:8080/styleguide/strings>
 
 Every interface string in English, Hindi and Hinglish, in three columns,
-grouped by area. There are 626 of them.
+grouped by area. There are 628 of them.
 
 **Read the Hinglish column out loud, one group at a time.** The test is not
 "is this correct Hinglish". It is "would I say this to a friend". Anything
@@ -299,9 +322,9 @@ Everything, in order. Tick as you go.
 |---|---|---|---|
 | 1 | Syntax | `find htdocs tools -name "*.php" -exec php -l {} \;` | no output |
 | 2 | Health | open `/health` | `"ok":true`, all three checks true |
-| 3 | Strings | `php tools/check-strings.php` | 626 keys × 3, `Clean.` |
+| 3 | Strings | `php tools/check-strings.php` | 628 keys × 3, `Clean.` |
 | 4 | Contrast | `php tools/check-contrast.php` | all 35 pairings pass |
-| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 51 passed, 0 failed |
+| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 79 passed, 0 failed |
 | 6 | Log | `tail -20 htdocs/storage/logs/vedaverse-*.log` | no ERROR lines |
 
 ### By hand — Step 1, the foundation
@@ -345,6 +368,39 @@ Everything, in order. Tick as you go.
 | 26 | Browser language detection | the two `curl` commands in §4.3 |
 | 27 | Hinglish is never auto-selected | second `curl` returns `en`, not `en-IN` |
 
+### By hand — Step 5, content
+
+Needs `seed_sample.sql` loaded (§2.4).
+
+| # | Check | How |
+|---|---|---|
+| 28 | The path | open `/` — chapter 2 milestone, two nodes, first marked "You are here" |
+| 29 | Marking progress | open 2.47, press "Mark as read" — the button becomes a "Read" badge and the path node fills |
+| 30 | Resume | back to `/` — the button now says "Carry on" and names a verse |
+| 31 | A verse, fully | `/chapter/2/verse/47` — Sanskrit, transliteration on two lines, translation, explanation, four examples, hook, reflections |
+| 32 | Reading modes | the four chips — Study adds word-by-word, Research adds cross-references, One minute strips it back |
+| 33 | Explanation depth | "Start simple" / "A bit deeper" — the text changes and the active chip fills |
+| 34 | Life problems | `/problem/anger` — disclaimer first, then an example, then verses |
+| 35 | The other door | `/topic/the-self` — definition first, then verses. The opposite order, on purpose. |
+| 36 | Wrong door | `/topic/anger` redirects 301 to `/problem/anger` |
+| 37 | Saving and notes | the buttons under a verse work signed out and survive a reload |
+| 38 | Chapters | `/chapters` — 18 cards, chapter 2 outlined as the entry point |
+| 39 | Devanagari in the gloss | `/chapter/2/verse/47?lang=hi&mode=study` — conjuncts join in the word list |
+| 40 | 320px and keyboard | narrow a verse page to 320px, then Tab from the top |
+| 41 | Focus mode | a verse → "Focus" at the foot — header, nav and breadcrumb vanish, the skip link does not |
+| 42 | Print | a verse → "Print" then Cmd-P — no chrome, links show their URLs |
+| 43 | Your own work | `/profile` signed out — saved verses, notes, recently opened |
+| 44 | **Acceptance test 5** | bookmark two verses and write a note signed out, then register — all three are still on `/profile` |
+| 45 | Data export | `/profile/export` downloads JSON with your notes in it, and no password hash |
+| 46 | Account deletion | `/profile` → "Delete this account" — needs the password *and* the word DELETE |
+
+**`/review` and `/sarathi` in the navigation are expected to 404.** They
+arrive in Steps 7 and 9.
+
+**Worth doing by hand, and it is the point of the whole step:** read one
+modern example out loud in Hinglish. That register is what the product stands
+on, and Step 6 writes a hundred more like it.
+
 ---
 
 ## 6. When something fails
@@ -360,6 +416,8 @@ actually produced, with its real cause. The five that come up most:
 | `Refusing to run: app.env is not 'local'` | `local.php` says `production`. Re-run the installer; it detects a local hostname now and writes `local`. |
 | Every page redirects to `/install.php` | `local.php` is missing. §2.3. |
 | `/login` is 404 but `/` works | you started `php -S` without `tools/dev-router.php`. |
+| Smoke test says `Nothing is listening` | the `php -S` tab was closed or Ctrl-C'd. Start it, leave it running, run the test in a *different* tab. |
+| Smoke test says `The database is not answering` | XAMPP's MariaDB is stopped. `sudo /Applications/XAMPP/xamppfiles/bin/mysql.server start` |
 
 Anything not on that list: send me the exact output and the last 20 lines of
 `htdocs/storage/logs/vedaverse-*.log`.
