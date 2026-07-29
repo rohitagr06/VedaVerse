@@ -133,38 +133,62 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 12 — also AFTER seed_sample.sql
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch12.sql
+
+# Step 6, chapter 16 — also AFTER seed_sample.sql
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch16.sql
 ```
 
-All four are safe to re-run — they update rather than duplicating.
+All five are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-twenty-eight fully-written verses with word meanings, explanations, modern
+thirty-six fully-written verses with word meanings, explanations, modern
 examples, memory hooks, reflections, practices and cross-references, all in
 three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
-and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; and chapter 12
-verses 5, 8, 12, 13, 15, 16, 18 and 19.
+and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 12 verses
+5, 8, 12, 13, 15, 16, 18 and 19; and chapter 16 verses 1, 3, 4, 5, 10, 13, 16
+and 21.
 
-Order matters. The three chapter files all join to the chapters and topics
+Order matters. The four chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 80 verses. Nothing in these files gets thrown away.
+Step 6 adds the other 72 verses. Nothing in these files gets thrown away.
 
-**Two verses need reading rather than skimming, and the suite guards both.**
+## The verses the suite guards
 
-3.35 — "better your own dharma than another's" — has been used for centuries
-to tell people that the circumstances of their birth are their duty. Its
-explanation refuses that reading in as many words, and the word gloss on
-`svadharma` says the word means *own*, not *inherited*.
+Five sentences across four verses each refuse a specific misreading that the
+verse has a documented history of being put to. `smoke-test.sh` asserts every
+one of them by literal string. **If one of those checks ever fails, find out
+what changed in the content — do not update the expected string.**
 
-12.13 opens the devotional chapter's portrait of the person its god calls
+**3.35** — "better your own dharma than another's" — has been used for
+centuries to tell people that the circumstances of their birth are their
+duty. Its explanation refuses that reading in as many words, and the word
+gloss on `svadharma` says the word means *own*, not *inherited*.
+
+**12.13** opens the devotional chapter's portrait of the person its god calls
 dear. Its explanation says both halves of an awkward thing once, plainly:
 who the chapter is addressed to, and that the reader does not have to share
-that frame to use the list. Nearby, 12.16's `sarvārambha-parityāgī` is
+that frame to use the list. Nearby, **12.16**'s `sarvārambha-parityāgī` is
 glossed as giving up the *launching* and not the work — unglossed it reads
 as "stop working", which contradicts chapter 3 outright.
 
-`smoke-test.sh` asserts all four sentences, so an edit that softens any of
-them fails the suite rather than shipping quietly.
+**16.4 and 16.5** are the most important two in the file. Chapter 16 names
+two sets of qualities, and read as a taxonomy of *persons* it hands anybody a
+vocabulary for deciding that some people are a different kind of thing —
+which is a use it has been put to, against communities, in living memory.
+The 16.4 explanation says the chapter describes two directions a person can
+face and not two kinds of person. The 16.5 explanation shows the text doing
+that itself: the moment the chapter becomes usable as a weapon, the speaker
+turns to the frightened man in front of him and tells him not to grieve,
+before any assessment of him at all. The word gloss on `asura` refuses the
+"species" reading that makes the whole misuse possible.
+
+Nothing anywhere in `seed_ch16.sql` — not an example, not a reflection, not
+a gloss — maps either list onto a group, a profession, a party, a region or
+a community. Two of the examples show the same person facing both directions
+inside one week. That is the reading the chapter supports and it is the
+strongest available answer to the other one.
 
 ---
 
@@ -221,7 +245,7 @@ pages Steps 5 to 13 will build. It is never a failure.
 real hex values out of `tokens.css`, so it cannot drift out of date. Change a
 colour, run this, know.
 
-**4. `smoke-test.sh`** — `85 passed, 0 failed`. It registers a real account,
+**4. `smoke-test.sh`** — `88 passed, 0 failed`. It registers a real account,
 signs in and out, merges anonymous work, checks the role gate, exercises
 account recovery, and confirms the brute-force lockout fires.
 
@@ -360,7 +384,7 @@ Everything, in order. Tick as you go.
 | 2 | Health | open `/health` | `"ok":true`, all three checks true |
 | 3 | Strings | `php tools/check-strings.php` | 628 keys × 3, `Clean.` |
 | 4 | Contrast | `php tools/check-contrast.php` | all 35 pairings pass |
-| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 85 passed, 0 failed |
+| 5 | HTTP surface | `php tools/dev-reset.php && bash tools/smoke-test.sh` | 88 passed, 0 failed |
 | 6 | Log | `tail -20 htdocs/storage/logs/vedaverse-*.log` | no ERROR lines |
 
 ### By hand — Step 1, the foundation

@@ -472,6 +472,35 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 12 not seeded — load database/seed_ch12.sql to test 12.13 and 12.16"
     fi
 
+    # CHAPTER 16 — THE ONE THAT CAN BE TURNED INTO A WEAPON
+    #   16.1 to 16.4 name two sets of qualities. Read as a taxonomy of
+    #   PERSONS the chapter hands anybody a vocabulary for deciding that
+    #   some people are a different kind of thing, and that vocabulary
+    #   has been used against communities in living memory.
+    #
+    #   Three sentences hold the line and all three are asserted here:
+    #   16.4 says the chapter describes directions and not kinds of
+    #   person; 16.5 says the text itself takes the chapter out of the
+    #   reader's hand by reassuring the listener before assessing him;
+    #   and the word gloss on asura refuses the "species" reading that
+    #   makes the whole misuse possible.
+    #
+    #   If any of these three fails, do not "fix the test". The content
+    #   has drifted and the chapter is no longer safe to ship.
+    if [ "$(status anon /chapter/16/verse/5)" = "200" ]; then
+      contains "16.4 says directions, not kinds of person" \
+        'not two kinds of person' \
+        "$(req anon "$BASE/chapter/16/verse/4")"
+      contains "16.5 keeps the line that disarms the chapter" \
+        'takes it out of the reader' \
+        "$(req anon "$BASE/chapter/16/verse/5")"
+      contains "  and the asura gloss refuses the species reading" \
+        'Not a species, not a kind of person' \
+        "$(req anon "$BASE/chapter/16/verse/4?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 16 not seeded — load database/seed_ch16.sql to test 16.4 and 16.5"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 
