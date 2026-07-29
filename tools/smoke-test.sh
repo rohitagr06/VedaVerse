@@ -448,6 +448,30 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 3 not seeded — load database/seed_ch03.sql to test 3.35"
     fi
 
+    # CHAPTER 12, AND THE TWO THINGS IT IS NOT ALLOWED TO LOSE
+    #   Chapter 12 is the devotional chapter, and the honest handling of
+    #   that has one load-bearing sentence: the 12.13 explanation says
+    #   who the chapter is addressed to AND says the reader does not
+    #   have to share it. Drop either half and the chapter either
+    #   misrepresents itself or excludes most of its audience.
+    #
+    #   12.16's "sarvārambha-parityāgī" is the second. Left unglossed it
+    #   reads as "give up all work", which contradicts chapter 3
+    #   outright. The gloss has to keep saying that ārambha is the
+    #   launching and not the work.
+    if [ "$(status anon /chapter/12/verse/13)" = "200" ]; then
+      V1213="$(req anon "$BASE/chapter/12/verse/13")"
+      contains "12.13 names who the chapter is addressed to" \
+        'addressed to somebody who has or wants' "$V1213"
+      contains "  and says the reader need not share it" \
+        'does not require you to share it' "$V1213"
+      contains "12.16 glosses sarvarambha as the launching, not the work" \
+        'not the work' \
+        "$(req anon "$BASE/chapter/12/verse/16?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 12 not seeded — load database/seed_ch12.sql to test 12.13 and 12.16"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 
