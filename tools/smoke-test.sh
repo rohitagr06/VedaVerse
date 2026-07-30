@@ -528,6 +528,37 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 18 not seeded — load database/seed_ch18.sql to test 18.63"
     fi
 
+    # CHAPTER 6 — TWO WELLBEING SAFEGUARDS RATHER THAN TWO MISUSES
+    #   6.5 says a person can lift themselves and can let themselves
+    #   sink. Handed to somebody who is depressed that reads as "your
+    #   suffering is your own fault", which is not in the line. The
+    #   explanation separates leverage from blame and says out loud that
+    #   this is not a reason to stop asking anybody else for help.
+    #
+    #   6.17 asks for measure in eating and sleeping, which somebody
+    #   already restricting can read as permission. The defence is the
+    #   verse before it, which rules out BOTH extremes by name, and the
+    #   gloss on yukta, which says fitted rather than minimal.
+    #
+    #   Both are asserted on the DEFAULT render, because the default is
+    #   what a reader in either situation actually lands on.
+    if [ "$(status anon /chapter/6/verse/5)" = "200" ]; then
+      contains "6.5 separates leverage from blame" \
+        'not a claim about blame' \
+        "$(req anon "$BASE/chapter/6/verse/5")"
+      contains "  and does not tell anybody to do it alone" \
+        'asking anybody else for a rope' \
+        "$(req anon "$BASE/chapter/6/verse/5")"
+      contains "6.17 keeps both extremes, not just the one" \
+        'not for the one who does not eat' \
+        "$(req anon "$BASE/chapter/6/verse/17")"
+      contains "  and the yukta gloss says fitted, not minimal" \
+        'not &quot;restrained&quot; and not &quot;minimal&quot;' \
+        "$(req anon "$BASE/chapter/6/verse/17?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 6 not seeded — load database/seed_ch06.sql to test 6.5 and 6.17"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

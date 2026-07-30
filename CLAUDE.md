@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 44 verses. **Beginner track complete**: ch2 batch A (12 of 18), ch3, ch12, ch16, ch18 (8 each) |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 52 verses. Beginner track complete (2, 3, 12, 16, 18); intermediate track opened with ch6 |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -301,6 +301,13 @@ page almost everybody lands on — no edit to the sentence, no error, just a
 different row winning. The beginner text carries it too, and `smoke-test.sh`
 asserts it on the DEFAULT render rather than at a named level.
 
+**Adding a chapter needs no config change.** `app.tracks` already lists all
+three tracks in full, and `PathService::build()` skips chapters that are not
+published yet rather than erroring. Seeding chapter 6 put it on the
+intermediate path on load — 52 verses across six chapters — with nothing
+edited. Check the path after every new chapter anyway; the silence cuts both
+ways.
+
 **A cross-reference to a verse that has not been seeded yet vanishes without
 a word.** The insert is a `JOIN` against `verses`, so a row pointing at an
 unwritten verse simply produces no row — no error, no warning, and the
@@ -458,11 +465,15 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
   Step 6.
 - **8 of the ~18 life problems in §9.3 are seeded.** Step 6.
 - **Modern examples below the specified 8–12 on most verses.** Chapter 3 is
-  done — all eight verses now carry eight, each with eight distinct
-  categories so no verse repeats a setting. Remaining: chapter 2 (43 of 96),
-  and chapters 12, 16 and 18 (24 of 64 each). The top-up rows live at the
-  bottom of each chapter's own seed file, continuing from sort_order 4, for
-  the same reason the beginner explanations do.
+  done at eight each, with eight distinct categories per verse so no verse
+  repeats a setting. Everything else is at three or four: chapter 2 (43 of
+  96), chapters 12, 16 and 18 (24 of 64 each), chapter 6 (32 of 64). Top-up
+  rows live at the bottom of each chapter's own seed file, continuing from
+  sort_order 4, for the same reason the beginner explanations do.
+
+  **Deliberately deprioritised.** Breadth was chosen over depth: opening a
+  new chapter puts more of the book in front of a reader than taking one
+  verse from three examples to eight. The top-up is still owed.
 - ~~14 of the 44 curated verses have no beginner-level explanation.~~
   **Closed.** All 44 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
