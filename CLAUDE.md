@@ -457,9 +457,12 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
   comparison has never rendered with data. The query and the template exist.
   Step 6.
 - **8 of the ~18 life problems in §9.3 are seeded.** Step 6.
-- **4 modern examples per verse against the specified 8–12.** Step 6 tops
-  them up; nothing written so far is thrown away. Chapters 3 and 12 carry 3
-  each, so they need the same pass.
+- **Modern examples below the specified 8–12 on most verses.** Chapter 3 is
+  done — all eight verses now carry eight, each with eight distinct
+  categories so no verse repeats a setting. Remaining: chapter 2 (43 of 96),
+  and chapters 12, 16 and 18 (24 of 64 each). The top-up rows live at the
+  bottom of each chapter's own seed file, continuing from sort_order 4, for
+  the same reason the beginner explanations do.
 - ~~14 of the 44 curated verses have no beginner-level explanation.~~
   **Closed.** All 44 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth

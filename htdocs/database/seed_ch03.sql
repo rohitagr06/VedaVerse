@@ -1045,3 +1045,602 @@ FROM (
 ) AS x
 JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
+
+-- =====================================================================
+-- 8. EXAMPLE TOP-UP — 3 PER VERSE TO 8
+-- =====================================================================
+-- The spec asks for eight to twelve modern examples per verse. This
+-- chapter shipped with three, which was enough to prove the shape and
+-- not enough to be the product. These forty take all eight verses to
+-- eight, and sort_order continues from 4 so the original three still
+-- lead.
+--
+-- CATEGORY SPREAD IS DELIBERATE
+--   No verse repeats a setting. A reader who does not recognise
+--   themselves in an office will find a hospital, a pitch, a marriage,
+--   a classroom. That breadth is the whole argument for having eight
+--   rather than three.
+--
+-- THE POLITICS EXAMPLES ARE STRUCTURAL AND NAME NOBODY
+--   They describe the SHAPE of a situation — a vote, an abstention, a
+--   term of office — and contain no living politician, party or
+--   movement, and no praise or criticism of any. Same rule as
+--   everywhere else in this corpus.
+--
+-- These live at the bottom of this file because the DELETE in the
+-- examples section clears the whole chapter; rows added from a separate
+-- file would vanish on the next re-run.
+-- =====================================================================
+
+INSERT INTO modern_examples
+  (verse_id, category, title_en, title_hi, title_hinglish,
+   scenario_en, scenario_hi, scenario_hinglish,
+   connection_en, connection_hi, connection_hinglish,
+   lesson_en, lesson_hi, lesson_hinglish,
+   source_reference, has_spoiler, difficulty, tags, is_ai_generated, approved, sort_order)
+SELECT v.id, x.cat, x.t_en, x.t_hi, x.t_hing, x.s_en, x.s_hi, x.s_hing,
+       x.c_en, x.c_hi, x.c_hing, x.l_en, x.l_hi, x.l_hing,
+       x.src, 0, x.diff, x.tags, 0, 1, x.ord
+FROM (
+
+  SELECT 5 AS vn, 'cricket' AS cat, 4 AS ord,
+  'Leaving deliveries outside off' AS t_en, 'ऑफ़ के बाहर की गेंदें छोड़ना' AS t_hi, 'Off ke bahar ki gendein chhodna' AS t_hing,
+  'A batsman decides to leave everything outside off stump for an hour. It is a real plan and a good one. What it is not is inaction: he is still choosing, ball by ball, and the bowler is reading the leave and adjusting his line. By the fortieth delivery the corridor has moved and the leave has become a stroke he did not intend to play.' AS s_en,
+  'एक बल्लेबाज़ तय करता है कि वह एक घंटे तक ऑफ़ स्टंप के बाहर की हर गेंद छोड़ देगा। यह असली योजना है और अच्छी भी। जो यह नहीं है वह है निष्क्रियता: वह अब भी हर गेंद पर चुनाव कर रहा है, और गेंदबाज़ उसका छोड़ना पढ़कर अपनी लाइन बदल रहा है। चालीसवीं गेंद तक कॉरिडोर खिसक चुका है और छोड़ना एक ऐसा शॉट बन गया है जो वह खेलना नहीं चाहता था।' AS s_hi,
+  'Ek batsman tay karta hai ki woh ek ghante tak off stump ke bahar ki har gend chhod dega. Yeh asli plan hai aur achha bhi. Jo yeh nahi hai woh hai nishkriyata: woh ab bhi har ball par chunav kar raha hai, aur bowler uska chhodna padhkar apni line badal raha hai. Chalisvi ball tak corridor khisak chuka hai aur chhodna ek aisa shot ban gaya hai jo woh khelna nahi chahta tha.' AS s_hing,
+  'The verse says nobody stays actionless for even a moment, and a leave is the cleanest small proof of it. Not playing at the ball is a move. The other side is responding to it. An hour of leaves has changed the match as surely as an hour of driving would have, just in a direction nobody announced.' AS c_en,
+  'श्लोक कहता है कि कोई एक क्षण भी निष्क्रिय नहीं रहता, और गेंद छोड़ना इसका सबसे साफ़ छोटा सबूत है। गेंद न खेलना भी एक चाल है। सामने वाला उस पर जवाब दे रहा है। एक घंटे के छोड़ने ने मैच उतना ही बदला है जितना एक घंटे के ड्राइव बदलते, बस उस दिशा में जिसकी किसी ने घोषणा नहीं की।' AS c_hi,
+  'Shloka kehta hai ki koi ek pal bhi nishkriya nahi rehta, aur gend chhodna iska sabse saaf chhota saboot hai. Gend na khelna bhi ek chaal hai. Saamne wala us par jawab de raha hai. Ek ghante ke chhodne ne match utna hi badla hai jitna ek ghante ke drive badalte, bas us disha mein jiski kisi ne ghoshna nahi ki.' AS c_hing,
+  'Not playing at the ball is a move, and the other side is already responding to it.' AS l_en,
+  'गेंद न खेलना भी एक चाल है, और सामने वाला उस पर जवाब दे भी चुका है।' AS l_hi,
+  'Gend na khelna bhi ek chaal hai, aur saamne wala us par jawab de bhi chuka hai.' AS l_hing,
+  NULL AS src, 'beginner' AS diff, 'cricket,inaction,choice,sport,pressure' AS tags
+
+  UNION ALL SELECT 5, 'technology', 5,
+  'The upgrade that was postponed', 'वह अपग्रेड जो टलता रहा', 'Woh upgrade jo talta raha',
+  'A team keeps deferring a framework upgrade because the current version works and the upgrade has risk. Every month the decision is re-taken in about four minutes and comes out the same way. Fourteen months later the version is out of support, the upgrade path now requires two intermediate hops, and the risk they were avoiding has roughly tripled.',
+  'एक टीम फ़्रेमवर्क अपग्रेड टालती रहती है क्योंकि मौजूदा संस्करण चल रहा है और अपग्रेड में जोखिम है। हर महीने यह फ़ैसला क़रीब चार मिनट में दोबारा लिया जाता है और वही निकलता है। चौदह महीने बाद संस्करण समर्थन से बाहर है, अपग्रेड के रास्ते में अब दो बीच के पड़ाव हैं, और जिस जोखिम से वे बच रहे थे वह क़रीब तीन गुना हो चुका है।',
+  'Ek team framework upgrade taalti rehti hai kyunki maujooda version chal raha hai aur upgrade mein jokhim hai. Har mahine yeh faisla karib chaar minute mein dobara liya jaata hai aur wahi nikalta hai. Chaudah mahine baad version support se bahar hai, upgrade ke raste mein ab do beech ke padav hain, aur jis jokhim se woh bach rahe the woh karib teen guna ho chuka hai.',
+  'Each of those four-minute decisions felt like declining to act. None of them was. Not upgrading is a position on the codebase, taken monthly, and it compounds — which is exactly the verse''s claim that you are being acted through whether or not you agreed to anything.',
+  'उन चार-चार मिनट के हर फ़ैसले में लगा कि काम करने से मना किया जा रहा है। उनमें से कोई ऐसा था नहीं। अपग्रेड न करना कोडबेस पर एक स्थिति है, हर महीने ली गई, और वह जुड़ती जाती है — और यही श्लोक का दावा है कि आपके ज़रिये काम हो रहा है, चाहे आपने किसी बात पर हामी भरी हो या नहीं।',
+  'Un chaar-chaar minute ke har faisle mein laga ki kaam karne se mana kiya ja raha hai. Unme se koi aisa tha nahi. Upgrade na karna codebase par ek position hai, har mahine li gayi, aur woh judti jaati hai — aur yahi shloka ka dawa hai ki tumhare zariye kaam ho raha hai, chahe tumne kisi baat par haami bhari ho ya nahi.',
+  'Deciding not to act, monthly, is not the absence of a decision. It is the same decision compounding.',
+  'हर महीने यह तय करना कि काम नहीं करना — यह फ़ैसले की गैरहाज़िरी नहीं है। यह वही फ़ैसला है जो जुड़ता जा रहा है।',
+  'Har mahine yeh tay karna ki kaam nahi karna — yeh faisle ki gairhaziri nahi hai. Yeh wahi faisla hai jo judta ja raha hai.',
+  NULL, 'intermediate', 'technology,delay,risk,decisions,compounding'
+
+  UNION ALL SELECT 5, 'healthcare', 6,
+  'Watchful waiting', 'देखते हुए इंतज़ार', 'Dekhte hue intezaar',
+  'A doctor recommends watchful waiting for a condition that may or may not need treating. The patient hears this as "we are not doing anything yet". The clinical note says otherwise: a monitoring interval, a set of thresholds, and a specific list of things that would change the plan. It is a treatment, and it has been chosen over two others.',
+  'एक डॉक्टर ऐसी स्थिति के लिए "देखते हुए इंतज़ार" की सलाह देते हैं जिसका इलाज ज़रूरी हो भी सकता है और नहीं भी। मरीज़ इसे "अभी हम कुछ नहीं कर रहे" की तरह सुनता है। क्लिनिकल नोट कुछ और कहता है: निगरानी का अंतराल, कुछ सीमाएँ, और उन चीज़ों की एक ख़ास सूची जो योजना बदल देंगी। यह एक इलाज है, और इसे दो और विकल्पों के मुक़ाबले चुना गया है।',
+  'Ek doctor aisi sthiti ke liye "dekhte hue intezaar" ki salah dete hain jiska ilaaj zaroori ho bhi sakta hai aur nahi bhi. Mareez ise "abhi hum kuch nahi kar rahe" ki tarah sunta hai. Clinical note kuch aur kehta hai: nigrani ka antaral, kuch seemayein, aur un cheezon ki ek khaas list jo yojna badal dengi. Yeh ek ilaaj hai, aur ise do aur options ke muqable chuna gaya hai.',
+  'Medicine had to invent a name for this because the alternative was patients believing nothing was happening. The verse makes the same move at a wider scale: there is no square marked "not playing", so the honest thing is to describe what the waiting actually is and set the thresholds that would end it.',
+  'चिकित्सा को इसके लिए एक नाम गढ़ना पड़ा क्योंकि वरना मरीज़ मान लेते कि कुछ हो ही नहीं रहा। श्लोक यही चाल बड़े पैमाने पर चलता है: "नहीं खेल रहे" का कोई ख़ाना है ही नहीं, इसलिए ईमानदारी यह है कि बताया जाए कि यह इंतज़ार असल में है क्या, और वे सीमाएँ तय की जाएँ जो उसे ख़त्म कर देंगी।',
+  'Chikitsa ko iske liye ek naam gadhna pada kyunki warna mareez maan lete ki kuch ho hi nahi raha. Shloka yahi chaal bade paimane par chalta hai: "nahi khel rahe" ka koi khaana hai hi nahi, isliye imaandari yeh hai ki bataya jaaye ki yeh intezaar asal mein hai kya, aur woh seemayein tay ki jaayein jo use khatam kar dengi.',
+  'Waiting deliberately has an interval and a threshold. Waiting by default has neither, and calls itself the same thing.',
+  'सोच-समझकर किए इंतज़ार में एक अंतराल और एक सीमा होती है। यूँ ही हो रहे इंतज़ार में दोनों नहीं होते, और वह ख़ुद को वही कहता है।',
+  'Soch-samajhkar kiye intezaar mein ek antaral aur ek seema hoti hai. Yun hi ho rahe intezaar mein dono nahi hote, aur woh khud ko wahi kehta hai.',
+  NULL, 'intermediate', 'health,waiting,decisions,monitoring,default'
+
+  UNION ALL SELECT 5, 'everyday_life', 7,
+  'The subscription nobody uses', 'वह सब्सक्रिप्शन जो कोई इस्तेमाल नहीं करता', 'Woh subscription jo koi use nahi karta',
+  'A monthly charge for a service last opened in March continues to leave an account every month. Cancelling takes four minutes and everybody in the house knows it. Nobody has decided to keep paying for it. Twenty-one months later the total is a number that would have bought something anybody in the house could name.',
+  'मार्च में आख़िरी बार खोली गई सेवा का मासिक शुल्क हर महीने खाते से जाता रहता है। रद्द करने में चार मिनट लगते हैं और घर में सबको यह पता है। किसी ने तय नहीं किया कि इसके पैसे देते रहना है। इक्कीस महीने बाद कुल रक़म ऐसा आँकड़ा है जिससे घर में कोई भी कुछ ऐसा ख़रीद लेता जिसका वह नाम बता सकता।',
+  'March mein aakhiri baar kholi gayi service ka monthly shulk har mahine khaate se jaata rehta hai. Radd karne mein chaar minute lagte hain aur ghar mein sabko yeh pata hai. Kisi ne tay nahi kiya ki iske paise dete rehna hai. Ikkis mahine baad kul rakam aisa number hai jisse ghar mein koi bhi kuch aisa kharid leta jiska woh naam bata sakta.',
+  'This is the verse at its smallest and most literal. Nobody chose to spend the money. The money was spent anyway, monthly, by the arrangement rather than by a person — which is precisely what "you are being acted through" describes when it is not being philosophical about it.',
+  'यह श्लोक अपने सबसे छोटे और सबसे सीधे रूप में है। किसी ने पैसे ख़र्च करने का फ़ैसला नहीं किया। पैसे फिर भी ख़र्च हुए, हर महीने, किसी व्यक्ति से नहीं बल्कि उस इंतज़ाम से — और "आपके ज़रिये काम हो रहा है" जब दार्शनिक नहीं हो रहा होता, तब ठीक यही बताता है।',
+  'Yeh shloka apne sabse chhote aur sabse seedhe roop mein hai. Kisi ne paise kharch karne ka faisla nahi kiya. Paise phir bhi kharch hue, har mahine, kisi insaan se nahi balki us intezaam se — aur "tumhare zariye kaam ho raha hai" jab darshanik nahi ho raha hota, tab theek yahi batata hai.',
+  'Nobody decided to spend it. It was spent anyway, by the arrangement rather than by a person.',
+  'किसी ने ख़र्च करने का फ़ैसला नहीं किया। ख़र्च फिर भी हुआ — किसी व्यक्ति से नहीं, उस इंतज़ाम से।',
+  'Kisi ne kharch karne ka faisla nahi kiya. Kharch phir bhi hua — kisi insaan se nahi, us intezaam se.',
+  NULL, 'beginner', 'money,default,habits,household,inaction'
+
+  UNION ALL SELECT 5, 'politics', 8,
+  'The seat left empty', 'वह कुर्सी जो ख़ाली रही', 'Woh kursi jo khaali rahi',
+  'A committee is deciding something on a simple majority. One member, believing the question is not really theirs to weigh in on, does not attend. The vote is close enough that the absence changes which way it goes. Nobody in the room notices this at the time, and the absent member describes themselves afterwards as having kept out of it.',
+  'एक समिति साधारण बहुमत से कुछ तय कर रही है। एक सदस्य, यह मानते हुए कि यह सवाल सचमुच उनका तौलने का नहीं है, नहीं आते। मतदान इतना क़रीबी है कि उनकी गैरहाज़िरी तय कर देती है कि फ़ैसला किधर जाएगा। उस वक़्त कमरे में किसी का ध्यान इस पर नहीं जाता, और गैरहाज़िर सदस्य बाद में ख़ुद को यह बताते हैं कि वे इससे अलग रहे।',
+  'Ek committee sadharan bahumat se kuch tay kar rahi hai. Ek sadasya, yeh maante hue ki yeh sawaal sach mein unka taulne ka nahi hai, nahi aate. Matdan itna karibi hai ki unki gairhaziri tay kar deti hai ki faisla kidhar jayega. Us waqt kamre mein kisi ka dhyan is par nahi jaata, aur gairhazir sadasya baad mein khud ko yeh batate hain ki woh isse alag rahe.',
+  'The verse holds here as arithmetic rather than as philosophy, which is why the example is worth having. Absence has a value in a count. Standing outside a decision is a position inside it, and the only thing the standing-outside changed was that nobody had to defend it.',
+  'यह श्लोक यहाँ दर्शन की तरह नहीं, गणित की तरह टिकता है — और इसीलिए यह उदाहरण रखने लायक है। गिनती में गैरहाज़िरी की भी एक क़ीमत होती है। किसी फ़ैसले से बाहर खड़ा होना उसी फ़ैसले के भीतर की एक स्थिति है, और बाहर खड़े होने से बस इतना बदला कि किसी को उसका बचाव नहीं करना पड़ा।',
+  'Yeh shloka yahan darshan ki tarah nahi, ganit ki tarah tikta hai — aur isiliye yeh example rakhne layak hai. Ginti mein gairhaziri ki bhi ek keemat hoti hai. Kisi faisle se bahar khada hona usi faisle ke bheetar ki ek sthiti hai, aur bahar khade hone se bas itna badla ki kisi ko uska bachav nahi karna pada.',
+  'Absence has a value in a count. Standing outside a decision is a position inside it.',
+  'गिनती में गैरहाज़िरी की भी क़ीमत होती है। फ़ैसले से बाहर खड़ा होना उसी फ़ैसले के भीतर की स्थिति है।',
+  'Ginti mein gairhaziri ki bhi keemat hoti hai. Faisle se bahar khada hona usi faisle ke bheetar ki sthiti hai.',
+  NULL, 'intermediate', 'decisions,abstention,consequences,committees,responsibility'
+
+  UNION ALL SELECT 8, 'cricket', 4,
+  'The nets nobody watches', 'वह नेट जिसे कोई नहीं देखता', 'Woh nets jise koi nahi dekhta',
+  'A player coming back from injury has a rehabilitation block that is four weeks of throwdowns in an empty net. No crowd, no video, no selectors. He describes it afterwards as the least interesting cricket of his life and the reason the season happened at all.',
+  'चोट से लौट रहे एक खिलाड़ी का पुनर्वास चार हफ़्ते के थ्रोडाउन का है, ख़ाली नेट में। कोई भीड़ नहीं, कोई वीडियो नहीं, कोई चयनकर्ता नहीं। वह बाद में इसे अपने जीवन का सबसे नीरस क्रिकेट बताता है और वही वजह जिससे वह सत्र हुआ।',
+  'Chot se laut rahe ek khiladi ka punarvas chaar hafte ke throwdown ka hai, khaali net mein. Koi bheed nahi, koi video nahi, koi selector nahi. Woh baad mein ise apne jeevan ka sabse neeras cricket batata hai aur wahi wajah jisse woh season hua.',
+  'The verse says do the required work, and "required" is doing a lot of quiet work in that sentence. It does not say do the interesting work or the visible work. Four weeks in an empty net is the required work, and there is nothing in it that would make anybody want to do it except that the alternative is not playing.',
+  'श्लोक कहता है तय काम कीजिए, और उस वाक्य में "तय" शब्द चुपचाप बहुत काम कर रहा है। वह यह नहीं कहता कि दिलचस्प काम कीजिए या दिखने वाला काम। ख़ाली नेट में चार हफ़्ते तय काम हैं, और उनमें ऐसा कुछ नहीं जो किसी को करने का मन कराए — सिवाय इसके कि दूसरा विकल्प न खेलना है।',
+  'Shloka kehta hai tay kaam karo, aur us vakya mein "tay" shabd chupchap bahut kaam kar raha hai. Woh yeh nahi kehta ki dilchasp kaam karo ya dikhne wala kaam. Khaali net mein chaar hafte tay kaam hain, aur unme aisa kuch nahi jo kisi ko karne ka man karaye — siwaye iske ki doosra option na khelna hai.',
+  '"Required" is not the same as interesting or visible, and the verse only asks for the first one.',
+  '"तय" का मतलब दिलचस्प या दिखने वाला नहीं है, और श्लोक सिर्फ़ पहला माँगता है।',
+  '"Tay" ka matlab dilchasp ya dikhne wala nahi hai, aur shloka sirf pehla maangta hai.',
+  NULL, 'beginner', 'cricket,rehab,discipline,unglamorous,work'
+
+  UNION ALL SELECT 8, 'school', 5,
+  'The teacher who kept turning up', 'वह शिक्षक जो आता रहा', 'Woh teacher jo aata raha',
+  'A school in a difficult year loses three staff and gains none. One teacher, who could reasonably reduce what she offers, keeps the Thursday afternoon extra class running for the four students who come. Two of the four later say it was the only part of that year that felt normal. She never described it as a stand for anything.',
+  'एक मुश्किल साल में स्कूल के तीन शिक्षक चले जाते हैं और कोई नया नहीं आता। एक शिक्षिका, जो वाजिब तौर पर अपना काम घटा सकती थीं, गुरुवार दोपहर की अतिरिक्त कक्षा उन चार छात्रों के लिए चलाती रहती हैं जो आते हैं। उन चार में से दो बाद में कहते हैं कि उस साल का वही इकलौता हिस्सा था जो सामान्य लगा। उन्होंने कभी इसे किसी बात का मोर्चा नहीं बताया।',
+  'Ek mushkil saal mein school ke teen teacher chale jaate hain aur koi naya nahi aata. Ek teacher, jo waajib taur par apna kaam ghata sakti thi, Thursday dopahar ki extra class un chaar students ke liye chalati rehti hain jo aate hain. Un chaar mein se do baad mein kehte hain ki us saal ka wahi iklauta hissa tha jo samanya laga. Unhone kabhi ise kisi baat ka morcha nahi bataya.',
+  'Withdrawal was available and defensible and she did not take it. The verse''s claim is that not acting is not neutral — and in a year where three people had already stopped, the Thursday class was not just work continuing. It was the only thing holding a line that everybody could feel.',
+  'पीछे हटना उपलब्ध भी था और जायज़ भी, और उन्होंने वह नहीं किया। श्लोक का दावा है कि न करना तटस्थ नहीं होता — और जिस साल तीन लोग पहले ही रुक चुके थे, उस साल गुरुवार की वह कक्षा सिर्फ़ काम का चलते रहना नहीं थी। वह इकलौती चीज़ थी जो एक मोर्चा थामे थी, और वह सबको महसूस होता था।',
+  'Peechhe hatna uplabdh bhi tha aur jaayaz bhi, aur unhone woh nahi kiya. Shloka ka dawa hai ki na karna neutral nahi hota — aur jis saal teen log pehle hi ruk chuke the, us saal Thursday ki woh class sirf kaam ka chalte rehna nahi thi. Woh iklauti cheez thi jo ek morcha thame thi, aur woh sabko mehsoos hota tha.',
+  'When enough people have already stopped, continuing stops being neutral and becomes the thing holding the line.',
+  'जब काफ़ी लोग पहले ही रुक चुके हों, तो चलते रहना तटस्थ होना बंद कर देता है और वही मोर्चा थामने लगता है।',
+  'Jab kaafi log pehle hi ruk chuke hon, to chalte rehna neutral hona band kar deta hai aur wahi morcha thaamne lagta hai.',
+  NULL, 'intermediate', 'school,teaching,duty,continuing,ordinary'
+
+  UNION ALL SELECT 8, 'marriage', 6,
+  'The dishes, again', 'फिर वही बर्तन', 'Phir wahi bartan',
+  'One person in a household has quietly stopped doing the small maintenance tasks — the bin, the bulb, the form that needed signing — on the reasonable grounds that they are tired and it is not fair that it always falls to them. It is not fair. Six weeks later the flat is measurably worse and the unfairness has not been discussed once.',
+  'घर में एक व्यक्ति ने चुपचाप छोटे-मोटे काम करने बंद कर दिए हैं — कूड़ा, बल्ब, वह फ़ॉर्म जिस पर दस्तख़त होने थे — इस वाजिब आधार पर कि वह थका है और यह ठीक नहीं कि हर बार यही उसके ज़िम्मे आए। यह ठीक है भी नहीं। छह हफ़्ते बाद घर साफ़ तौर पर ख़राब हालत में है और इस नाइंसाफ़ी पर एक बार भी बात नहीं हुई।',
+  'Ghar mein ek insaan ne chupchap chhote-mote kaam karne band kar diye hain — kachra, bulb, woh form jis par dastkhat hone the — is waajib aadhar par ki woh thaka hai aur yeh theek nahi ki har baar yahi uske zimme aaye. Yeh theek hai bhi nahi. Chhah hafte baad ghar saaf taur par kharab haalat mein hai aur is nainsaafi par ek baar bhi baat nahi hui.',
+  'The grievance is legitimate and the method is the one the verse rules out. Stopping did not raise the issue; it just moved the cost onto the flat and onto the other person, without either of them having to say anything. The verse is not asking for silent endurance. It is pointing out that stopping is not the same as objecting.',
+  'शिकायत जायज़ है और तरीक़ा वही है जिसे श्लोक ख़ारिज करता है। रुकने से बात उठी नहीं; उसने बस क़ीमत घर पर और दूसरे व्यक्ति पर डाल दी, और दोनों में से किसी को कुछ कहना नहीं पड़ा। श्लोक चुपचाप सहने को नहीं कह रहा। वह बता रहा है कि रुकना और आपत्ति करना एक बात नहीं है।',
+  'Shikayat jaayaz hai aur tareeka wahi hai jise shloka khaarij karta hai. Rukne se baat uthi nahi; usne bas keemat ghar par aur doosre insaan par daal di, aur dono mein se kisi ko kuch kehna nahi pada. Shloka chupchap sehne ko nahi keh raha. Woh bata raha hai ki rukna aur aapatti karna ek baat nahi hai.',
+  'Stopping is not the same as objecting. It moves the cost without raising the question.',
+  'रुकना आपत्ति करना नहीं है। वह क़ीमत सरका देता है और सवाल उठाता ही नहीं।',
+  'Rukna aapatti karna nahi hai. Woh keemat sarka deta hai aur sawaal uthata hi nahi.',
+  NULL, 'intermediate', 'marriage,household,fairness,withdrawal,communication'
+
+  UNION ALL SELECT 8, 'ai', 7,
+  'Waiting for the better model', 'बेहतर मॉडल का इंतज़ार', 'Behtar model ka intezaar',
+  'A small team wants to build something and decides to wait six months for capabilities that are clearly coming. The capabilities arrive on schedule. So does a competitor who spent those six months learning what their users actually needed, and who now knows things about the problem that no model release supplies.',
+  'एक छोटी टीम कुछ बनाना चाहती है और तय करती है कि छह महीने उन क्षमताओं का इंतज़ार करेगी जो साफ़ तौर पर आने वाली हैं। क्षमताएँ समय पर आ जाती हैं। साथ ही एक प्रतिस्पर्धी भी, जिसने वे छह महीने यह सीखने में लगाए कि उसके उपयोगकर्ताओं को असल में चाहिए क्या, और जो अब उस समस्या के बारे में वे बातें जानता है जो किसी मॉडल रिलीज़ से नहीं मिलतीं।',
+  'Ek chhoti team kuch banana chahti hai aur tay karti hai ki chhah mahine un kshamtaon ka intezaar karegi jo saaf taur par aane wali hain. Kshamtayein samay par aa jaati hain. Saath hi ek competitor bhi, jisne woh chhah mahine yeh seekhne mein lagaye ki uske users ko asal mein chahiye kya, aur jo ab us samasya ke baare mein woh baatein jaanta hai jo kisi model release se nahi miltin.',
+  'The waiting was correct about the technology and wrong about what those six months were. They were not neutral time that passed equally for everybody. The verse''s point is that the clock does not stop for the person who has decided not to start, and somebody else''s six months were spent.',
+  'इंतज़ार तकनीक के बारे में सही था और इस बारे में ग़लत कि वे छह महीने थे क्या। वे तटस्थ समय नहीं थे जो सबके लिए बराबर बीता। श्लोक की बात यह है कि जिसने शुरू न करने का तय किया है उसके लिए घड़ी रुकती नहीं, और किसी और के छह महीने ख़र्च हुए।',
+  'Intezaar technology ke baare mein sahi tha aur is baare mein galat ki woh chhah mahine the kya. Woh neutral samay nahi the jo sabke liye barabar beeta. Shloka ki baat yeh hai ki jisne shuru na karne ka tay kiya hai uske liye ghadi rukti nahi, aur kisi aur ke chhah mahine kharch hue.',
+  'The clock does not stop for the person who decided not to start. Somebody else spent those months.',
+  'जिसने शुरू न करने का तय किया, उसके लिए घड़ी रुकती नहीं। वे महीने किसी और ने ख़र्च किए।',
+  'Jisne shuru na karne ka tay kiya, uske liye ghadi rukti nahi. Woh mahine kisi aur ne kharch kiye.',
+  NULL, 'intermediate', 'technology,waiting,building,competition,timing'
+
+  UNION ALL SELECT 8, 'friendship', 8,
+  'The message left on read', 'वह संदेश जो पढ़कर छोड़ दिया गया', 'Woh message jo padhkar chhod diya gaya',
+  'Somebody receives a message from a friend they have drifted from. They mean to reply properly, which means not now, which means at the weekend, which means when they have thought about what to say. The weekend goes. Four months later the reply would need to be about the four months, so it does not get written either.',
+  'किसी को उस दोस्त का संदेश मिलता है जिससे दूरी बन चुकी है। वह ठीक से जवाब देना चाहता है, यानी अभी नहीं, यानी सप्ताहांत पर, यानी जब वह सोच ले कि कहना क्या है। सप्ताहांत बीत जाता है। चार महीने बाद जवाब उन्हीं चार महीनों के बारे में होना पड़ेगा, इसलिए वह भी नहीं लिखा जाता।',
+  'Kisi ko us dost ka message milta hai jisse doori ban chuki hai. Woh theek se jawab dena chahta hai, yaani abhi nahi, yaani weekend par, yaani jab woh soch le ki kehna kya hai. Weekend beet jaata hai. Chaar mahine baad jawab unhi chaar mahinon ke baare mein hona padega, isliye woh bhi nahi likha jaata.',
+  'Nothing here was decided and a friendship changed shape anyway. The verse is not moralising about it. It is pointing at the mechanism: intending to do the thing properly is one of the more reliable ways of not doing it, and the not-doing keeps working the whole time.',
+  'यहाँ कुछ तय नहीं हुआ और एक दोस्ती का आकार फिर भी बदल गया। श्लोक इस पर उपदेश नहीं दे रहा। वह तंत्र की तरफ़ इशारा कर रहा है: किसी काम को ठीक से करने का इरादा उसे न करने के भरोसेमंद तरीक़ों में एक है, और न करना पूरे समय काम करता रहता है।',
+  'Yahan kuch tay nahi hua aur ek dosti ka aakar phir bhi badal gaya. Shloka is par updesh nahi de raha. Woh mechanism ki taraf ishara kar raha hai: kisi kaam ko theek se karne ka iraada use na karne ke bharosemand tareekon mein ek hai, aur na karna poore samay kaam karta rehta hai.',
+  'Intending to do it properly is one of the more reliable ways of not doing it at all.',
+  'ठीक से करने का इरादा उसे बिलकुल न करने के भरोसेमंद तरीक़ों में एक है।',
+  'Theek se karne ka iraada use bilkul na karne ke bharosemand tareekon mein ek hai.',
+  NULL, 'beginner', 'friendship,messages,drift,intention,delay'
+
+  UNION ALL SELECT 16, 'healthcare', 4,
+  'The blood on the shelf', 'शेल्फ़ पर रखा ख़ून', 'Shelf par rakha khoon',
+  'Somebody needs three units during surgery. They receive them. At no point in the process does anybody involved learn the names of the three people who gave that blood, and the three people will never learn who received it. The system works precisely because neither end is asked to care about the other.',
+  'किसी को सर्जरी के दौरान तीन यूनिट चाहिए। उसे मिल जाती हैं। पूरी प्रक्रिया में शामिल किसी को उन तीन लोगों के नाम पता नहीं चलते जिन्होंने वह ख़ून दिया, और वे तीन लोग कभी नहीं जान पाएँगे कि वह किसे मिला। यह व्यवस्था ठीक इसलिए चलती है कि किसी भी सिरे से दूसरे की परवाह करने को नहीं कहा जाता।',
+  'Kisi ko surgery ke dauran teen unit chahiye. Use mil jaati hain. Poori prakriya mein shamil kisi ko un teen logon ke naam pata nahi chalte jinhone woh khoon diya, aur woh teen log kabhi nahi jaan payenge ki woh kise mila. Yeh vyavastha theek isliye chalti hai ki kisi bhi sire se doosre ki parwah karne ko nahi kaha jaata.',
+  'The wheel in its most literal form. Nobody in this story met anybody. What kept it turning was a large number of people doing an unremarkable thing on an ordinary Tuesday, and the verse''s question — what are you putting back — has a very specific answer available here that takes about forty minutes.',
+  'चक्र अपने सबसे सीधे रूप में। इस कहानी में कोई किसी से मिला ही नहीं। इसे घुमाए रखा बहुत सारे लोगों ने, किसी साधारण मंगलवार को कोई साधारण-सा काम करके — और श्लोक का सवाल, कि आप वापस क्या डाल रहे हैं, यहाँ एक बहुत ही ख़ास जवाब रखता है जिसमें क़रीब चालीस मिनट लगते हैं।',
+  'Chakr apne sabse seedhe roop mein. Is kahani mein koi kisi se mila hi nahi. Ise ghumaye rakha bahut saare logon ne, kisi sadharan Tuesday ko koi sadharan sa kaam karke — aur shloka ka sawaal, ki tum wapas kya daal rahe ho, yahan ek bahut hi khaas jawab rakhta hai jisme karib chalis minute lagte hain.',
+  'The wheel turns on people doing unremarkable things for strangers they will never meet.',
+  'चक्र उन लोगों से घूमता है जो अनजानों के लिए साधारण काम करते हैं, जिनसे वे कभी मिलेंगे भी नहीं।',
+  'Chakr un logon se ghoomta hai jo anjaano ke liye sadharan kaam karte hain, jinse woh kabhi milenge bhi nahi.',
+  NULL, 'beginner', 'health,donation,strangers,systems,contribution'
+
+  UNION ALL SELECT 16, 'college', 5,
+  'The notes that circulated for nine years', 'वे नोट्स जो नौ साल चलते रहे', 'Woh notes jo nau saal chalte rahe',
+  'A set of handwritten notes for a hard second-year paper passes from batch to batch, photocopied, then scanned, then re-typed. The original author graduated nine years ago. Nobody currently using them knows who she was, and nobody in nine years has made a second set for the paper that replaced hers.',
+  'दूसरे साल के एक कठिन पर्चे के हाथ से लिखे नोट्स एक बैच से दूसरे बैच तक जाते रहते हैं — फ़ोटोकॉपी, फिर स्कैन, फिर दोबारा टाइप। मूल लिखने वाली नौ साल पहले पास आउट हो गई। अभी जो इन्हें इस्तेमाल कर रहे हैं उनमें से कोई नहीं जानता कि वह कौन थी, और नौ साल में किसी ने उस पर्चे के लिए दूसरा सेट नहीं बनाया जिसने उसके पर्चे की जगह ली।',
+  'Doosre saal ke ek mushkil paper ke haath se likhe notes ek batch se doosre batch tak jaate rehte hain — photocopy, phir scan, phir dobara type. Mool likhne wali nau saal pehle pass out ho gayi. Abhi jo inhe use kar rahe hain unme se koi nahi jaanta ki woh kaun thi, aur nau saal mein kisi ne us paper ke liye doosra set nahi banaya jisne uske paper ki jagah li.',
+  'Both halves of the verse in one artefact. Somebody turned the wheel once, hard, and nine years of students have been living off it. And the second half: nobody has turned it since, so the newer paper has nothing, and the students taking it are having a harder time for no reason anybody would defend.',
+  'श्लोक के दोनों आधे एक ही चीज़ में। किसी ने चक्र एक बार, ज़ोर से घुमाया, और नौ साल के छात्र उसी पर जी रहे हैं। और दूसरा आधा: उसके बाद किसी ने नहीं घुमाया, इसलिए नए पर्चे के लिए कुछ नहीं है, और उसे देने वाले छात्रों को बिना किसी ऐसी वजह के ज़्यादा मुश्किल हो रही है जिसका कोई बचाव करे।',
+  'Shloka ke dono aadhe ek hi cheez mein. Kisi ne chakr ek baar, zor se ghumaya, aur nau saal ke students usi par jee rahe hain. Aur doosra aadha: uske baad kisi ne nahi ghumaya, isliye naye paper ke liye kuch nahi hai, aur use dene wale students ko bina kisi aisi wajah ke zyada mushkil ho rahi hai jiska koi bachav kare.',
+  'Somebody turned it once, hard. Nine years of people lived off that and nobody turned it again.',
+  'किसी ने एक बार, ज़ोर से घुमाया। नौ साल के लोग उसी पर जिए और किसी ने दोबारा नहीं घुमाया।',
+  'Kisi ne ek baar, zor se ghumaya. Nau saal ke log usi par jiye aur kisi ne dobara nahi ghumaya.',
+  NULL, 'beginner', 'college,notes,sharing,contribution,students'
+
+  UNION ALL SELECT 16, 'finance', 6,
+  'The fund that everybody was in', 'वह फ़ंड जिसमें सब थे', 'Woh fund jisme sab the',
+  'A widely held index fund works because a smaller number of people spend their working lives on price discovery — reading filings, arguing about valuations, being wrong expensively. The passive holder benefits from all of it and pays almost nothing for it. This is not a scandal; it is how the instrument is designed. It is also only stable while enough people are still doing the other job.',
+  'एक व्यापक रूप से रखा गया इंडेक्स फ़ंड इसलिए चलता है कि कम लोग अपना कामकाजी जीवन क़ीमत तय होने की प्रक्रिया में लगाते हैं — फाइलिंग पढ़ना, मूल्यांकन पर बहस करना, महँगे ढंग से ग़लत होना। निष्क्रिय निवेशक इस सबका फ़ायदा उठाता है और उसके लिए लगभग कुछ नहीं देता। यह कोई घोटाला नहीं है; यह उपकरण की बनावट है। और यह तभी तक टिकाऊ है जब तक काफ़ी लोग वह दूसरा काम कर रहे हों।',
+  'Ek vyapak roop se rakha gaya index fund isliye chalta hai ki kam log apna kaamkaji jeevan keemat tay hone ki prakriya mein lagate hain — filing padhna, mulyankan par behes karna, mehnge dhang se galat hona. Nishkriya nivehsak is sabka fayda uthata hai aur uske liye lagbhag kuch nahi deta. Yeh koi ghotala nahi hai; yeh upkaran ki banavat hai. Aur yeh tabhi tak tikaau hai jab tak kaafi log woh doosra kaam kar rahe hon.',
+  'The verse is describing a structural risk rather than a personal failing, and this is the cleanest modern instance of it. Nobody holding the fund is behaving badly. The arrangement is nonetheless one where the taking is easy and cheap and the turning is hard and expensive, and arrangements shaped like that have a limit.',
+  'श्लोक व्यक्तिगत ख़ामी नहीं, ढाँचे का जोखिम बता रहा है, और यह उसका सबसे साफ़ आधुनिक उदाहरण है। फ़ंड रखने वाला कोई बुरा बरताव नहीं कर रहा। फिर भी यह इंतज़ाम ऐसा है जिसमें लेना आसान और सस्ता है और घुमाना कठिन और महँगा — और इस आकार के इंतज़ामों की एक सीमा होती है।',
+  'Shloka vyaktigat khami nahi, dhaanche ka jokhim bata raha hai, aur yeh uska sabse saaf aadhunik udaharan hai. Fund rakhne wala koi bura bartav nahi kar raha. Phir bhi yeh intezaam aisa hai jisme lena asaan aur sasta hai aur ghumana mushkil aur mehnga — aur is aakar ke intezaamon ki ek seema hoti hai.',
+  'When taking is cheap and turning is expensive, the arrangement has a limit nobody has to break to reach.',
+  'जब लेना सस्ता हो और घुमाना महँगा, तो उस इंतज़ाम की एक सीमा होती है, जिस तक पहुँचने के लिए किसी को कुछ तोड़ना नहीं पड़ता।',
+  'Jab lena sasta ho aur ghumana mehnga, to us intezaam ki ek seema hoti hai, jis tak pahunchne ke liye kisi ko kuch todna nahi padta.',
+  NULL, 'advanced', 'money,investing,systems,free-riding,structure'
+
+  UNION ALL SELECT 16, 'ethics', 7,
+  'Herd immunity', 'सामूहिक प्रतिरोध', 'Samoohik pratirodh',
+  'A protection that works at population level depends on most people taking a small individual cost. Somebody who declines it is genuinely safer than they would be alone, because everybody around them did not decline. The logic is sound for one person and collapses at scale, which is the whole difficulty and is not solved by calling anybody names.',
+  'आबादी के स्तर पर काम करने वाला एक बचाव इस पर टिका है कि ज़्यादातर लोग एक छोटी निजी क़ीमत चुकाएँ। जो इससे मना करता है वह अकेले होने की तुलना में सचमुच ज़्यादा सुरक्षित है, क्योंकि उसके आस-पास सबने मना नहीं किया। यह तर्क एक व्यक्ति के लिए ठीक बैठता है और पैमाने पर ढह जाता है — पूरी मुश्किल यही है और किसी को नाम देकर यह हल नहीं होती।',
+  'Aabadi ke star par kaam karne wala ek bachav is par tika hai ki zyadatar log ek chhoti niji keemat chukayein. Jo isse mana karta hai woh akele hone ki tulna mein sach mein zyada surakshit hai, kyunki uske aas-paas sabne mana nahi kiya. Yeh tark ek insaan ke liye theek baithta hai aur paimane par dheh jaata hai — poori mushkil yahi hai aur kisi ko naam dekar yeh hal nahi hoti.',
+  'The verse does not solve this either, and it is worth saying so. What it does is name the shape precisely: a wheel that keeps turning only while enough people turn it, and where the individually rational move and the collectively necessary one point in different directions. Naming it accurately is not nothing — most arguments about it never get that far.',
+  'श्लोक भी इसे हल नहीं करता, और यह कह देना चाहिए। वह जो करता है वह है आकार को ठीक-ठीक नाम देना: ऐसा चक्र जो तभी तक घूमता है जब तक काफ़ी लोग घुमाएँ, और जहाँ व्यक्तिगत रूप से समझदारी वाली चाल और सामूहिक रूप से ज़रूरी चाल अलग दिशाओं में जाती हैं। इसे सही नाम दे देना कम नहीं है — इस पर होने वाली ज़्यादातर बहसें यहाँ तक पहुँचती ही नहीं।',
+  'Shloka bhi ise hal nahi karta, aur yeh keh dena chahiye. Woh jo karta hai woh hai aakar ko theek-theek naam dena: aisa chakr jo tabhi tak ghoomta hai jab tak kaafi log ghumayein, aur jahan vyaktigat roop se samajhdari wali chaal aur samoohik roop se zaroori chaal alag dishaon mein jaati hain. Ise sahi naam de dena kam nahi hai — is par hone wali zyadatar behsein yahan tak pahunchti hi nahi.',
+  'The individually rational move and the collectively necessary one can point different ways. The verse names that shape rather than solving it.',
+  'व्यक्तिगत समझदारी वाली चाल और सामूहिक ज़रूरत वाली चाल अलग दिशाओं में जा सकती हैं। श्लोक इस आकार को हल नहीं करता, नाम देता है।',
+  'Vyaktigat samajhdari wali chaal aur samoohik zaroorat wali chaal alag dishaon mein ja sakti hain. Shloka is aakar ko hal nahi karta, naam deta hai.',
+  NULL, 'advanced', 'ethics,collective-action,systems,public-good,honesty'
+
+  UNION ALL SELECT 16, 'military', 8,
+  'The kit that came back clean', 'वह सामान जो साफ़ लौटा', 'Woh saamaan jo saaf lauta',
+  'A unit has a standing rule that equipment is returned serviceable, not merely returned. Nobody checks most of the time. A soldier spends twenty minutes at the end of an exhausting week on kit he will not personally use again, for a person he will not meet, and the person who draws it three weeks later never learns that this happened.',
+  'एक यूनिट में यह तय नियम है कि सामान लौटाया ही नहीं, चलने लायक हालत में लौटाया जाए। ज़्यादातर वक़्त कोई जाँचता नहीं। एक सैनिक थका देने वाले हफ़्ते के अंत में बीस मिनट ऐसे सामान पर लगाता है जो वह ख़ुद दोबारा इस्तेमाल नहीं करेगा, किसी ऐसे व्यक्ति के लिए जिससे वह मिलेगा नहीं, और तीन हफ़्ते बाद जो उसे लेता है उसे कभी पता नहीं चलता कि ऐसा हुआ था।',
+  'Ek unit mein yeh tay niyam hai ki saamaan lautaya hi nahi, chalne layak haalat mein lautaya jaaye. Zyadatar waqt koi jaanchta nahi. Ek sainik thaka dene wale hafte ke ant mein bees minute aise saamaan par lagata hai jo woh khud dobara istemaal nahi karega, kisi aise insaan ke liye jisse woh milega nahi, aur teen hafte baad jo use leta hai use kabhi pata nahi chalta ki aisa hua tha.',
+  'This is what turning the wheel looks like when nobody is watching and nothing is owed. The verse''s strong word is for the opposite case, and putting the two side by side is the point: the same twenty minutes, done or not done, is the entire difference between an arrangement that holds and one that quietly stops.',
+  'जब कोई देख नहीं रहा और कुछ बकाया भी नहीं, तब चक्र घुमाना ऐसा दिखता है। श्लोक का सख़्त शब्द उल्टे मामले के लिए है, और दोनों को साथ रखना ही बात है: वही बीस मिनट, किए या न किए, उस इंतज़ाम और उस इंतज़ाम के बीच का पूरा फ़र्क़ हैं जो टिकता है और जो चुपचाप बैठ जाता है।',
+  'Jab koi dekh nahi raha aur kuch bakaya bhi nahi, tab chakr ghumana aisa dikhta hai. Shloka ka sakht shabd ulte mamle ke liye hai, aur dono ko saath rakhna hi baat hai: wahi bees minute, kiye ya na kiye, us intezaam aur us intezaam ke beech ka poora farq hain jo tikta hai aur jo chupchap baith jaata hai.',
+  'Twenty minutes nobody checks, for somebody you will not meet. That is the whole difference between a system that holds and one that stops.',
+  'बीस मिनट जिन्हें कोई जाँचता नहीं, किसी ऐसे के लिए जिससे आप मिलेंगे नहीं। टिकने वाली और बैठ जाने वाली व्यवस्था में पूरा फ़र्क़ यही है।',
+  'Bees minute jinhe koi jaanchta nahi, kisi aise ke liye jisse tum miloge nahi. Tikne wali aur baith jaane wali vyavastha mein poora farq yahi hai.',
+  NULL, 'intermediate', 'military,discipline,unseen,systems,contribution'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
+
+INSERT INTO modern_examples
+  (verse_id, category, title_en, title_hi, title_hinglish,
+   scenario_en, scenario_hi, scenario_hinglish,
+   connection_en, connection_hi, connection_hinglish,
+   lesson_en, lesson_hi, lesson_hinglish,
+   source_reference, has_spoiler, difficulty, tags, is_ai_generated, approved, sort_order)
+SELECT v.id, x.cat, x.t_en, x.t_hi, x.t_hing, x.s_en, x.s_hi, x.s_hing,
+       x.c_en, x.c_hi, x.c_hing, x.l_en, x.l_hi, x.l_hing,
+       x.src, 0, x.diff, x.tags, 0, 1, x.ord
+FROM (
+
+  SELECT 19 AS vn, 'cricket' AS cat, 4 AS ord,
+  'The declaration that did not come off' AS t_en, 'वह पारी घोषणा जो काम नहीं आई' AS t_hi, 'Woh declaration jo kaam nahi aayi' AS t_hing,
+  'A captain declares with a lead he judges enough and forty overs to bowl. It rains for two sessions and the match is drawn. Every analyst agrees afterwards that the declaration was correct at the moment it was made. He is asked about it in eleven separate interviews over the following month.' AS s_en,
+  'एक कप्तान उस बढ़त पर पारी घोषित करता है जिसे वह काफ़ी मानता है, और चालीस ओवर गेंदबाज़ी के लिए बचे हैं। दो सत्र बारिश होती है और मैच ड्रॉ हो जाता है। बाद में हर विश्लेषक मानता है कि जिस क्षण घोषणा हुई, वह उस क्षण सही थी। अगले महीने ग्यारह अलग-अलग इंटरव्यू में उससे इसी पर सवाल होता है।' AS s_hi,
+  'Ek captain us badhat par paari ghoshit karta hai jise woh kaafi maanta hai, aur chalis over bowling ke liye bache hain. Do session baarish hoti hai aur match draw ho jaata hai. Baad mein har vishleshak maanta hai ki jis pal ghoshna hui, woh us pal sahi thi. Agle mahine gyarah alag-alag interview mein usse isi par sawaal hota hai.' AS s_hing,
+  'The instruction has two halves and this is the cleanest place to see them come apart. The work — the judgement at the moment of declaring — was done well. The result was weather. Eleven interviews about the weather is what happens when the second half of the instruction is not taken up.' AS c_en,
+  'हिदायत के दो आधे हैं और उन्हें अलग होते देखने की यह सबसे साफ़ जगह है। काम — घोषणा के क्षण का फ़ैसला — अच्छा हुआ। नतीजा मौसम था। मौसम पर ग्यारह इंटरव्यू वही है जो तब होता है जब हिदायत का दूसरा आधा उठाया नहीं जाता।' AS c_hi,
+  'Hidayat ke do aadhe hain aur unhe alag hote dekhne ki yeh sabse saaf jagah hai. Kaam — declaration ke pal ka faisla — achha hua. Nateeja mausam tha. Mausam par gyarah interview wahi hai jo tab hota hai jab hidayat ka doosra aadha uthaya nahi jaata.' AS c_hing,
+  'The decision was right at the moment it was made. Everything after that was weather, and weather is not yours.' AS l_en,
+  'फ़ैसला उस क्षण सही था जब लिया गया। उसके बाद सब मौसम था, और मौसम आपका नहीं है।' AS l_hi,
+  'Faisla us pal sahi tha jab liya gaya. Uske baad sab mausam tha, aur mausam tumhara nahi hai.' AS l_hing,
+  NULL AS src, 'beginner' AS diff, 'cricket,captaincy,results,judgement,luck' AS tags
+
+  UNION ALL SELECT 19, 'healthcare', 5,
+  'The night the protocol was followed exactly', 'वह रात जब प्रोटोकॉल ठीक-ठीक निभाया गया', 'Woh raat jab protocol theek-theek nibhaya gaya',
+  'A resuscitation is run correctly from the first minute to the last. Every drug, every interval, every escalation is right, and the patient dies. The team debriefs at four in the morning and can find nothing that should have been done differently. Two of them cannot sleep for a week and one of them can, and neither reaction is a comment on how much they cared.',
+  'एक पुनर्जीवन प्रयास पहले मिनट से आख़िरी तक सही चलाया जाता है। हर दवा, हर अंतराल, हर अगला क़दम ठीक है, और मरीज़ नहीं बचता। टीम सुबह चार बजे समीक्षा करती है और ऐसा कुछ नहीं मिलता जो अलग किया जाना चाहिए था। उनमें से दो हफ़्ता भर सो नहीं पाते और एक सो पाता है, और दोनों में से कोई प्रतिक्रिया इस बात पर टिप्पणी नहीं है कि किसने कितनी परवाह की।',
+  'Ek punarjeevan prayas pehle minute se aakhiri tak sahi chalaya jaata hai. Har dawa, har antaral, har agla kadam theek hai, aur mareez nahi bachta. Team subah chaar baje samiksha karti hai aur aisa kuch nahi milta jo alag kiya jaana chahiye tha. Unme se do hafta bhar so nahi paate aur ek so paata hai, aur dono mein se koi pratikriya is baat par tippani nahi hai ki kisne kitni parwah ki.',
+  'This is the verse at the highest stakes it gets to, and it does not offer comfort — it offers a boundary. The work was theirs and it was done. The outcome was not theirs and no amount of carrying it afterwards moves it. Anybody who has to do this job for thirty years needs that line to be real rather than consoling.',
+  'यह श्लोक अपने सबसे बड़े दाँव पर है, और वह तसल्ली नहीं देता — वह एक सीमा देता है। काम उनका था और हो गया। नतीजा उनका नहीं था और बाद में उसे कितना भी ढोने से वह हिलता नहीं। जिसे यह काम तीस साल करना है उसे यह पंक्ति सांत्वना नहीं, सच चाहिए।',
+  'Yeh shloka apne sabse bade daanv par hai, aur woh tasalli nahi deta — woh ek seema deta hai. Kaam unka tha aur ho gaya. Nateeja unka nahi tha aur baad mein use kitna bhi dhone se woh hilta nahi. Jise yeh kaam tees saal karna hai use yeh line saantvana nahi, sach chahiye.',
+  'The work was theirs and it was done. The outcome was not, and carrying it afterwards does not move it.',
+  'काम उनका था और हो गया। नतीजा उनका नहीं था, और उसे बाद में ढोने से वह हिलता नहीं।',
+  'Kaam unka tha aur ho gaya. Nateeja unka nahi tha, aur use baad mein dhone se woh hilta nahi.',
+  NULL, 'advanced', 'health,outcomes,grief,duty,limits'
+
+  UNION ALL SELECT 19, 'sports', 6,
+  'The penalty taken properly', 'वह पेनल्टी जो ठीक से मारी गई', 'Woh penalty jo theek se maari gayi',
+  'A player picks a corner, strikes it well, and the keeper guesses right and saves it. The same player, in the same competition two years earlier, mishit one badly and it went in off the post. In the interviews the first is a failure and the second was a goal, and he is the only person in the stadium who knows which of the two he took better.',
+  'एक खिलाड़ी कोना चुनता है, अच्छी तरह मारता है, और गोलकीपर सही अंदाज़ा लगाकर रोक लेता है। उसी खिलाड़ी ने, उसी प्रतियोगिता में दो साल पहले, एक बुरी तरह ग़लत मारी थी और वह पोस्ट से लगकर अंदर चली गई थी। इंटरव्यू में पहली नाकामी है और दूसरी गोल थी, और स्टेडियम में वही इकलौता है जो जानता है कि दोनों में से कौन-सी उसने बेहतर मारी।',
+  'Ek player kona chunta hai, achhi tarah maarta hai, aur goalkeeper sahi andaza lagakar rok leta hai. Usi player ne, usi competition mein do saal pehle, ek buri tarah galat maari thi aur woh post se lagkar andar chali gayi thi. Interview mein pehli nakami hai aur doosri goal thi, aur stadium mein wahi iklauta hai jo jaanta hai ki dono mein se kaun si usne behtar maari.',
+  'The verse asks you to hold on to the part that was yours. Here the two are perfectly separated by chance and by two years, and the scoreboard has them the wrong way round. He does not get to argue with the scoreboard. He does get to know which one he took well.',
+  'श्लोक कहता है कि जो हिस्सा आपका था उसे थामिए। यहाँ दोनों संयोग से और दो साल के अंतर से पूरी तरह अलग हो चुके हैं, और स्कोरबोर्ड ने उन्हें उल्टा रखा है। वह स्कोरबोर्ड से बहस नहीं कर सकता। वह यह ज़रूर जान सकता है कि उसने कौन-सी अच्छी मारी।',
+  'Shloka kehta hai ki jo hissa tumhara tha use thaamo. Yahan dono sanyog se aur do saal ke antar se poori tarah alag ho chuke hain, aur scoreboard ne unhe ulta rakha hai. Woh scoreboard se behes nahi kar sakta. Woh yeh zaroor jaan sakta hai ki usne kaun si achhi maari.',
+  'You do not get to argue with the scoreboard. You do get to know which one you took well.',
+  'आप स्कोरबोर्ड से बहस नहीं कर सकते। आप यह ज़रूर जान सकते हैं कि आपने कौन-सी अच्छी मारी।',
+  'Tum scoreboard se behes nahi kar sakte. Tum yeh zaroor jaan sakte ho ki tumne kaun si achhi maari.',
+  NULL, 'beginner', 'sport,penalties,luck,judgement,results'
+
+  UNION ALL SELECT 19, 'marriage', 7,
+  'The apology that was not accepted', 'वह माफ़ी जो मानी नहीं गई', 'Woh maafi jo maani nahi gayi',
+  'One person apologises properly — no explanation attached, no mention of the other side''s part, no timing chosen for advantage. It is not accepted, that day or that week. They can either apologise again, better, until it works, or let it stand. They let it stand, and describe the fortnight afterwards as the hardest part.',
+  'एक व्यक्ति ठीक से माफ़ी माँगता है — कोई सफ़ाई जोड़े बिना, दूसरे के हिस्से का ज़िक्र किए बिना, फ़ायदे के लिए समय चुने बिना। वह मानी नहीं जाती, न उस दिन न उस हफ़्ते। अब वह या तो दोबारा, बेहतर माफ़ी माँगता रहे जब तक काम न कर जाए, या उसे वहीं रहने दे। वह उसे वहीं रहने देता है, और अगले पंद्रह दिनों को सबसे कठिन हिस्सा बताता है।',
+  'Ek insaan theek se maafi maangta hai — koi safai jode bina, doosre ke hisse ka zikr kiye bina, fayde ke liye samay chune bina. Woh maani nahi jaati, na us din na us hafte. Ab woh ya to dobara, behtar maafi maangta rahe jab tak kaam na kar jaaye, ya use wahin rehne de. Woh use wahin rehne deta hai, aur agle pandrah dinon ko sabse mushkil hissa batata hai.',
+  'An apology aimed at being accepted is a transaction, and the verse names exactly that boundary. The apology was the work. Whether it lands is the other person, and they are allowed to take their time or not take it at all. The fortnight is hard because the second half of the instruction always is.',
+  'ऐसी माफ़ी जिसका निशाना मान लिया जाना हो, वह सौदा है — और श्लोक ठीक उसी सीमा का नाम लेता है। माफ़ी काम था। वह मानी जाती है या नहीं, यह दूसरा व्यक्ति है, और उसे समय लेने या बिलकुल न मानने का हक़ है। वे पंद्रह दिन इसलिए कठिन हैं कि हिदायत का दूसरा आधा हमेशा कठिन होता है।',
+  'Aisi maafi jiska nishana maan liya jaana ho, woh sauda hai — aur shloka theek usi seema ka naam leta hai. Maafi kaam tha. Woh maani jaati hai ya nahi, yeh doosra insaan hai, aur use samay lene ya bilkul na maanne ka haq hai. Woh pandrah din isliye mushkil hain ki hidayat ka doosra aadha hamesha mushkil hota hai.',
+  'An apology aimed at being accepted is a transaction. The apology was the work; the accepting is not yours.',
+  'ऐसी माफ़ी जिसका निशाना मान लिया जाना हो, वह सौदा है। माफ़ी काम था; मान लेना आपका नहीं है।',
+  'Aisi maafi jiska nishana maan liya jaana ho, woh sauda hai. Maafi kaam tha; maan lena tumhara nahi hai.',
+  NULL, 'intermediate', 'marriage,apology,repair,letting-go,patience'
+
+  UNION ALL SELECT 19, 'ai', 8,
+  'The evaluation nobody read', 'वह मूल्यांकन जो किसी ने नहीं पढ़ा', 'Woh evaluation jo kisi ne nahi padha',
+  'An engineer spends three weeks building a careful evaluation for a system, finds two real problems, writes them up clearly, and files it. The project ships on the original date. Eight months later somebody hits one of the two problems in production and finds the document while searching for prior art.',
+  'एक इंजीनियर तीन हफ़्ते किसी सिस्टम के लिए सावधान मूल्यांकन बनाने में लगाता है, दो असली समस्याएँ पाता है, उन्हें साफ़ लिखता है, और दाख़िल कर देता है। परियोजना अपनी मूल तारीख़ पर ही रिलीज़ हो जाती है। आठ महीने बाद कोई उन्हीं दो में से एक समस्या से प्रोडक्शन में टकराता है और पहले के काम की तलाश करते हुए वह दस्तावेज़ पा लेता है।',
+  'Ek engineer teen hafte kisi system ke liye savdhan evaluation banane mein lagata hai, do asli samasyayein paata hai, unhe saaf likhta hai, aur file kar deta hai. Project apni mool tareekh par hi release ho jaata hai. Aath mahine baad koi unhi do mein se ek samasya se production mein takrata hai aur pehle ke kaam ki talash karte hue woh dastavez paa leta hai.',
+  'Nothing about the three weeks changed the ship date, which is the result he had no claim on. The document existing eight months later did change something. The verse is not promising that the work pays off — it is saying the work is the part you get to be responsible for, and this is what that looks like when the payoff arrives late and to somebody else.',
+  'उन तीन हफ़्तों से रिलीज़ की तारीख़ नहीं बदली, और वह नतीजा उसका था ही नहीं। आठ महीने बाद उस दस्तावेज़ का मौजूद होना कुछ बदल गया। श्लोक यह वादा नहीं कर रहा कि मेहनत रंग लाएगी — वह कह रहा है कि मेहनत वह हिस्सा है जिसकी ज़िम्मेदारी आपकी है, और जब फल देर से और किसी और को मिले, तब वह ऐसा दिखता है।',
+  'Un teen hafton se release ki tareekh nahi badli, aur woh nateeja uska tha hi nahi. Aath mahine baad us dastavez ka maujood hona kuch badal gaya. Shloka yeh wada nahi kar raha ki mehnat rang layegi — woh keh raha hai ki mehnat woh hissa hai jiski zimmedari tumhari hai, aur jab phal der se aur kisi aur ko mile, tab woh aisa dikhta hai.',
+  'The work does not always change the thing it was aimed at. It still has to exist for anything later to find it.',
+  'मेहनत हमेशा उस चीज़ को नहीं बदलती जिसके लिए की गई। फिर भी उसे मौजूद रहना पड़ता है ताकि बाद में कोई उसे पा सके।',
+  'Mehnat hamesha us cheez ko nahi badalti jiske liye ki gayi. Phir bhi use maujood rehna padta hai taki baad mein koi use paa sake.',
+  NULL, 'intermediate', 'technology,work,documentation,results,patience'
+
+  UNION ALL SELECT 21, 'corporate', 4,
+  'The expenses claim everybody saw', 'वह ख़र्च का दावा जो सबने देखा', 'Woh expense claim jo sabne dekha',
+  'A director puts through a claim that is inside the letter of the policy and outside its spirit, and the finance team processes it without comment. Nothing is said. Within two quarters the average claim across the department has moved, in the same direction, by an amount somebody eventually charts.',
+  'एक निदेशक ऐसा दावा भेजते हैं जो नीति के अक्षरों के भीतर है और उसकी भावना के बाहर, और वित्त टीम बिना कुछ कहे उसे पास कर देती है। कुछ कहा नहीं जाता। दो तिमाहियों में विभाग भर का औसत दावा उसी दिशा में इतना खिसक जाता है कि कोई आख़िरकार उसका ग्राफ़ बनाता है।',
+  'Ek director aisa claim bhejte hain jo policy ke aksharon ke bheetar hai aur uski bhavna ke bahar, aur finance team bina kuch kahe use pass kar deti hai. Kuch kaha nahi jaata. Do quarter mein vibhag bhar ka ausat claim usi disha mein itna khisak jaata hai ki koi aakhirkar uska graph banata hai.',
+  'The verse says people take the standard from whoever is in front, and nothing here was announced. It did not need to be. One processed claim, visible to a finance team who talk to people, moved a department''s behaviour further than any policy circular has ever moved it.',
+  'श्लोक कहता है कि लोग पैमाना उसी से लेते हैं जो आगे है, और यहाँ कुछ घोषित नहीं हुआ। ज़रूरत भी नहीं थी। एक पास हुआ दावा, ऐसी वित्त टीम को दिखता जो लोगों से बात करती है, विभाग के बरताव को उससे ज़्यादा खिसका गया जितना कोई नीति-परिपत्र आज तक खिसका सका।',
+  'Shloka kehta hai ki log paimana usi se lete hain jo aage hai, aur yahan kuch ghoshit nahi hua. Zaroorat bhi nahi thi. Ek pass hua claim, aisi finance team ko dikhta jo logon se baat karti hai, vibhag ke bartav ko usse zyada khiska gaya jitna koi policy circular aaj tak khiska saka.',
+  'Inside the letter and outside the spirit is a standard too, and it travels faster than any circular.',
+  'अक्षरों के भीतर और भावना के बाहर होना भी एक पैमाना है, और वह किसी परिपत्र से तेज़ चलता है।',
+  'Aksharon ke bheetar aur bhavna ke bahar hona bhi ek paimana hai, aur woh kisi circular se tez chalta hai.',
+  NULL, 'intermediate', 'work,ethics,example,culture,policy'
+
+  UNION ALL SELECT 21, 'school', 5,
+  'The queue at the gate', 'गेट पर क़तार', 'Gate par line',
+  'A school asks parents not to park across the entrance. Most do not. Two or three do, every morning, and nothing happens to them. Within a term the number is eleven, and the parents who have started doing it are able to give an accurate and slightly aggrieved account of why the rule was never realistic.',
+  'एक स्कूल अभिभावकों से कहता है कि प्रवेश द्वार के सामने गाड़ी न खड़ी करें। ज़्यादातर नहीं करते। दो-तीन रोज़ करते हैं, और उनका कुछ नहीं होता। एक सत्र में संख्या ग्यारह हो जाती है, और जिन अभिभावकों ने अभी शुरू किया है वे सटीक और हल्की शिकायत भरे लहजे में बता सकते हैं कि वह नियम कभी व्यावहारिक था ही नहीं।',
+  'Ek school abhibhavkon se kehta hai ki pravesh dwar ke saamne gaadi na khadi karein. Zyadatar nahi karte. Do-teen roz karte hain, aur unka kuch nahi hota. Ek term mein sankhya gyarah ho jaati hai, aur jin parents ne abhi shuru kiya hai woh sateek aur halki shikayat bhare lehje mein bata sakte hain ki woh niyam kabhi vyavharik tha hi nahi.',
+  'Nobody in this story decided to break a rule. Each of the eleven took the standard from the people already doing it, which is what the verse describes, and the justification arrived after the behaviour rather than before it. The two or three at the start were not villains either. They were just first.',
+  'इस कहानी में किसी ने नियम तोड़ने का फ़ैसला नहीं किया। उन ग्यारह में से हर एक ने पैमाना उन्हीं से लिया जो पहले से कर रहे थे — और श्लोक यही बताता है — और सफ़ाई बरताव के बाद आई, पहले नहीं। शुरू के दो-तीन भी खलनायक नहीं थे। वे बस पहले थे।',
+  'Is kahani mein kisi ne niyam todne ka faisla nahi kiya. Un gyarah mein se har ek ne paimana unhi se liya jo pehle se kar rahe the — aur shloka yahi batata hai — aur safai bartav ke baad aayi, pehle nahi. Shuru ke do-teen bhi khalnayak nahi the. Woh bas pehle the.',
+  'Nobody decided to break it. Each one took the standard from whoever was already there, and the reason arrived afterwards.',
+  'किसी ने तोड़ने का फ़ैसला नहीं किया। हर एक ने पैमाना उसी से लिया जो पहले से वहाँ था, और वजह बाद में आई।',
+  'Kisi ne todne ka faisla nahi kiya. Har ek ne paimana usi se liya jo pehle se wahan tha, aur wajah baad mein aayi.',
+  NULL, 'beginner', 'school,rules,norms,parents,example'
+
+  UNION ALL SELECT 21, 'cricket', 6,
+  'Walking', 'ख़ुद चल देना', 'Khud chal dena',
+  'A batsman edges to the keeper, is not given, and walks anyway. It costs his side a wicket they would have kept. Nothing is said in the dressing room. Over the following two seasons three younger players in the same side start doing it, and none of them can point to a conversation in which it was discussed.',
+  'एक बल्लेबाज़ की गेंद कीपर के पास जाती है, अंपायर आउट नहीं देता, और वह फिर भी ख़ुद चल देता है। इससे उसकी टीम को वह विकेट गँवाना पड़ता है जो बच जाता। ड्रेसिंग रूम में कुछ कहा नहीं जाता। अगले दो सत्रों में उसी टीम के तीन युवा खिलाड़ी ऐसा करने लगते हैं, और उनमें से कोई ऐसी बातचीत नहीं बता सकता जिसमें इस पर चर्चा हुई हो।',
+  'Ek batsman ki gend keeper ke paas jaati hai, umpire out nahi deta, aur woh phir bhi khud chal deta hai. Isse uski team ko woh wicket ganwana padta hai jo bach jaata. Dressing room mein kuch kaha nahi jaata. Agle do season mein usi team ke teen yuva khiladi aisa karne lagte hain, aur unme se koi aisi baatchit nahi bata sakta jisme is par charcha hui ho.',
+  'The verse works in this direction as easily as the other, which is easy to forget when it is quoted as a warning. He did not make a case for walking and did not ask anybody to follow. He walked, once, at a cost, in front of people. That is the entire mechanism.',
+  'श्लोक इस दिशा में उतनी ही आसानी से काम करता है जितनी दूसरी में, जो तब भूल जाता है जब इसे चेतावनी की तरह उद्धृत किया जाता है। उसने चलने के पक्ष में दलील नहीं दी और किसी से पीछे चलने को नहीं कहा। वह चला, एक बार, क़ीमत देकर, लोगों के सामने। पूरा तंत्र यही है।',
+  'Shloka is disha mein utni hi aasani se kaam karta hai jitni doosri mein, jo tab bhool jaata hai jab ise chetavni ki tarah quote kiya jaata hai. Usne chalne ke paksh mein dalil nahi di aur kisi se peechhe chalne ko nahi kaha. Woh chala, ek baar, keemat dekar, logon ke saamne. Poora mechanism yahi hai.',
+  'He made no case for it and asked nobody to follow. He did it once, at a cost, where people could see.',
+  'उसने इसके पक्ष में कोई दलील नहीं दी और किसी से पीछे चलने को नहीं कहा। उसने एक बार, क़ीमत देकर, वहाँ किया जहाँ लोग देख सकते थे।',
+  'Usne iske paksh mein koi dalil nahi di aur kisi se peechhe chalne ko nahi kaha. Usne ek baar, keemat dekar, wahan kiya jahan log dekh sakte the.',
+  NULL, 'beginner', 'cricket,honesty,example,sport,cost'
+
+  UNION ALL SELECT 21, 'bollywood', 7,
+  'The unit that finished on time', 'वह यूनिट जो समय पर ख़त्म करती थी', 'Woh unit jo samay par khatam karti thi',
+  'A film crew is known for wrapping when it said it would. This is traced by people who have worked there to one first assistant director who leaves at the stated time herself, without announcement or complaint, and who has done so for eleven years. Crews she has never worked with have picked it up from crews she has.',
+  'एक फ़िल्म यूनिट इस बात के लिए जानी जाती है कि वह जब कहती है तभी पैकअप करती है। वहाँ काम कर चुके लोग इसे एक फ़र्स्ट असिस्टेंट डायरेक्टर तक ले जाते हैं जो ख़ुद तय समय पर निकल जाती हैं, बिना किसी घोषणा या शिकायत के, और ग्यारह साल से ऐसा कर रही हैं। जिन यूनिटों के साथ उन्होंने कभी काम नहीं किया, उन्होंने भी यह उन यूनिटों से उठा लिया जिनके साथ किया है।',
+  'Ek film unit is baat ke liye jaani jaati hai ki woh jab kehti hai tabhi packup karti hai. Wahan kaam kar chuke log ise ek first assistant director tak le jaate hain jo khud tay samay par nikal jaati hain, bina kisi ghoshna ya shikayat ke, aur gyarah saal se aisa kar rahi hain. Jin unit ke saath unhone kabhi kaam nahi kiya, unhone bhi yeh un unit se utha liya jinke saath kiya hai.',
+  'An industry that runs on nobody leaving is exactly where this verse is most visible, because the standard is set entirely by who goes first. She never argued for it. The people who copied her mostly could not say when they started, which is what the verse means by the world following the measure somebody sets.',
+  'जो उद्योग इस पर चलता है कि कोई जाता ही नहीं, वहीं यह श्लोक सबसे साफ़ दिखता है, क्योंकि पैमाना पूरी तरह इससे तय होता है कि पहले कौन उठता है। उन्होंने कभी इसके पक्ष में दलील नहीं दी। जिन्होंने उनकी नक़ल की उनमें से ज़्यादातर यह नहीं बता सकते कि उन्होंने कब शुरू किया — और यही श्लोक का मतलब है कि दुनिया उसी पैमाने के पीछे चलती है जो कोई तय कर देता है।',
+  'Jo udyog is par chalta hai ki koi jaata hi nahi, wahin yeh shloka sabse saaf dikhta hai, kyunki paimana poori tarah isse tay hota hai ki pehle kaun uthta hai. Unhone kabhi iske paksh mein dalil nahi di. Jinhone unki nakal ki unme se zyadatar yeh nahi bata sakte ki unhone kab shuru kiya — aur yahi shloka ka matlab hai ki duniya usi paimane ke peechhe chalti hai jo koi tay kar deta hai.',
+  'In a place where nobody leaves, the standard is set entirely by whoever goes first and says nothing about it.',
+  'जहाँ कोई जाता ही नहीं, वहाँ पैमाना पूरी तरह वही तय करता है जो पहले उठता है और उस पर कुछ कहता नहीं।',
+  'Jahan koi jaata hi nahi, wahan paimana poori tarah wahi tay karta hai jo pehle uthta hai aur us par kuch kehta nahi.',
+  NULL, 'intermediate', 'film,work,hours,example,culture'
+
+  UNION ALL SELECT 21, 'friendship', 8,
+  'The one who never repeats things', 'वह जो बातें आगे नहीं बढ़ाता', 'Woh jo baatein aage nahi badhata',
+  'In a group of six friends, one has never once passed on something said in confidence. Nobody has noticed this as a quality, because the evidence for it is a long absence of events. Over about four years the group''s conversations get noticeably franker, and if asked why, none of the six would name him.',
+  'छह दोस्तों के समूह में एक ने कभी भी भरोसे में कही गई बात आगे नहीं बढ़ाई। किसी ने इसे गुण की तरह नोटिस नहीं किया, क्योंकि इसका सबूत घटनाओं की एक लंबी गैरहाज़िरी है। क़रीब चार साल में समूह की बातचीत साफ़ तौर पर ज़्यादा खुली हो जाती है, और पूछा जाए तो छहों में से कोई उसका नाम नहीं लेगा।',
+  'Chhah doston ke samuh mein ek ne kabhi bhi bharose mein kahi gayi baat aage nahi badhayi. Kisi ne ise gun ki tarah notice nahi kiya, kyunki iska saboot ghatnaon ki ek lambi gairhaziri hai. Karib chaar saal mein samuh ki baatchit saaf taur par zyada khuli ho jaati hai, aur poocha jaaye to chhahon mein se koi uska naam nahi lega.',
+  'Standards set by absence are the hardest to see and among the strongest. Nothing happened, repeatedly, in front of five people, and the room changed shape. The verse does not require the example to be visible — only that it be consistent.',
+  'गैरहाज़िरी से बने पैमाने सबसे कठिन दिखते हैं और सबसे मज़बूत होते हैं। पाँच लोगों के सामने बार-बार कुछ नहीं हुआ, और कमरे का आकार बदल गया। श्लोक यह नहीं माँगता कि उदाहरण दिखे — सिर्फ़ यह कि वह लगातार हो।',
+  'Gairhaziri se bane paimane sabse mushkil dikhte hain aur sabse mazboot hote hain. Paanch logon ke saamne baar-baar kuch nahi hua, aur kamre ka aakar badal gaya. Shloka yeh nahi maangta ki udaharan dikhe — sirf yeh ki woh lagatar ho.',
+  'Nothing happened, repeatedly, in front of people. That is a standard too, and one of the strongest.',
+  'लोगों के सामने बार-बार कुछ नहीं हुआ। वह भी एक पैमाना है, और सबसे मज़बूत में से एक।',
+  'Logon ke saamne baar-baar kuch nahi hua. Woh bhi ek paimana hai, aur sabse mazboot mein se ek.',
+  NULL, 'intermediate', 'friendship,trust,discretion,example,absence'
+
+  UNION ALL SELECT 27, 'cricket', 4,
+  'The catch that stuck', 'वह कैच जो टिक गया', 'Woh catch jo tik gaya',
+  'A fielder takes a spectacular catch at short leg. Slowed down, the ball hits his hand at an angle nobody could plan, off a top edge that came from a delivery the bowler admits afterwards was not the one he wanted. The fielder is on the highlights reel for a decade and can describe, if asked honestly, roughly how much of it he did.',
+  'एक फ़ील्डर शॉर्ट लेग पर शानदार कैच लेता है। धीमा करके देखें तो गेंद उसके हाथ पर ऐसे कोण से लगती है जिसकी योजना कोई नहीं बना सकता, एक टॉप एज से जो उस गेंद पर आया जिसे गेंदबाज़ बाद में मानता है कि वह वैसी नहीं थी जैसी वह चाहता था। फ़ील्डर एक दशक तक हाइलाइट्स में रहता है और ईमानदारी से पूछा जाए तो बता सकता है कि उसमें उसने लगभग कितना किया।',
+  'Ek fielder short leg par shandar catch leta hai. Dheema karke dekhein to gend uske haath par aise kon se lagti hai jiski yojna koi nahi bana sakta, ek top edge se jo us gend par aaya jise bowler baad mein maanta hai ki woh waisi nahi thi jaisi woh chahta tha. Fielder ek dashak tak highlights mein rehta hai aur imaandari se poocha jaaye to bata sakta hai ki usme usne lagbhag kitna kiya.',
+  'The reflexes were real and years of close-catching practice were real and neither of them chose the angle. The verse is not saying he did nothing. It is saying that a great deal happened that he did not arrange, and that the highlights reel has no way of showing which was which.',
+  'प्रतिवर्त सच्चे थे और सालों का क्लोज़ कैचिंग अभ्यास भी सच्चा था, और उनमें से किसी ने वह कोण नहीं चुना। श्लोक यह नहीं कह रहा कि उसने कुछ नहीं किया। वह कह रहा है कि बहुत कुछ ऐसा हुआ जो उसने जुटाया नहीं था, और हाइलाइट्स के पास यह दिखाने का कोई तरीक़ा नहीं कि कौन-सा कौन-सा था।',
+  'Prativart sachche the aur saalon ka close catching abhyas bhi sachcha tha, aur unme se kisi ne woh kon nahi chuna. Shloka yeh nahi keh raha ki usne kuch nahi kiya. Woh keh raha hai ki bahut kuch aisa hua jo usne jutaya nahi tha, aur highlights ke paas yeh dikhane ka koi tareeka nahi ki kaun sa kaun sa tha.',
+  'The reflexes were his. The angle was not, and the highlights reel cannot tell them apart.',
+  'प्रतिवर्त उसके थे। कोण नहीं था, और हाइलाइट्स दोनों में फ़र्क़ नहीं बता सकतीं।',
+  'Prativart uske the. Kon nahi tha, aur highlights dono mein farq nahi bata saktin.',
+  NULL, 'beginner', 'cricket,skill,luck,credit,highlights'
+
+  UNION ALL SELECT 27, 'startup', 5,
+  'The pitch that landed in the right week', 'वह पिच जो सही हफ़्ते में पड़ी', 'Woh pitch jo sahi hafte mein padi',
+  'A founder raises on the eighth pitch. The deck for the eighth was better than the first, and she had also, by then, walked into a partner who had lost a deal in the same space nine days earlier and was looking for a reason to move. She knows this because he told her, cheerfully, at the closing dinner.',
+  'एक संस्थापक आठवीं पिच पर निवेश जुटा लेती हैं। आठवीं का डेक पहली से बेहतर था, और तब तक वे ऐसे पार्टनर के सामने भी पहुँच चुकी थीं जिसने नौ दिन पहले इसी क्षेत्र में एक सौदा गँवाया था और आगे बढ़ने की वजह ढूँढ़ रहा था। उन्हें यह इसलिए पता है कि उसने ही, ख़ुशी-ख़ुशी, क्लोज़िंग डिनर पर बता दिया।',
+  'Ek founder aathvi pitch par nivesh juta leti hain. Aathvi ka deck pehli se behtar tha, aur tab tak woh aise partner ke saamne bhi pahunch chuki thi jisne nau din pehle isi kshetra mein ek sauda ganwaya tha aur aage badhne ki wajah dhoondh raha tha. Unhe yeh isliye pata hai ki usne hi, khushi-khushi, closing dinner par bata diya.',
+  'Both things are true and only one of them will be in the story she tells at conferences. The verse is not asking her to discount the seven earlier pitches — that work is what put her in the room. It is asking her to keep the nine days in the sentence, and almost nobody does.',
+  'दोनों बातें सच हैं और उनमें से एक ही उस कहानी में रहेगी जो वे सम्मेलनों में सुनाएँगी। श्लोक उनसे पहली सात पिचों को कम आँकने को नहीं कह रहा — वही मेहनत उन्हें उस कमरे तक लाई। वह कह रहा है कि उन नौ दिनों को भी वाक्य में रखिए, और लगभग कोई नहीं रखता।',
+  'Dono baatein sach hain aur unme se ek hi us kahani mein rahegi jo woh conference mein sunayengi. Shloka unse pehli saat pitchon ko kam aankne ko nahi keh raha — wahi mehnat unhe us kamre tak layi. Woh keh raha hai ki un nau dinon ko bhi vakya mein rakhiye, aur lagbhag koi nahi rakhta.',
+  'The seven pitches put her in the room. The nine days decided what happened in it, and only one of them makes the story.',
+  'सात पिचों ने उन्हें कमरे तक पहुँचाया। नौ दिनों ने तय किया कि कमरे में क्या हुआ, और कहानी में उनमें से एक ही आता है।',
+  'Saat pitchon ne unhe kamre tak pahunchaya. Nau dinon ne tay kiya ki kamre mein kya hua, aur kahani mein unme se ek hi aata hai.',
+  NULL, 'intermediate', 'business,fundraising,luck,credit,timing'
+
+  UNION ALL SELECT 27, 'ai', 6,
+  'The prompt that worked', 'वह प्रॉम्प्ट जो चल गया', 'Woh prompt jo chal gaya',
+  'Somebody gets a very good result from a model and saves the prompt, believing the wording did it. Run again a month later against an updated model it produces something ordinary. The wording had helped. So had the model version, the example they happened to include, and the fact that the question was well posed before it was typed.',
+  'किसी को किसी मॉडल से बहुत अच्छा नतीजा मिलता है और वह प्रॉम्प्ट सहेज लेता है, यह मानकर कि शब्द ही काम कर गए। एक महीने बाद अपडेट हुए मॉडल पर दोबारा चलाने पर वह साधारण-सा कुछ देता है। शब्दों ने मदद की थी। मॉडल के संस्करण ने भी, उस उदाहरण ने भी जो संयोग से उसमें था, और इस बात ने भी कि सवाल टाइप होने से पहले ही ठीक से बना हुआ था।',
+  'Kisi ko kisi model se bahut achha nateeja milta hai aur woh prompt sahej leta hai, yeh maankar ki shabd hi kaam kar gaye. Ek mahine baad update hue model par dobara chalane par woh sadharan sa kuch deta hai. Shabdon ne madad ki thi. Model ke version ne bhi, us udaharan ne bhi jo sanyog se usme tha, aur is baat ne bhi ki sawaal type hone se pehle hi theek se bana hua tha.',
+  'A saved prompt is a receipt with one name on it, and this is a good place to notice the habit because the machinery is unusually easy to enumerate. Four things produced that output and the person kept one, which is exactly the move the verse describes and does not require any mysticism to see.',
+  'सहेजा हुआ प्रॉम्प्ट ऐसी रसीद है जिस पर एक ही नाम है, और यह इस आदत को देखने की अच्छी जगह है क्योंकि यहाँ मशीन के पुर्ज़े असामान्य रूप से आसानी से गिने जा सकते हैं। उस नतीजे को चार चीज़ों ने बनाया और आदमी ने एक रखी — और श्लोक ठीक यही चाल बताता है, जिसे देखने के लिए किसी रहस्यवाद की ज़रूरत नहीं।',
+  'Saheja hua prompt aisi receipt hai jis par ek hi naam hai, aur yeh is aadat ko dekhne ki achhi jagah hai kyunki yahan machine ke purze asamanya roop se aasani se gine ja sakte hain. Us nateeje ko chaar cheezon ne banaya aur aadmi ne ek rakhi — aur shloka theek yahi chaal batata hai, jise dekhne ke liye kisi rahasyavad ki zaroorat nahi.',
+  'Four things made that output. The saved prompt is a receipt with one of them on it.',
+  'उस नतीजे को चार चीज़ों ने बनाया। सहेजा हुआ प्रॉम्प्ट ऐसी रसीद है जिस पर उनमें से एक है।',
+  'Us nateeje ko chaar cheezon ne banaya. Saheja hua prompt aisi receipt hai jis par unme se ek hai.',
+  NULL, 'beginner', 'technology,ai,credit,causes,tools'
+
+  UNION ALL SELECT 27, 'marriage', 7,
+  'Who kept it together', 'किसने संभाले रखा', 'Kisne sambhale rakha',
+  'A couple comes through a hard three years. Each of them has a private account of what got them through, and the two accounts have almost nothing in common. Neither is dishonest. Told about the other''s version, both are surprised, and one of them is briefly hurt before finding it funny.',
+  'एक जोड़ा तीन कठिन साल पार कर लेता है। दोनों के पास अपना-अपना निजी बयान है कि उन्हें किस चीज़ ने पार लगाया, और दोनों बयानों में लगभग कुछ भी साझा नहीं है। कोई भी बेईमान नहीं है। दूसरे का बयान सुनकर दोनों हैरान होते हैं, और उनमें से एक थोड़ी देर के लिए आहत होता है, फिर उसे यह मज़ेदार लगने लगता है।',
+  'Ek joda teen mushkil saal paar kar leta hai. Dono ke paas apna-apna niji bayan hai ki unhe kis cheez ne paar lagaya, aur dono bayanon mein lagbhag kuch bhi saajha nahi hai. Koi bhi beimaan nahi hai. Doosre ka bayan sunkar dono hairan hote hain, aur unme se ek thodi der ke liye aahat hota hai, phir use yeh mazedaar lagne lagta hai.',
+  'Two people in the same house for the same three years produced two single-author versions of the same events. The verse does not say either is wrong about what they did. It says the sense of being the author attaches afterwards, quietly, and it attaches to whoever is doing the remembering.',
+  'एक ही घर में, उन्हीं तीन सालों में रहे दो लोगों ने उन्हीं घटनाओं के दो इकलौते-कर्ता वाले रूप बना लिए। श्लोक यह नहीं कहता कि उनमें से कोई अपने किए के बारे में ग़लत है। वह कहता है कि कर्ता होने का भाव बाद में चुपचाप जुड़ता है, और उसी से जुड़ता है जो याद कर रहा है।',
+  'Ek hi ghar mein, unhi teen saalon mein rahe do logon ne unhi ghatnaon ke do iklaute-karta wale roop bana liye. Shloka yeh nahi kehta ki unme se koi apne kiye ke baare mein galat hai. Woh kehta hai ki karta hone ka bhaav baad mein chupchap judta hai, aur usi se judta hai jo yaad kar raha hai.',
+  'The sense of being the author attaches afterwards, and it attaches to whoever is doing the remembering.',
+  'कर्ता होने का भाव बाद में जुड़ता है, और उसी से जुड़ता है जो याद कर रहा है।',
+  'Karta hone ka bhaav baad mein judta hai, aur usi se judta hai jo yaad kar raha hai.',
+  NULL, 'advanced', 'marriage,memory,credit,perspective,hard-years'
+
+  UNION ALL SELECT 27, 'college', 8,
+  'The rank and the coaching', 'रैंक और कोचिंग', 'Rank aur coaching',
+  'A student gets a rank they are proud of. Contributing: two years of their own work, a school that taught the syllabus properly, parents who did not need them to earn, a coaching institute, a quiet room, and a paper that happened to be light on the one topic they were weakest at. In the interviews afterwards the coaching institute claims the rank and so, differently, does the student.',
+  'एक छात्र को ऐसी रैंक मिलती है जिस पर उसे गर्व है। इसमें योगदान: उसके अपने दो साल की मेहनत, वह स्कूल जिसने पाठ्यक्रम ठीक से पढ़ाया, वे माता-पिता जिन्हें उससे कमाई की ज़रूरत नहीं थी, एक कोचिंग संस्थान, एक शांत कमरा, और एक पर्चा जो संयोग से उसी विषय पर हल्का था जिसमें वह सबसे कमज़ोर था। बाद के इंटरव्यू में कोचिंग संस्थान उस रैंक पर दावा करता है और छात्र भी, अपने तरीक़े से।',
+  'Ek student ko aisi rank milti hai jis par use garv hai. Isme yogdan: uske apne do saal ki mehnat, woh school jisne syllabus theek se padhaya, woh maa-baap jinhe usse kamai ki zaroorat nahi thi, ek coaching institute, ek shaant kamra, aur ek paper jo sanyog se usi vishay par halka tha jisme woh sabse kamzor tha. Baad ke interview mein coaching institute us rank par dawa karta hai aur student bhi, apne tareeke se.',
+  'Six contributions, two claimants, and the two years of work were genuinely one of the six. The verse is not deflating the student. It is pointing out that the same mechanism producing the institute''s advertisement is producing the student''s sentence, and that the quiet room does not appear in either.',
+  'छह योगदान, दो दावेदार, और वे दो साल की मेहनत सचमुच उन छह में से एक थी। श्लोक छात्र को छोटा नहीं कर रहा। वह बता रहा है कि जो तंत्र संस्थान का विज्ञापन बना रहा है वही छात्र का वाक्य भी बना रहा है, और वह शांत कमरा दोनों में से किसी में नहीं आता।',
+  'Chhah yogdan, do dawedar, aur woh do saal ki mehnat sach mein un chhah mein se ek thi. Shloka student ko chhota nahi kar raha. Woh bata raha hai ki jo mechanism institute ka vigyapan bana raha hai wahi student ka vakya bhi bana raha hai, aur woh shaant kamra dono mein se kisi mein nahi aata.',
+  'Six things contributed. Two of them are claiming it, and the quiet room appears in neither claim.',
+  'छह चीज़ों का योगदान था। उनमें से दो दावा कर रही हैं, और शांत कमरा किसी दावे में नहीं आता।',
+  'Chhah cheezon ka yogdan tha. Unme se do dawa kar rahi hain, aur shaant kamra kisi dawe mein nahi aata.',
+  NULL, 'intermediate', 'study,exams,credit,privilege,causes'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
+
+-- ---------------------------------------------------------------------
+-- The 3.35 additions are held to the same rule as the original three:
+-- every one is about somebody choosing between their own work and an
+-- imitation of somebody else's. Not one of them turns on where anybody
+-- came from. That boundary is what the explanation draws and the
+-- examples do not get to cross it just because there are more of them.
+-- ---------------------------------------------------------------------
+
+INSERT INTO modern_examples
+  (verse_id, category, title_en, title_hi, title_hinglish,
+   scenario_en, scenario_hi, scenario_hinglish,
+   connection_en, connection_hi, connection_hinglish,
+   lesson_en, lesson_hi, lesson_hinglish,
+   source_reference, has_spoiler, difficulty, tags, is_ai_generated, approved, sort_order)
+SELECT v.id, x.cat, x.t_en, x.t_hi, x.t_hing, x.s_en, x.s_hi, x.s_hing,
+       x.c_en, x.c_hi, x.c_hing, x.l_en, x.l_hi, x.l_hing,
+       x.src, 0, x.diff, x.tags, 0, 1, x.ord
+FROM (
+
+  SELECT 35 AS vn, 'bollywood' AS cat, 4 AS ord,
+  'The actor who was good at the wrong thing' AS t_en, 'वह अभिनेता जो ग़लत चीज़ में अच्छा था' AS t_hi, 'Woh actor jo galat cheez mein achha tha' AS t_hing,
+  'A performer builds a career on a kind of role he is reliably good at and does not much like. The work is competent and it keeps coming. At forty-one he takes a small part in something nobody expects to do well, and the reviews notice something they describe as him finally being present. He cannot afford to do only that, and he does not go back to doing none of it.' AS s_en,
+  'एक कलाकार ऐसे किरदारों पर करियर बनाता है जिनमें वह भरोसे से अच्छा है और जो उसे ख़ास पसंद नहीं। काम कुशल है और आता रहता है। इकतालीस की उम्र में वह ऐसी किसी चीज़ में छोटा-सा हिस्सा लेता है जिससे किसी को उम्मीद नहीं, और समीक्षाएँ कुछ ऐसा नोटिस करती हैं जिसे वे "आख़िरकार वह मौजूद है" कहती हैं। वह सिर्फ़ वही करने की हैसियत में नहीं है, और वह उसे बिलकुल न करने पर भी नहीं लौटता।' AS s_hi,
+  'Ek kalakar aise kirdaron par career banata hai jinme woh bharose se achha hai aur jo use khaas pasand nahi. Kaam kushal hai aur aata rehta hai. Iktalis ki umar mein woh aisi kisi cheez mein chhota sa hissa leta hai jisse kisi ko ummeed nahi, aur samikshayein kuch aisa notice karti hain jise woh "aakhirkar woh maujood hai" kehti hain. Woh sirf wahi karne ki haisiyat mein nahi hai, aur woh use bilkul na karne par bhi nahi lautta.' AS s_hing,
+  'The verse is about imitation, not about origins, and this is what the distinction looks like in a career. Nothing about where he came from is in this story. What is in it is fifteen years of doing somebody else''s kind of work competently, and the fact that competence never once made it his.' AS c_en,
+  'श्लोक नक़ल के बारे में है, जड़ों के बारे में नहीं, और करियर में यह फ़र्क़ ऐसा दिखता है। इस कहानी में इस बात का कोई ज़िक्र नहीं कि वह कहाँ से आया। इसमें जो है वह पंद्रह साल किसी और तरह का काम कुशलता से करना है, और यह कि कुशलता ने उसे एक बार भी उसका अपना नहीं बनाया।' AS c_hi,
+  'Shloka nakal ke baare mein hai, jadon ke baare mein nahi, aur career mein yeh farq aisa dikhta hai. Is kahani mein is baat ka koi zikr nahi ki woh kahan se aaya. Isme jo hai woh pandrah saal kisi aur tarah ka kaam kushalta se karna hai, aur yeh ki kushalta ne use ek baar bhi uska apna nahi banaya.' AS c_hing,
+  'Fifteen years of doing it well never once made it his. Competence is not ownership.' AS l_en,
+  'पंद्रह साल अच्छा करने से वह एक बार भी उसका अपना नहीं हुआ। कुशलता मालिकाना नहीं है।' AS l_hi,
+  'Pandrah saal achha karne se woh ek baar bhi uska apna nahi hua. Kushalta malikana nahi hai.' AS l_hing,
+  NULL AS src, 'intermediate' AS diff, 'film,career,imitation,work,identity' AS tags
+
+  UNION ALL SELECT 35, 'everyday_life', 5,
+  'The hobby that was somebody else''s', 'वह शौक़ जो किसी और का था', 'Woh shauk jo kisi aur ka tha',
+  'Two friends take up running together. One of them loves it. The other keeps at it for three years, is faster, and quietly dreads Sundays. In the fourth year she stops running and starts swimming, badly, and is happier in a way that she finds slightly embarrassing to explain given how much worse she is at it.',
+  'दो दोस्त साथ दौड़ना शुरू करते हैं। एक को यह बहुत पसंद है। दूसरी तीन साल लगी रहती है, ज़्यादा तेज़ है, और चुपचाप रविवार से डरती है। चौथे साल वह दौड़ना छोड़कर तैरना शुरू करती है, बुरी तरह, और ऐसे तरीक़े से ज़्यादा ख़ुश है जिसे बताने में उसे हल्की झेंप होती है, यह देखते हुए कि वह इसमें कितनी कमज़ोर है।',
+  'Do dost saath daudna shuru karte hain. Ek ko yeh bahut pasand hai. Doosri teen saal lagi rehti hai, zyada tez hai, aur chupchap Sunday se darti hai. Chauthe saal woh daudna chhodkar tairna shuru karti hai, buri tarah, aur aise tareeke se zyada khush hai jise batane mein use halki jhenp hoti hai, yeh dekhte hue ki woh isme kitni kamzor hai.',
+  'This is the verse in miniature and with nothing at stake, which is the best way to meet it first. Her own thing done badly beat somebody else''s thing done well, and she had three years of evidence that being faster settled nothing.',
+  'यह श्लोक छोटे रूप में है और यहाँ कोई बड़ा दाँव नहीं — और पहली बार इससे मिलने का यही सबसे अच्छा तरीक़ा है। अपनी चीज़ अधूरे ढंग से किसी और की चीज़ कुशलता से करने से बेहतर निकली, और उसके पास तीन साल का सबूत था कि ज़्यादा तेज़ होने से कुछ तय नहीं होता।',
+  'Yeh shloka chhote roop mein hai aur yahan koi bada daanv nahi — aur pehli baar isse milne ka yahi sabse achha tareeka hai. Apni cheez adhoore dhang se kisi aur ki cheez kushalta se karne se behtar nikli, aur uske paas teen saal ka saboot tha ki zyada tez hone se kuch tay nahi hota.',
+  'She was faster at the one she dreaded. Three years of being better at it settled nothing.',
+  'जिससे वह डरती थी उसमें वह ज़्यादा तेज़ थी। तीन साल बेहतर होने से कुछ तय नहीं हुआ।',
+  'Jisse woh darti thi usme woh zyada tez thi. Teen saal behtar hone se kuch tay nahi hua.',
+  NULL, 'beginner', 'habits,hobbies,friends,choice,honesty'
+
+  UNION ALL SELECT 35, 'friendship', 6,
+  'Advice from somebody it worked for', 'उससे मिली सलाह जिस पर यह चला', 'Usse mili salah jis par yeh chala',
+  'A friend who took a particular route and did well from it gives that advice generously and often. It is honest advice and it is working advice — for him. A third person follows it for two years and it does not take, and he spends most of those two years assuming the problem is that he is not trying hard enough.',
+  'एक दोस्त जिसने कोई ख़ास रास्ता लिया और उससे अच्छा किया, वही सलाह खुले दिल से और बार-बार देता है। सलाह ईमानदार है और चलने वाली भी — उसके लिए। एक तीसरा व्यक्ति दो साल उस पर चलता है और बात बैठती नहीं, और वह उन दो सालों का ज़्यादातर हिस्सा यह मानते हुए बिताता है कि दिक़्क़त यह है कि वह पूरी कोशिश नहीं कर रहा।',
+  'Ek dost jisne koi khaas rasta liya aur usse achha kiya, wahi salah khule dil se aur baar-baar deta hai. Salah imaandar hai aur chalne wali bhi — uske liye. Ek teesra insaan do saal us par chalta hai aur baat baithti nahi, aur woh un do saalon ka zyadatar hissa yeh maante hue bitata hai ki dikkat yeh hai ki woh poori koshish nahi kar raha.',
+  'Nobody is behaving badly. The advice is good and it is somebody else''s, and the two years went into an imitation performed sincerely. The verse''s hardest part is that the imitation is often the sensible-looking option, recommended by somebody who means well and has the results to prove it.',
+  'यहाँ कोई बुरा बरताव नहीं कर रहा। सलाह अच्छी है और किसी और की है, और वे दो साल एक ईमानदारी से निभाई गई नक़ल में गए। श्लोक का सबसे कठिन हिस्सा यही है कि नक़ल अक्सर समझदारी वाला दिखने वाला विकल्प होती है, और उसकी सिफ़ारिश वह करता है जिसकी नीयत साफ़ है और जिसके पास नतीजे भी हैं।',
+  'Yahan koi bura bartav nahi kar raha. Salah achhi hai aur kisi aur ki hai, aur woh do saal ek imaandari se nibhayi gayi nakal mein gaye. Shloka ka sabse mushkil hissa yahi hai ki nakal aksar samajhdari wala dikhne wala option hoti hai, aur uski sifarish woh karta hai jiski niyat saaf hai aur jiske paas nateeje bhi hain.',
+  'The imitation is usually the sensible-looking option, recommended by somebody who means well and has the results.',
+  'नक़ल आमतौर पर समझदारी वाला दिखने वाला विकल्प होती है, जिसकी सिफ़ारिश वह करता है जिसकी नीयत अच्छी है और नतीजे भी।',
+  'Nakal aam taur par samajhdari wala dikhne wala option hoti hai, jiski sifarish woh karta hai jiski niyat achhi hai aur nateeje bhi.',
+  NULL, 'intermediate', 'friendship,advice,imitation,work,choice'
+
+  UNION ALL SELECT 35, 'healthcare', 7,
+  'The specialty that fit', 'वह विशेषज्ञता जो जँची', 'Woh specialty jo janchi',
+  'A doctor two years into a prestigious specialty is competent and unwell. She moves to one with less status, longer relationships with patients and no dramatic days, taking a pay cut and a certain amount of comment. Eight years later she is regarded as unusually good at it, which she was not on track to be at the other thing.',
+  'एक डॉक्टर दो साल से एक प्रतिष्ठित विशेषज्ञता में हैं, कुशल हैं और ठीक नहीं हैं। वे कम रुतबे वाली, मरीज़ों से लंबे रिश्तों वाली और बिना नाटकीय दिनों वाली विशेषज्ञता में चली जाती हैं, तनख़्वाह में कटौती और कुछ बातें सहते हुए। आठ साल बाद उन्हें उसमें असामान्य रूप से अच्छा माना जाता है, जो वे पहली वाली में होने के रास्ते पर नहीं थीं।',
+  'Ek doctor do saal se ek pratishthit specialty mein hain, kushal hain aur theek nahi hain. Woh kam rutbe wali, marizon se lambe rishton wali aur bina natakiya dinon wali specialty mein chali jaati hain, tankhwah mein katauti aur kuch baatein sehte hue. Aath saal baad unhe usme asamanya roop se achha maana jaata hai, jo woh pehli wali mein hone ke raste par nahi thi.',
+  'Svadharma is discovered rather than assigned, and this is what discovering it costs and pays. She did not find out by thinking; she found out by two years of being competent and unwell, which is the only instrument most people get.',
+  'स्वधर्म सौंपा नहीं जाता, खोजा जाता है — और खोजने की क़ीमत और उसका फल यही है। उन्होंने यह सोचकर नहीं जाना; उन्होंने दो साल कुशल और अस्वस्थ रहकर जाना, और ज़्यादातर लोगों को यही इकलौता उपकरण मिलता है।',
+  'Svadharma saunpa nahi jaata, khoja jaata hai — aur khojne ki keemat aur uska phal yahi hai. Unhone yeh sochkar nahi jaana; unhone do saal kushal aur aswasth rehkar jaana, aur zyadatar logon ko yahi iklauta upkaran milta hai.',
+  'She did not find out by thinking. Two years of being competent and unwell is the instrument most people get.',
+  'उन्होंने सोचकर नहीं जाना। दो साल कुशल और अस्वस्थ रहना ही वह उपकरण है जो ज़्यादातर लोगों को मिलता है।',
+  'Unhone sochkar nahi jaana. Do saal kushal aur aswasth rehna hi woh upkaran hai jo zyadatar logon ko milta hai.',
+  NULL, 'intermediate', 'health,career,choice,status,discovery'
+
+  UNION ALL SELECT 35, 'technology', 8,
+  'The manager who went back to building', 'वह मैनेजर जो बनाने पर लौट आई', 'Woh manager jo banane par laut aayi',
+  'An engineer promoted into management is adequate at it for two years and misses building in a way she can describe precisely. Moving back is available and reads, to her, as a demotion. She does it. Her new team lead is somebody she used to manage, and the first month is as awkward as she expected and the second is not.',
+  'प्रबंधन में भेजी गई एक इंजीनियर दो साल उसमें ठीक-ठाक रहती हैं और बनाने की कमी ऐसे महसूस करती हैं जिसे वे ठीक-ठीक बता सकती हैं। वापस जाना उपलब्ध है और उन्हें पदावनति जैसा लगता है। वे चली जाती हैं। उनकी नई टीम लीड वही हैं जिन्हें वे कभी संभालती थीं, और पहला महीना उतना ही असहज है जितना उन्होंने सोचा था और दूसरा नहीं है।',
+  'Prabandhan mein bheji gayi ek engineer do saal usme theek-thaak rehti hain aur banane ki kami aise mehsoos karti hain jise woh theek-theek bata sakti hain. Wapas jaana uplabdh hai aur unhe demotion jaisa lagta hai. Woh chali jaati hain. Unki nayi team lead wahi hain jinhe woh kabhi sambhalti thi, aur pehla mahina utna hi asahaj hai jitna unhone socha tha aur doosra nahi hai.',
+  'The verse says the imitation performed competently is the worse of the two options, and it does not say the move into it was stupid. The ladder had one shape and she followed it, which was reasonable. What it did not do was make management hers, and two years was long enough to establish that going back is not the same as going down.',
+  'श्लोक कहता है कि कुशलता से निभाई गई नक़ल दोनों में बुरा विकल्प है, और वह यह नहीं कहता कि उसमें जाना बेवक़ूफ़ी थी। सीढ़ी का एक आकार था और वे उस पर चलीं, जो वाजिब था। उससे प्रबंधन उनका नहीं हो गया, और दो साल यह साबित करने के लिए काफ़ी थे कि वापस जाना और नीचे जाना एक बात नहीं है।',
+  'Shloka kehta hai ki kushalta se nibhayi gayi nakal dono mein bura option hai, aur woh yeh nahi kehta ki usme jaana bewakoofi thi. Seedhi ka ek aakar tha aur woh us par chali, jo waajib tha. Usse prabandhan unka nahi ho gaya, aur do saal yeh sabit karne ke liye kaafi the ki wapas jaana aur neeche jaana ek baat nahi hai.',
+  'Going back is not the same as going down, and two years of being adequate is enough evidence.',
+  'वापस जाना नीचे जाना नहीं है, और दो साल ठीक-ठाक रहना इसका काफ़ी सबूत है।',
+  'Wapas jaana neeche jaana nahi hai, aur do saal theek-thaak rehna iska kaafi saboot hai.',
+  NULL, 'intermediate', 'work,career,management,imitation,choice'
+
+  UNION ALL SELECT 37, 'cricket', 4,
+  'The shot he had promised not to play', 'वह शॉट जो उसने न खेलने का वादा किया था', 'Woh shot jo usne na khelne ka wada kiya tha',
+  'A batsman is out to the same stroke four innings running and tells the coach, meaning it, that he is not playing it again. In the fifth innings, on 38, a short ball arrives at the exact height and he plays it. He is back in the pavilion before the decision he made in the nets has finished being remembered.',
+  'एक बल्लेबाज़ लगातार चार पारियों में उसी शॉट पर आउट होता है और कोच से, सच्चे मन से, कहता है कि वह इसे दोबारा नहीं खेलेगा। पाँचवीं पारी में, 38 पर, ठीक उसी ऊँचाई पर छोटी गेंद आती है और वह खेल देता है। नेट में लिया गया फ़ैसला पूरी तरह याद आने से पहले ही वह पवेलियन में है।',
+  'Ek batsman lagatar chaar pariyon mein usi shot par out hota hai aur coach se, sachche man se, kehta hai ki woh ise dobara nahi khelega. Paanchvi paari mein, 38 par, theek usi oonchai par chhoti gend aati hai aur woh khel deta hai. Net mein liya gaya faisla poori tarah yaad aane se pehle hi woh pavilion mein hai.',
+  'Naming the appetite is not the same as being free of it, and the verse is unsentimental about the gap. Kama at that speed is not a decision he lost — it arrived before deciding was available. Which is exactly why the useful work happens in the nets, on the trigger movement, and not in the promise.',
+  'भूख का नाम रख देना उससे मुक्त हो जाना नहीं है, और श्लोक इस फ़ासले पर भावुक नहीं होता। उस रफ़्तार पर काम कोई फ़ैसला नहीं है जो वह हार गया — वह तय करने का मौक़ा आने से पहले पहुँच गया। और इसीलिए काम की मेहनत नेट में, ट्रिगर मूवमेंट पर होती है, वादे में नहीं।',
+  'Bhookh ka naam rakh dena usse mukt ho jaana nahi hai, aur shloka is faasle par bhavuk nahi hota. Us raftar par kaam koi faisla nahi hai jo woh haar gaya — woh tay karne ka mauka aane se pehle pahunch gaya. Aur isiliye kaam ki mehnat net mein, trigger movement par hoti hai, wade mein nahi.',
+  'It arrived before deciding was available. That is why the work happens in the nets and not in the promise.',
+  'वह तय करने का मौक़ा आने से पहले पहुँच गया। इसीलिए मेहनत नेट में होती है, वादे में नहीं।',
+  'Woh tay karne ka mauka aane se pehle pahunch gaya. Isiliye mehnat net mein hoti hai, wade mein nahi.',
+  NULL, 'intermediate', 'cricket,habit,impulse,practice,discipline'
+
+  UNION ALL SELECT 37, 'marriage', 5,
+  'The row about the holiday', 'छुट्टी वाला झगड़ा', 'Chhutti wala jhagda',
+  'A disagreement about where to go in April becomes, within twenty minutes, about something from two years ago. Both people can see it happening and neither can stop it. Afterwards one of them traces it back accurately: she had wanted the other to be pleased about a small piece of news from that morning, was not asked about it, and said nothing.',
+  'अप्रैल में कहाँ जाना है, इस असहमति के बीस मिनट में ही यह दो साल पुरानी किसी बात पर आ जाती है। दोनों को यह होते हुए दिख रहा है और दोनों में से कोई रोक नहीं पा रहा। बाद में उनमें से एक इसे सही-सही पीछे तक जोड़ पाती है: वह चाहती थी कि उस सुबह की एक छोटी ख़बर पर दूसरा ख़ुश हो, उससे पूछा नहीं गया, और उसने कहा कुछ नहीं।',
+  'April mein kahan jaana hai, is asahmati ke bees minute mein hi yeh do saal purani kisi baat par aa jaati hai. Dono ko yeh hote hue dikh raha hai aur dono mein se koi rok nahi paa raha. Baad mein unme se ek ise sahi-sahi peechhe tak jod paati hai: woh chahti thi ki us subah ki ek chhoti khabar par doosra khush ho, usse poocha nahi gaya, aur usne kaha kuch nahi.',
+  'Wanting and anger as one thing with two faces, and the twenty minutes are the join. The anger arrived wearing a subject it had nothing to do with, which is what the verse describes, and the actual want was small enough that saying it out loud in the morning would have taken nine seconds.',
+  'चाह और गुस्सा एक ही चीज़ के दो चेहरे, और वे बीस मिनट ही जोड़ हैं। गुस्सा ऐसा विषय ओढ़कर आया जिससे उसका कोई लेना-देना नहीं था — और श्लोक यही बताता है — और असली चाह इतनी छोटी थी कि सुबह उसे कह देने में नौ सेकंड लगते।',
+  'Chaah aur gussa ek hi cheez ke do chehre, aur woh bees minute hi jod hain. Gussa aisa vishay odhkar aaya jisse uska koi lena-dena nahi tha — aur shloka yahi batata hai — aur asli chaah itni chhoti thi ki subah use keh dene mein nau second lagte.',
+  'The actual want was small enough to say in nine seconds. Unsaid, it took twenty minutes and two years of material.',
+  'असली चाह इतनी छोटी थी कि नौ सेकंड में कही जा सकती थी। न कही गई, तो उसने बीस मिनट और दो साल का सामान ले लिया।',
+  'Asli chaah itni chhoti thi ki nau second mein kahi ja sakti thi. Na kahi gayi, to usne bees minute aur do saal ka saamaan le liya.',
+  NULL, 'intermediate', 'marriage,anger,desire,communication,arguments'
+
+  UNION ALL SELECT 37, 'ai', 6,
+  'One more generation', 'एक और बार', 'Ek aur baar',
+  'Somebody generating images for a small project has a usable result at attempt six. They run attempt seven because seven might be better. At attempt thirty-one they are choosing between images they can no longer tell apart, and the thing they liked about number six has been gone for about fifteen attempts.',
+  'किसी छोटे काम के लिए तस्वीरें बना रहे व्यक्ति के पास छठी कोशिश पर काम लायक नतीजा है। वह सातवीं चलाता है क्योंकि सातवीं बेहतर हो सकती है। इकतीसवीं पर वह ऐसी तस्वीरों में से चुन रहा है जिनमें अब फ़र्क़ ही नहीं बता सकता, और छठी में जो उसे अच्छा लगा था वह क़रीब पंद्रह कोशिशों से ग़ायब है।',
+  'Kisi chhote kaam ke liye tasveerein bana rahe insaan ke paas chhathi koshish par kaam layak nateeja hai. Woh saatvi chalata hai kyunki saatvi behtar ho sakti hai. Ikatisvi par woh aisi tasveeron mein se chun raha hai jinme ab farq hi nahi bata sakta, aur chhathi mein jo use achha laga tha woh karib pandrah koshishon se gayab hai.',
+  'Mahashana — great-eating, never filling up — with a button attached and no marginal cost. The verse says satisfying the appetite is the mechanism by which it continues, and a generate button is the cleanest demonstration anybody has built: each result is a small satisfaction and each one makes the next attempt more likely, not less.',
+  'महाशन — बहुत खाने वाला, कभी न भरने वाला — जिसके साथ एक बटन जुड़ा है और कोई अतिरिक्त लागत नहीं। श्लोक कहता है कि भूख का तृप्त होना ही उसके चलते रहने का तरीक़ा है, और जनरेट बटन इसका सबसे साफ़ प्रदर्शन है जो किसी ने बनाया: हर नतीजा एक छोटी तृप्ति है और हर एक अगली कोशिश को कम नहीं, ज़्यादा संभव बनाता है।',
+  'Mahashana — bahut khaane wala, kabhi na bharne wala — jiske saath ek button juda hai aur koi extra laagat nahi. Shloka kehta hai ki bhookh ka tript hona hi uske chalte rehne ka tareeka hai, aur generate button iska sabse saaf pradarshan hai jo kisi ne banaya: har nateeja ek chhoti tripti hai aur har ek agli koshish ko kam nahi, zyada sambhav banata hai.',
+  'Each result is a small satisfaction, and each one makes the next attempt more likely rather than less.',
+  'हर नतीजा एक छोटी तृप्ति है, और हर एक अगली कोशिश को कम नहीं, ज़्यादा संभव बनाता है।',
+  'Har nateeja ek chhoti tripti hai, aur har ek agli koshish ko kam nahi, zyada sambhav banata hai.',
+  NULL, 'beginner', 'technology,ai,desire,iteration,enough'
+
+  UNION ALL SELECT 37, 'everyday_life', 7,
+  'The second helping', 'दूसरी बार', 'Doosri baar',
+  'Somebody is full and takes more anyway, at a table where the food is good and the company is easy. There is no distress in this and no crisis. They notice, mildly, that they stopped wanting it about four mouthfuls before they stopped taking it, and that the noticing did not change anything.',
+  'किसी का पेट भर चुका है और वह फिर भी और ले लेता है, ऐसी मेज़ पर जहाँ खाना अच्छा है और साथ आरामदेह। इसमें कोई तकलीफ़ नहीं है और कोई संकट नहीं। उसे हल्के से ध्यान आता है कि चाह उसने लेना बंद करने से क़रीब चार कौर पहले ख़त्म कर दी थी, और उस ध्यान से कुछ बदला नहीं।',
+  'Kisi ka pet bhar chuka hai aur woh phir bhi aur le leta hai, aisi mez par jahan khana achha hai aur saath aaramdeh. Isme koi takleef nahi hai aur koi sankat nahi. Use halke se dhyan aata hai ki chaah usne lena band karne se karib chaar kaur pehle khatam kar di thi, aur us dhyan se kuch badla nahi.',
+  'The verse names an enemy and this example is deliberately not one. Most encounters with the mechanism are this size — mild, harmless, and instructive precisely because nothing is at stake. The gap between stopping wanting and stopping taking is where the whole thing lives, and it is easiest to measure at a good dinner.',
+  'श्लोक एक दुश्मन का नाम लेता है और यह उदाहरण जानबूझकर वैसा नहीं है। इस तंत्र से ज़्यादातर मुलाक़ातें इसी आकार की होती हैं — हल्की, बेज़रर, और सीखने लायक ठीक इसलिए कि कोई दाँव नहीं है। चाहना बंद होने और लेना बंद होने के बीच का फ़ासला ही वह जगह है जहाँ यह पूरी चीज़ रहती है, और उसे नापना किसी अच्छे खाने पर सबसे आसान है।',
+  'Shloka ek dushman ka naam leta hai aur yeh udaharan jaanboojhkar waisa nahi hai. Is mechanism se zyadatar mulaqatein isi aakar ki hoti hain — halki, bezarar, aur seekhne layak theek isliye ki koi daanv nahi hai. Chahna band hone aur lena band hone ke beech ka faasla hi woh jagah hai jahan yeh poori cheez rehti hai, aur use naapna kisi achhe khaane par sabse aasan hai.',
+  'The gap between stopping wanting and stopping taking is the whole thing, and dinner is the easiest place to measure it.',
+  'चाहना बंद होने और लेना बंद होने के बीच का फ़ासला ही पूरी बात है, और उसे नापने की सबसे आसान जगह खाने की मेज़ है।',
+  'Chahna band hone aur lena band hone ke beech ka faasla hi poori baat hai, aur use naapne ki sabse aasan jagah khaane ki mez hai.',
+  NULL, 'beginner', 'food,desire,noticing,ordinary,enough'
+
+  UNION ALL SELECT 37, 'healthcare', 8,
+  'The last cigarette, several times', 'आख़िरी सिगरेट, कई बार', 'Aakhiri cigarette, kai baar',
+  'Somebody quitting smoking succeeds for eleven weeks and then does not. What they describe afterwards is not craving in the way they expected — it is that a particular kind of bad afternoon produced a completely reasonable-sounding thought, and that the thought did not feel like wanting. It felt like a conclusion.',
+  'धूम्रपान छोड़ रहा कोई ग्यारह हफ़्ते सफल रहता है और फिर नहीं। वह बाद में जो बताता है वह वैसी तलब नहीं है जैसी उसने सोची थी — बात यह है कि एक ख़ास तरह की बुरी दोपहर ने एक पूरी तरह वाजिब लगने वाला ख़याल पैदा किया, और वह ख़याल चाह जैसा महसूस ही नहीं हुआ। वह निष्कर्ष जैसा लगा।',
+  'Dhoomrapan chhod raha koi gyarah hafte safal rehta hai aur phir nahi. Woh baad mein jo batata hai woh waisi talab nahi hai jaisi usne sochi thi — baat yeh hai ki ek khaas tarah ki buri dopahar ne ek poori tarah waajib lagne wala khayal paida kiya, aur woh khayal chaah jaisa mehsoos hi nahi hua. Woh nishkarsh jaisa laga.',
+  'This is why the verse calls it an enemy rather than a weakness, and the distinction is practical rather than dramatic. A weakness is something you feel losing. This arrives already dressed as a reasonable conclusion, at a moment chosen for it, and the person is not aware of negotiating.',
+  'इसीलिए श्लोक इसे कमज़ोरी नहीं, दुश्मन कहता है — और यह फ़र्क़ नाटकीय नहीं, काम का है। कमज़ोरी वह है जिसे आप हारते हुए महसूस करते हैं। यह पहले से एक वाजिब निष्कर्ष का कपड़ा पहनकर आता है, ऐसे क्षण में जो इसी के लिए चुना गया है, और आदमी को पता ही नहीं चलता कि मोलभाव हो रहा है।',
+  'Isiliye shloka ise kamzori nahi, dushman kehta hai — aur yeh farq natakiya nahi, kaam ka hai. Kamzori woh hai jise tum haarte hue mehsoos karte ho. Yeh pehle se ek waajib nishkarsh ka kapda pehankar aata hai, aise pal mein jo isi ke liye chuna gaya hai, aur aadmi ko pata hi nahi chalta ki mol-bhaav ho raha hai.',
+  'It does not arrive as wanting. It arrives already dressed as a reasonable conclusion.',
+  'यह चाह बनकर नहीं आता। यह पहले से वाजिब निष्कर्ष का कपड़ा पहनकर आता है।',
+  'Yeh chaah bankar nahi aata. Yeh pehle se waajib nishkarsh ka kapda pehankar aata hai.',
+  NULL, 'advanced', 'health,habits,quitting,desire,self-deception'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
