@@ -315,6 +315,41 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 12;
 
 -- =====================================================================
+-- 8. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 12
+JOIN (
+  SELECT 5 AS vn,
+    'The formless path is real, but harder when you live through a body and senses.',
+    'Those who fix their minds on the unmanifest, the imperishable, and the indefinable reach Me. Yet that path is more difficult for embodied beings.'
+  UNION ALL SELECT 8,
+    'Let your mind and understanding return to what you most deeply trust.',
+    'Fix your mind on Me alone and place your understanding in Me. Then you will live in Me alone from this point onward.'
+  UNION ALL SELECT 12,
+    'When the whole path feels distant, let peace begin with releasing the result.',
+    'Better than practice is knowledge, better than knowledge is meditation, and better than meditation is letting go of the fruits of action. From such letting go, peace follows at once.'
+  UNION ALL SELECT 13,
+    'Devotion shows itself in how a person meets every living being.',
+    'One who has no hatred for any being, who is friendly and compassionate, free from possessiveness and ego, steady in pleasure and pain, and forgiving, is dear to Me.'
+  UNION ALL SELECT 15,
+    'A steady person does not make the world more frightened, and is not easily shaken by it.',
+    'One from whom the world does not shrink, and who does not shrink from the world, who is free from agitation, fear, and excitement, is dear to Me.'
+  UNION ALL SELECT 16,
+    'Freedom from dependence is not indifference. It is a clear and unburdened way of living.',
+    'One who expects nothing, is clean, capable, impartial, and free from distress, who gives up self-serving undertakings, is dear to Me.'
+  UNION ALL SELECT 18,
+    'Equanimity means meeting praise, blame, friend, and opponent without losing your centre.',
+    'One who is the same toward friend and enemy, honour and dishonour, cold and heat, pleasure and pain, and who is free from attachment, is dear to Me.'
+  UNION ALL SELECT 19,
+    'Contentment and restraint make a person less available to every passing demand.',
+    'One who treats praise and blame alike, is silent when silence is right, content with whatever comes, without a fixed home, and steady in mind, is dear to Me.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 

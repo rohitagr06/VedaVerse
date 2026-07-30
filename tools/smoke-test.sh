@@ -559,6 +559,55 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 6 not seeded — load database/seed_ch06.sql to test 6.5 and 6.17"
     fi
 
+    # CHAPTER 5 — THE LEVELLING VERSE, GUARDED FROM BOTH SIDES
+    #   5.18 puts the most respected figure in that society and the
+    #   most despised one in a single line and refuses to rank them.
+    #   There are two ways to spoil it and the explanation refuses
+    #   both, so both are asserted here.
+    #
+    #   The first: sanding the word down. Śvapāka was a term of
+    #   contempt aimed at people that society pushed to its bottom.
+    #   Translating it into something neutral hides what the verse is
+    #   doing, so the explanation says the word is not softened, and
+    #   the gloss says what it meant and that it must not be used as a
+    #   name now.
+    #
+    #   The second: turning it into a boast. The same book contains
+    #   4.13, and quoting 5.18 as proof the tradition was always
+    #   egalitarian is the same move as quoting 4.13 for the opposite,
+    #   run backwards. The explanation says so in as many words.
+    #
+    #   5.22 has a smaller trap: "the wise one does not dwell in them"
+    #   read as an argument for joylessness. The defence is the gloss
+    #   on ramate, which rules out "does not touch" and "does not
+    #   enjoy" by name.
+    #
+    #   Asserted on the DEFAULT render, not at a named level, because
+    #   the safeguards have to survive somebody adding a deeper
+    #   explanation row later.
+    if [ "$(status anon /chapter/5/verse/18)" = "200" ]; then
+      contains "5.18 does not sand the word down" \
+        'not softened here' \
+        "$(req anon "$BASE/chapter/5/verse/18")"
+      contains "  and does not turn the verse into a boast" \
+        'run backwards' \
+        "$(req anon "$BASE/chapter/5/verse/18")"
+      contains "  and the gloss refuses the word as a name" \
+        'must not be used as one now' \
+        "$(req anon "$BASE/chapter/5/verse/18?mode=study")"
+      contains "5.22 is not an argument for joylessness" \
+        'does not take up residence' \
+        "$(req anon "$BASE/chapter/5/verse/22")"
+      contains "  and the ramate gloss rules out both misreadings" \
+        'Not &quot;does not touch&quot; and not &quot;does not enjoy&quot;' \
+        "$(req anon "$BASE/chapter/5/verse/22?mode=study")"
+      contains "5.23 glosses vega as a surge with an end" \
+        'Not a state and not a temperament' \
+        "$(req anon "$BASE/chapter/5/verse/23?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 5 not seeded — load database/seed_ch05.sql to test 5.18 and 5.22"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

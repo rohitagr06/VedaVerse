@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 52 verses. Beginner track complete (2, 3, 12, 16, 18); intermediate track opened with ch6 |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 60 verses, 243 examples. Beginner track complete (2, 3, 12, 16, 18); intermediate track over half written (adds 5, 6; 4, 13, 14, 17 remain) |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -303,10 +303,10 @@ asserts it on the DEFAULT render rather than at a named level.
 
 **Adding a chapter needs no config change.** `app.tracks` already lists all
 three tracks in full, and `PathService::build()` skips chapters that are not
-published yet rather than erroring. Seeding chapter 6 put it on the
-intermediate path on load — 52 verses across six chapters — with nothing
-edited. Check the path after every new chapter anyway; the silence cuts both
-ways.
+published yet rather than erroring. Seeding chapter 6 and then chapter 5 put
+both on the intermediate path on load — now 60 verses across seven chapters,
+fifteen path clusters — with nothing edited. Check the path after every new
+chapter anyway; the silence cuts both ways.
 
 **A cross-reference to a verse that has not been seeded yet vanishes without
 a word.** The insert is a `JOIN` against `verses`, so a row pointing at an
@@ -318,11 +318,33 @@ then `SELECT COUNT(*)` for that chapter after loading. They have to match.
 The one deliberate exception is `seed_sample.sql`'s 2.13 → 4.7, which points
 outside the seeded set on purpose and carries a NULL target.
 
-**The safeguard sentences in 3.35, 12.13, 12.16, 16.4, 16.5 and 18.63 are
-content, not commentary.** Each one refuses a specific misreading that the
+**`verse_word_meanings.meaning_*` is `varchar(400)` and the load fails hard
+when a gloss is longer.** That is the right failure — `ERROR 1406 Data too
+long`, no partial write — but it lands in the middle of a chapter file, so
+the `DELETE` at the top of the block has already run and the table is empty
+for that chapter until the file is reloaded. The `śvapāka` gloss in
+`seed_ch05.sql` needs every one of its 371 characters, so it was compressed
+rather than trimmed of anything load-bearing. Any gloss doing real work
+should be length-checked in all three languages before the first load;
+Devanagari costs characters, not bytes, so Hindi is not automatically the
+long one.
+
+**A content-safety regex has to be read against Hinglish, not just English.**
+The caste/communal sweep over chapter 5's examples first returned seven hits
+and all seven were the pattern `jaati` matching the ordinary Hinglish verb
+*jaati hai* — "goes". A scan that cries wolf on the second most common verb
+in the corpus will be ignored within a week, which is worse than no scan. The
+working pattern drops `jaati`, word-boundaries `jati` and `Sikh`, and keeps
+the Devanagari terms separately. The sweep over chapter 5 is clean.
+
+**The safeguard sentences in 3.35, 12.13, 12.16, 16.4, 16.5, 18.63, 6.5,
+6.17, 5.18, 5.22 and 5.23 are content, not commentary.** Each one refuses a specific misreading that the
 verse has a documented history of being put to — except 18.63, which is
-there for the opposite reason: it is the sentence the product's whole stance
-rests on. `smoke-test.sh` asserts all of them by literal string. If one of
+there for the opposite reason (it is the sentence the product's whole stance
+rests on) and 6.5, 6.17, 5.22 and 5.23, which are wellbeing safeguards
+against a reading that harms the reader rather than somebody else. 5.18
+carries two at once, in opposite directions: the word must not be softened,
+and the verse must not be turned into a boast about the tradition. `smoke-test.sh` asserts all of them by literal string. If one of
 those checks fails, the correct response is to find out what changed in the
 content — never to update the expected string.
 
@@ -467,15 +489,16 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
 - **Modern examples below the specified 8–12 on most verses.** Chapter 3 is
   done at eight each, with eight distinct categories per verse so no verse
   repeats a setting. Everything else is at three or four: chapter 2 (43 of
-  96), chapters 12, 16 and 18 (24 of 64 each), chapter 6 (32 of 64). Top-up
+  96), chapters 12, 16 and 18 (24 of 64 each), chapters 5 and 6 (32 of 64
+  each). Top-up
   rows live at the bottom of each chapter's own seed file, continuing from
   sort_order 4, for the same reason the beginner explanations do.
 
   **Deliberately deprioritised.** Breadth was chosen over depth: opening a
   new chapter puts more of the book in front of a reader than taking one
   verse from three examples to eight. The top-up is still owed.
-- ~~14 of the 44 curated verses have no beginner-level explanation.~~
-  **Closed.** All 44 now have one. The fallback in
+- ~~14 of the curated verses have no beginner-level explanation.~~
+  **Closed.** All 60 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
   from rendering an empty section — but it is no longer carrying a third of
   the corpus. Each chapter's beginner rows live at the bottom of that

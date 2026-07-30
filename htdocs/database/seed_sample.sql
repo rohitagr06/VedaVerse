@@ -560,6 +560,37 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2;
 
 -- =====================================================================
+-- 11. EDITORIAL READING ANCHORS
+-- =====================================================================
+-- summary_en is the one-line meaning shown before the fuller reading.
+-- translation_en is the faithful, natural "What it says" translation.
+-- Keeping this UPDATE separate makes the seed refresh these fields when
+-- it is re-run against an existing database.
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2
+JOIN (
+  SELECT 13 AS vn,
+    'Change is not the same as destruction.' AS summary_en,
+    'Just as the embodied self passes through childhood, youth, and old age in this body, so it passes into another body. The steady person is not confused by this.' AS translation_en
+  UNION ALL SELECT 14,
+    'Pleasure and pain arrive and leave. Learn not to be ruled by either.',
+    'Contacts with the senses bring cold and heat, pleasure and pain. They come and go, for they are temporary. Bear them steadily, Arjuna.'
+  UNION ALL SELECT 47,
+    'Give your full attention to the work, not to owning its result.',
+    'Your claim is to action alone, never to its fruits. Do not make the fruits of action your motive, and do not become attached to inaction.'
+  UNION ALL SELECT 62,
+    'What you keep feeding with attention can quietly take charge of you.',
+    'When a person dwells on sense objects, attachment to them grows. From attachment comes desire, and from desire, anger.'
+  UNION ALL SELECT 70,
+    'Peace comes from letting desires pass through, not from satisfying every one.',
+    'As rivers enter the full and unmoving ocean without disturbing it, so desires enter the person who remains steady. That person finds peace, not one who chases desire.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 6. MEMORY AIDS, REFLECTIONS, PRACTICES
 -- =====================================================================
 -- The hook is the line the learner should still have in a year. Twenty

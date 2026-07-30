@@ -319,6 +319,41 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 16;
 
 -- =====================================================================
+-- 8. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 16
+JOIN (
+  SELECT 1 AS vn,
+    'Courage begins with the habits that make a person less ruled by fear and self-interest.',
+    'Fearlessness, purity of heart, steadiness in knowledge and yoga, generosity, self-control, sacrifice, study, discipline, and straightforwardness are the qualities of one born for the divine path.'
+  UNION ALL SELECT 3,
+    'Strength without cruelty is a discipline, not a personality trait.',
+    'Vigour, forgiveness, fortitude, cleanliness, freedom from malice, and freedom from excessive pride are the qualities of one born for the divine path.'
+  UNION ALL SELECT 4,
+    'Certain habits close a person down: pretence, arrogance, anger, harshness, and ignorance.',
+    'Hypocrisy, arrogance, self-conceit, anger, harshness, and ignorance belong to one moving in a destructive direction.'
+  UNION ALL SELECT 5,
+    'The chapter names directions of conduct, not permanent kinds of people.',
+    'The qualities that lead toward freedom are called divine, and those that lead toward bondage are called destructive. Do not grieve, Arjuna. You are born for the divine path.'
+  UNION ALL SELECT 10,
+    'When desire becomes endless, other people become tools for feeding it.',
+    'Holding fast to insatiable desire, hypocrisy, pride, and arrogance, they act from delusion and pursue harmful purposes.'
+  UNION ALL SELECT 13,
+    'A mind trapped in acquisition mistakes temporary possession for safety.',
+    'They think, “This I have gained today. This desire I will obtain. This wealth is mine, and more will be mine in the future.”'
+  UNION ALL SELECT 16,
+    'A mind scattered by craving can build its own confinement.',
+    'Confused by many thoughts, caught in the net of delusion, and devoted to the enjoyment of desire, they fall into an unclean state.'
+  UNION ALL SELECT 21,
+    'Desire, anger, and greed are exits from a life you can respect.',
+    'Desire, anger, and greed are the three gates leading to the ruin of the self. Therefore one should abandon all three.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 -- Every reflection here points the reader at themselves. Not one asks

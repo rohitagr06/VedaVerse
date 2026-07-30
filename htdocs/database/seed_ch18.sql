@@ -317,6 +317,41 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 18;
 
 -- =====================================================================
+-- 8. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 18
+JOIN (
+  SELECT 11 AS vn,
+    'You can release the claim to results without abandoning responsible action.',
+    'For an embodied being, it is not possible to give up action entirely. But one who gives up attachment to the fruits of action is called a renouncer.'
+  UNION ALL SELECT 14,
+    'Every outcome has more causes than the individual who claims credit or blame.',
+    'The body, the agent, the instruments, the many different efforts, and the divine factor are the five causes of every action.'
+  UNION ALL SELECT 16,
+    'Taking yourself as the only cause is not strength. It is a failure to see clearly.',
+    'One who sees the self alone as the doer, because of an untrained understanding, does not see rightly.'
+  UNION ALL SELECT 32,
+    'A confused intelligence can call harm good and mistake its own direction.',
+    'The understanding that mistakes wrongdoing for right action, and sees everything wrongly because it is covered by darkness, is tamasic.'
+  UNION ALL SELECT 37,
+    'Some forms of happiness begin with effort and become a source of ease.',
+    'That happiness which is at first like poison but in the end like nectar, born from the clarity of one’s own understanding, is called sattvic.'
+  UNION ALL SELECT 48,
+    'Every role has flaws. Do not abandon necessary work because it is imperfect.',
+    'One should not give up the work that comes with one’s own nature, even if it has faults. Every undertaking is covered by some fault, as fire is covered by smoke.'
+  UNION ALL SELECT 59,
+    'Refusal can be sincere and still fail when it ignores the forces already at work.',
+    'If, relying on ego, you think, “I will not act,” your resolve is mistaken. Your own nature will compel you.'
+  UNION ALL SELECT 63,
+    'The Gita ends its instruction by returning the decision to Arjuna.',
+    'I have told you this knowledge, more secret than secrets. Reflect on it fully, and then act as you choose.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 

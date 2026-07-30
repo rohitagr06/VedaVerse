@@ -286,6 +286,38 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2;
 
 -- =====================================================================
+-- 6. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2
+JOIN (
+  SELECT 20 AS vn,
+    'What is truly real is not born with the body or ended by it.' AS summary_en,
+    'It is never born and it never dies. Having once existed, it does not cease to be. Unborn, eternal, enduring, and ancient, it is not killed when the body is killed.' AS translation_en
+  UNION ALL SELECT 22,
+    'The body changes. The embodied self continues.',
+    'As a person puts aside worn-out clothes and takes up new ones, so the embodied self leaves worn-out bodies and enters others that are new.'
+  UNION ALL SELECT 23,
+    'Nothing material can damage the self Krishna is describing.',
+    'Weapons do not cut it, fire does not burn it, water does not wet it, and wind does not dry it.'
+  UNION ALL SELECT 27,
+    'Grief can be real without changing what is unavoidable.',
+    'For one who is born, death is certain, and for one who dies, birth is certain. Therefore you should not grieve over what cannot be avoided.'
+  UNION ALL SELECT 48,
+    'Do the work steadily, whether it succeeds or fails.',
+    'Established in yoga, perform your actions, letting go of attachment. Remain even in success and failure. This evenness is called yoga.'
+  UNION ALL SELECT 50,
+    'Yoga is the clear, skilful way of doing what needs doing.',
+    'Joined with discernment, one sets aside both good and bad results here. Therefore devote yourself to yoga. Yoga is skill in action.'
+  UNION ALL SELECT 63,
+    'Anger does not end with anger. It can take judgement down with it.',
+    'From anger comes confusion, from confusion the loss of clear memory, from that loss the ruin of discernment, and when discernment is ruined, the person is lost.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 

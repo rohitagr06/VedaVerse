@@ -141,35 +141,48 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 18 — also AFTER seed_sample.sql. Completes the beginner track.
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch18.sql
+
+# Step 6, chapter 6 — opens the intermediate track.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch06.sql
+
+# Step 6, chapter 5 — the second intermediate chapter. Contains 5.18.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch05.sql
 ```
 
-All six are safe to re-run — they update rather than duplicating.
+All eight are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-**forty-four fully-written verses** with word meanings, explanations, 139
-modern examples, memory hooks, reflections, practices and cross-references,
-all in three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50,
-62, 63 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 12
-verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1, 3, 4, 5, 10, 13,
-16 and 21; and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
+**sixty fully-written verses** with word meanings, explanations, 243 modern
+examples, memory hooks, reflections, practices and cross-references, all in
+three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
+and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
+8, 10, 12, 18, 21, 22 and 23; chapter 6 verses 5, 6, 17, 19, 26, 34, 35 and
+40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1,
+3, 4, 5, 10, 13, 16 and 21; and chapter 18 verses 11, 14, 16, 32, 37, 48, 59
+and 63.
 
-**That is the whole beginner track.** `/` now renders eleven clusters across
-five chapters, and a reader who works through it meets the argument of the
-book from 2.13 to 18.63 without a gap. Every one of the 44 verses has an
+**The beginner track is complete and the intermediate track is more than
+half written.** `/` renders eleven clusters across five chapters on the
+beginner track and fifteen across seven on the intermediate one, and a
+reader who works through the beginner track meets the argument of the book
+from 2.13 to 18.63 without a gap. Every one of the 60 verses has an
 explanation written at beginner depth, so nobody on the default track is
 served writing pitched above them.
 
-Order matters. The five chapter files all join to the chapters and topics
+Order matters. The seven chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 64 verses — the intermediate and advanced tracks, plus
-chapter 2 batch B. Nothing in these files gets thrown away.
+Step 6 adds the other 48 verses — the rest of the intermediate track
+(chapters 4, 13, 14, 17), the advanced track, and chapter 2 batch B. Nothing
+in these files gets thrown away.
 
 ## The verses the suite guards
 
-Seven sentences across five verses. Six of them refuse a specific misreading
-that the verse has a documented history of being put to; the seventh, on
-18.63, is there for the opposite reason — it is the sentence the product's
+Sixteen sentences across nine verses. Most of them refuse a specific
+misreading that the verse has a documented history of being put to; the one
+on 18.63 is there for the opposite reason — it is the sentence the product's
 whole stance rests on. `smoke-test.sh` asserts every one of them by literal
 string. **If one of those checks ever fails, find out what changed in the
 content — do not update the expected string.**
@@ -210,6 +223,37 @@ obey, not accept — do as you wish. That permission is why this text can be
 taught to somebody with no background and no belief without either side
 pretending, and it is in the book rather than being a modern accommodation.
 The explanation says so directly and the word gloss keeps *do*, not *obey*.
+
+**6.5 and 6.17** are wellbeing safeguards rather than answers to a history of
+misuse. 6.5 says a person can lift themselves and can let themselves sink,
+which handed to somebody who is depressed reads as *your suffering is your
+own fault* — a claim the line does not make. The explanation separates
+leverage from blame and says out loud that this is not a reason to stop
+asking anybody else for help. 6.17 asks for measure in eating and sleeping,
+which somebody already restricting can read as permission; the defence is
+that the verse rules out **both** extremes by name, and that `yukta` is
+glossed as *fitted* rather than as restrained or minimal.
+
+**5.18** is the levelling verse and there are two ways to spoil it, so the
+suite guards both. Sanding the word down — translating `śvapāka` into
+something neutral — hides what the verse is doing, so the explanation says
+the word is not softened and the gloss says plainly what it meant, who it was
+used against, and that it must not be used as a name now. Turning the verse
+into a boast is the other failure: the same book contains 4.13, and quoting
+5.18 as proof that the tradition was always egalitarian is the same move as
+quoting 4.13 for the opposite, run backwards. The explanation says so. Not
+one example, reflection or gloss anywhere in `seed_ch05.sql` names a caste, a
+community, a religion or a region; the 5.18 examples are about a reader
+noticing their own sorting, and none of them lets the reader finish feeling
+congratulated.
+
+**5.22** carries the chapter's smaller trap. *The wise one does not dwell in
+them* reads easily as an argument for joylessness. The gloss on `ramate`
+rules out "does not touch" and "does not enjoy" by name, and in all four of
+its examples the person keeps the thing they enjoy — what changes is what
+they had built on top of it. **5.23** glosses `vega` as a surge with a shape
+that ends, because the verse asks the reader to outlast one wave rather than
+to become a person who does not have them.
 
 ---
 

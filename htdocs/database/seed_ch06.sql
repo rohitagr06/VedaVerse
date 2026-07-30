@@ -324,6 +324,41 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 6;
 
 -- =====================================================================
+-- 7. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 6
+JOIN (
+  SELECT 5 AS vn,
+    'The mind can become an ally or an obstacle, depending on how it is trained.',
+    'Let a person lift the self by the self, and not let the self fall. For the self is the friend of the self, and the self is also its enemy.'
+  UNION ALL SELECT 6,
+    'A trained mind supports you. An untrained mind works against you.',
+    'For one who has mastered the self, the self is a friend. But for one who has not mastered the self, the self acts like an enemy.'
+  UNION ALL SELECT 17,
+    'A sustainable rhythm of living makes steadiness possible.',
+    'For one who is balanced in food and recreation, balanced in effort at work, and balanced in sleep and waking, yoga becomes the remover of suffering.'
+  UNION ALL SELECT 19,
+    'A settled mind is like a flame where no wind is pulling at it.',
+    'As a lamp in a windless place does not flicker, so is the disciplined mind of the yogi absorbed in the self.'
+  UNION ALL SELECT 26,
+    'Every return of attention is the practice.',
+    'Wherever the restless and unsteady mind wanders, from there bring it back under the control of the self.'
+  UNION ALL SELECT 34,
+    'The mind is hard to hold. Saying so is the beginning of honest practice.',
+    'The mind is restless, turbulent, strong, and stubborn, Krishna. I think controlling it is as difficult as controlling the wind.'
+  UNION ALL SELECT 35,
+    'Practice and letting go work together to steady the mind.',
+    'Without doubt, the mind is restless and hard to control. Yet it can be mastered through practice and detachment.'
+  UNION ALL SELECT 40,
+    'No sincere effort toward what is good is wasted.',
+    'One who does good never comes to a bad end, my dear. There is no ruin for such a person, here or in the life to come.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 -- No practice in this file names an amount, a duration of fasting, a

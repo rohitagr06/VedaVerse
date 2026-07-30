@@ -289,6 +289,41 @@ JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
 
 -- =====================================================================
+-- 9. EDITORIAL READING ANCHORS
+-- =====================================================================
+
+UPDATE verses v
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3
+JOIN (
+  SELECT 5 AS vn,
+    'You cannot avoid action. The real choice is how you act.',
+    'No one can remain without acting even for a moment. Everyone is compelled to act by the qualities of nature.'
+  UNION ALL SELECT 8,
+    'Do the work in front of you. Inaction cannot sustain a life.',
+    'Do the action that is yours to do, for action is better than inaction. Even maintaining the body would not be possible through inaction.'
+  UNION ALL SELECT 16,
+    'A life that only receives eventually loses its place in the exchange.',
+    'One who does not keep this wheel of giving and receiving in motion lives in vain, delighting only in the senses.'
+  UNION ALL SELECT 19,
+    'Act fully, without making your identity depend on the payoff.',
+    'Therefore, always do the action that needs to be done without attachment. By acting without attachment, a person reaches the highest.'
+  UNION ALL SELECT 21,
+    'Your conduct teaches before your words do.',
+    'Whatever a person of influence does, others follow. Whatever standard that person sets, the world takes up.'
+  UNION ALL SELECT 27,
+    'The forces shaping action are larger than the story of a separate self.',
+    'All actions are carried out by the qualities of nature. Deluded by ego, the self thinks, “I am the doer.”'
+  UNION ALL SELECT 35,
+    'A difficult life that is truly yours is safer than an impressive borrowed one.',
+    'Better is one’s own duty, though imperfectly done, than the duty of another well performed. Better to die in one’s own duty. Another’s duty brings danger.'
+  UNION ALL SELECT 37,
+    'Desire can disguise itself as hunger, then consume the person who feeds it.',
+    'It is desire, it is anger, born of the force of passion. Know it as the great devourer and the enemy here.'
+) AS x ON x.vn = v.verse_number
+SET v.summary_en = x.summary_en,
+    v.translation_en = x.translation_en;
+
+-- =====================================================================
 -- 3. HOOKS, REFLECTIONS, PRACTICES, TOPICS
 -- =====================================================================
 -- The hook is the sentence somebody repeats to a friend a week later.
