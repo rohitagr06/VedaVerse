@@ -161,26 +161,31 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 14 — the fourth intermediate chapter. Contains 14.8 and 14.23.
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch14.sql
+
+# Step 6, chapter 13 — completes the intermediate track apart from chapter 4.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch13.sql
 ```
 
-All eleven are safe to re-run — they update rather than duplicating.
+All twelve are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-**eighty-four fully-written verses** with word meanings, explanations, 243 modern
+**ninety-two fully-written verses** with word meanings, explanations, 243 modern
 examples, memory hooks, reflections, practices and cross-references, all in
 three languages: chapter 1 verses 28, 29, 30, 31, 32, 38, 46 and 47; chapter 2
 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
 8, 10, 12, 18, 21, 22 and 23; chapter 6 verses 5, 6, 17, 19, 26, 34, 35 and
-40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 14 verses 5, 6, 7,
+40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 13 verses 2, 6, 8,
+20, 27, 29, 32 and 34; chapter 14 verses 5, 6, 7,
 8, 11, 22, 23 and 26; chapter 16 verses 1,
 3, 4, 5, 10, 13, 16 and 21; chapter 17 verses 2, 3, 7, 15, 16, 19, 20 and 28;
 and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 
-**The beginner track is complete and the intermediate track is eight of its
-eleven chapters.** `/` renders thirteen clusters across six chapters on the
-beginner track and twenty-one across ten on both of the others, and a reader who works through the beginner
+**The beginner track is complete and the intermediate track is complete apart
+from chapter 4.** `/` renders thirteen clusters across six chapters on the
+beginner track and twenty-three across eleven on both of the others, and a reader who works through the beginner
 track meets the argument of the book from 2.13 to 18.63 without a gap. Every one
-of the 84 verses has an explanation written at beginner depth, so nobody on the
+of the 92 verses has an explanation written at beginner depth, so nobody on the
 default track is served writing pitched above them.
 
 **Chapter 1 is a fix, not an addition.** All 18 chapters are seeded as published,
@@ -196,17 +201,17 @@ chapter list would never have seen it again on their own path. `smoke-test.sh`
 asserts chapter 1 appears on the guest home page so this cannot regress
 silently.
 
-Order matters. The ten chapter files all join to the chapters and topics
+Order matters. The eleven chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 24 verses — the rest of the intermediate track (chapters 4
-and 13), the advanced track, and chapter 2 batch B. Nothing in these files
+Step 6 adds the other 16 verses — chapter 4, the advanced-only chapters 7 to 11
+and 15, and chapter 2 batch B. Nothing in these files
 gets thrown away.
 
 ## The verses the suite guards
 
-Thirty-five sentences across nineteen verses. Most of them refuse a specific
+Forty-one sentences across twenty-two verses. Most of them refuse a specific
 misreading that the verse has a documented history of being put to; the one
 on 18.63 is there for the opposite reason — it is the sentence the product's
 whole stance rests on. `smoke-test.sh` asserts every one of them by literal
@@ -331,6 +336,26 @@ uninvolved, the same construction as śatru-vat in 6.6. Drop the suffix and the
 verse becomes a licence to stop caring about people, which it is not — chapter 12
 describes the same person as friendly to every being, and 12.13 is
 cross-referenced here for exactly that reason.
+
+**13.6, 13.29 and 13.32** guard the most misusable idea in the book. *You are
+not this, you are the one watching it* handed to somebody in pain, grieving or
+already feeling unreal is not wisdom — it is an exit, and unlike caste or gender
+nobody has to be arguing in bad faith for the harm to land. The reader does it to
+themselves and it feels like progress. The chapter defends against this itself,
+which is why the explanations quote the text rather than arguing alongside it.
+**13.6** puts `cetanā` — awareness — on the list of what the *field* contains, so
+the witness is not a place a person can climb into, and any practice that
+consists of climbing into it has misread the verse that defines it. **13.29** is
+the chapter's own wellbeing line, `na hinasty ātmanā ātmānam` — he does not
+injure the self by the self — in the identical construction to 6.5, and it says
+this seeing produces *less* self-harm, so any reading that leaves somebody
+further from themselves is contradicted by the same chapter. **13.32** can go
+wrong in two directions at once and both are asserted: "not stained" means not
+coloured by (the 5.10 leaf sits in the water all day, so this is not an
+instruction to stop feeling things), and it is not moral licence either. Not one
+practice in `seed_ch13.sql` asks the reader to step back from, disidentify from
+or observe themselves from a distance — that is the one thing this chapter must
+not become an exercise for.
 
 `smoke-test.sh` also asserts that **/chapter/1 reports 8 verses**, because the
 bug that verse set fixed was a published chapter with nothing in it.

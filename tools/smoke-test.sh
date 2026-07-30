@@ -747,6 +747,55 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 14 not seeded — load database/seed_ch14.sql to test 14.8 and 14.23"
     fi
 
+    # CHAPTER 13 — THE MOST MISUSABLE IDEA IN THE BOOK
+    #   "You are not this, you are the one watching it." Handed to
+    #   somebody in pain, grieving, or already feeling unreal, that is
+    #   not wisdom — it is an exit, and unlike caste or gender nobody
+    #   has to be arguing in bad faith for the harm to happen. The
+    #   reader does it to themselves and it feels like progress.
+    #
+    #   The chapter defends against this itself in three places, and the
+    #   explanations quote the text rather than arguing alongside it:
+    #
+    #   13.6 puts cetana — AWARENESS — on the list of what the field
+    #   contains. If awareness is among the things observed then the
+    #   watcher is not a place a person can climb into, and any practice
+    #   that consists of climbing into it has misread the verse that
+    #   defines it.
+    #
+    #   13.29 is the chapter's own wellbeing line: na hinasty atmana
+    #   atmanam, he does not injure the self by the self. Same
+    #   construction as 6.5. The claim is that this seeing produces LESS
+    #   self-harm, so any reading of 13.2 or 13.32 that leaves somebody
+    #   further from themselves is contradicted by the same chapter.
+    #
+    #   13.32 can go wrong in two directions at once and both are
+    #   asserted. Not stained means not coloured by — the 5.10 leaf sits
+    #   in the water all day — so it is not an instruction to stop
+    #   feeling things. And it is not moral licence either.
+    if [ "$(status anon /chapter/13/verse/29)" = "200" ]; then
+      contains "13.6 keeps the witness out of reach as a hiding place" \
+        'the watcher is not a place a person can go and sit' \
+        "$(req anon "$BASE/chapter/13/verse/6")"
+      contains "  and the cetana gloss says why" \
+        'awareness is among the things being watched' \
+        "$(req anon "$BASE/chapter/13/verse/6?mode=study")"
+      contains "13.29 says the seeing produces less self-harm" \
+        'it produces LESS self-harm' \
+        "$(req anon "$BASE/chapter/13/verse/29")"
+      contains "13.32 is not an instruction to stop feeling things" \
+        'is not a technique. It will not work' \
+        "$(req anon "$BASE/chapter/13/verse/32")"
+      contains "  and it is not moral licence either" \
+        'nothing attaches to me, so nothing I do matters' \
+        "$(req anon "$BASE/chapter/13/verse/32")"
+      contains "  and the lipyate gloss keeps touched and soaked apart" \
+        'It does not mean not touched and it does not mean not felt' \
+        "$(req anon "$BASE/chapter/13/verse/32?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 13 not seeded — load database/seed_ch13.sql to test 13.6 and 13.29"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
 
     # CHAPTER 1 IS ON EVERY TRACK, NOT ONLY ON ADVANCED

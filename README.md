@@ -23,7 +23,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | **Done** |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
-| 6 | 108 curated verses, all seed content | **In progress — 84 of 108** |
+| 6 | 108 curated verses, all seed content | **In progress — 92 of 108** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -38,7 +38,7 @@ Nothing is deployed yet.
 
 ### Where step 6 has got to
 
-Eighty-four verses are written to final quality across ten chapters, each with
+Ninety-two verses are written to final quality across eleven chapters, each with
 Sanskrit, IAST and simple transliteration, a literal rendering, three original
 translations, three summaries, an explanation at beginner depth, memory hooks,
 three reflection questions, a practice, topic tags, modern examples,
@@ -53,6 +53,7 @@ Hinglish.
 | 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
 | 6 — Sitting With Yourself | 8 | 32 | intermediate, advanced |
 | 12 — The Easier Road | 8 | 24 | all three |
+| 13 — The Field and Who Watches It | 8 | 32 | intermediate, advanced |
 | 14 — Three Settings | 8 | 32 | intermediate, advanced |
 | 16 — Two Directions | 8 | 24 | all three |
 | 17 — What You Actually Believe | 8 | 32 | intermediate, advanced |
@@ -65,9 +66,10 @@ tracks rather than first: the collapse reads far better once you know what the
 argument is going to be. It used to be on the advanced track only, which was the
 same judgement taken one step too far — the chapter list shows chapter 1 first,
 badged Beginner, so a reader could open it and then never meet it again on their
-own path. The intermediate track is eight of its eleven
-chapters. Chapters 4 and 13 are still to write, and chapter 2 has a second batch
-of six discretionary verses outstanding.
+own path. **The intermediate track is now complete except for chapter 4**, which
+is deferred on purpose (below). Chapter 2 has a second batch of six discretionary
+verses outstanding, and the advanced-only chapters — 7 to 11 and 15 — are the
+remaining body of work.
 
 **Two passages are deliberately deferred rather than forgotten.** 4.13, the
 varṇa verse, and 1.40–1.44, Arjuna's kula-dharma argument with its
@@ -208,10 +210,10 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 120 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 126 HTTP checks
 ```
 
-A hundred and twenty checks over HTTP in about twenty seconds: headers, error
+A hundred and twenty-six checks over HTTP in about twenty seconds: headers, error
 pages in three languages, CSRF, the password policy, registration, escaping,
 sign-in, the role gate, recovery, the brute-force lockout — and the content
 guards described below. Exits non-zero on any failure, so it can gate a commit.
@@ -279,7 +281,12 @@ For the reader's own wellbeing: **6.5** (leverage is not blame, and this is not 
 reason to stop asking for help), **6.17 and 17.7** (both sort by fit and by
 effect, never by amount; no number appears in either), **17.19** (practice done
 by hurting yourself is put in the bottom category by the text itself — the
-problem is the category, not the dose), **14.8** (being tired is not what that
+problem is the category, not the dose), **13.6, 13.29 and 13.32** — chapter 13
+carries the most misusable idea in the book, *you are not this, you are the one
+watching it*, and it defends against that itself: 13.6 puts awareness on the list
+of things observed, so the witness is not a place to climb into; 13.29 says the
+seeing produces *less* self-harm; and 13.32's "not stained" means not coloured
+by, not not-felt — **14.8** (being tired is not what that
 verse describes — tamas is defined as born of *not-seeing*, and rest is not on
 trial anywhere in the chapter), **14.23** (udāsīna-*vat*, LIKE one uninvolved —
 the suffix is not a licence to stop caring about people), **5.22** (not an
