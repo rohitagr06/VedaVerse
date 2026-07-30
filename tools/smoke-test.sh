@@ -701,6 +701,52 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 17 not seeded — load database/seed_ch17.sql to test 17.7 and 17.19"
     fi
 
+    # CHAPTER 14 — A SORTING CHAPTER, WHICH MEANS 16.4 ALL OVER AGAIN
+    #   Any chapter that sorts into three can be read as sorting PEOPLE
+    #   into three, and somebody has always been willing to call another
+    #   person tamasic and mean it about who they are. The refusal here
+    #   is stronger than chapter 16's because the chapter argues against
+    #   the misreading itself: 14.10 says the three take turns in the
+    #   same person, so a quality that alternates inside an afternoon
+    #   cannot be an identity.
+    #
+    #   14.8 is the verse that can hurt somebody. Tamas is listed with
+    #   heedlessness, indolence and sleep, and handed to an exhausted
+    #   reader that is the book calling their state the lowest quality
+    #   of being. The defence is the definition, which comes FIRST:
+    #   ajnana-ja, born of not-seeing. Somebody exhausted can see
+    #   perfectly well what is happening to them. Rest is not on trial
+    #   anywhere in this chapter and 6.17 is cross-referenced to prove
+    #   it.
+    #
+    #   14.23 turns on a suffix. udasina-VAT, LIKE one uninvolved — the
+    #   same construction as shatru-vat in 6.6. Drop the suffix and the
+    #   verse becomes a licence to stop caring about people, which it is
+    #   not, and chapter 12 describes the same person as friendly to
+    #   every being.
+    if [ "$(status anon /chapter/14/verse/8)" = "200" ]; then
+      contains "14.5 keeps the gunas as states, not as people" \
+        'settings that take turns, not kinds of person' \
+        "$(req anon "$BASE/chapter/14/verse/5")"
+      contains "14.8 separates not-seeing from being tired" \
+        'being tired is not what this verse is describing' \
+        "$(req anon "$BASE/chapter/14/verse/8")"
+      contains "  and the ajnana-ja gloss says so too" \
+        'which is not the same as being tired' \
+        "$(req anon "$BASE/chapter/14/verse/8?mode=study")"
+      contains "14.23 is not a licence to stop caring" \
+        'licence to stop caring about anybody' \
+        "$(req anon "$BASE/chapter/14/verse/23")"
+      contains "  and the udasina-vat gloss keeps the suffix" \
+        'Drop the suffix and the verse becomes a licence' \
+        "$(req anon "$BASE/chapter/14/verse/23?mode=study")"
+      contains "14.6 says the clear setting binds too" \
+        'said of the good one' \
+        "$(req anon "$BASE/chapter/14/verse/6?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 14 not seeded — load database/seed_ch14.sql to test 14.8 and 14.23"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

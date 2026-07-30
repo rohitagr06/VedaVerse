@@ -157,26 +157,31 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 1 — fixes a published chapter that had no verses.
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch01.sql
+
+# Step 6, chapter 14 — the fourth intermediate chapter. Contains 14.8 and 14.23.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch14.sql
 ```
 
-All ten are safe to re-run — they update rather than duplicating.
+All eleven are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-**seventy-six fully-written verses** with word meanings, explanations, 243 modern
+**eighty-four fully-written verses** with word meanings, explanations, 243 modern
 examples, memory hooks, reflections, practices and cross-references, all in
 three languages: chapter 1 verses 28, 29, 30, 31, 32, 38, 46 and 47; chapter 2
 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
 8, 10, 12, 18, 21, 22 and 23; chapter 6 verses 5, 6, 17, 19, 26, 34, 35 and
-40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1,
+40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 14 verses 5, 6, 7,
+8, 11, 22, 23 and 26; chapter 16 verses 1,
 3, 4, 5, 10, 13, 16 and 21; chapter 17 verses 2, 3, 7, 15, 16, 19, 20 and 28;
 and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 
-**The beginner track is complete and the intermediate track is seven of its
+**The beginner track is complete and the intermediate track is eight of its
 eleven chapters.** `/` renders eleven clusters across five chapters on the
-beginner track, seventeen across eight on the intermediate one and nineteen
-across nine on the advanced one, and a reader who works through the beginner
+beginner track, nineteen across nine on the intermediate one and twenty-one
+across ten on the advanced one, and a reader who works through the beginner
 track meets the argument of the book from 2.13 to 18.63 without a gap. Every one
-of the 76 verses has an explanation written at beginner depth, so nobody on the
+of the 84 verses has an explanation written at beginner depth, so nobody on the
 default track is served writing pitched above them.
 
 **Chapter 1 is a fix, not an addition.** All 18 chapters are seeded as published,
@@ -186,17 +191,17 @@ off the beginner path deliberately (`app.php` explains why: the collapse reads
 far better once you know what the argument is going to be), and it is now on the
 advanced path where the config always had it.
 
-Order matters. The nine chapter files all join to the chapters and topics
+Order matters. The ten chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 32 verses — the rest of the intermediate track (chapters
-4, 13 and 14), the advanced track, and chapter 2 batch B. Nothing in these files
+Step 6 adds the other 24 verses — the rest of the intermediate track (chapters 4
+and 13), the advanced track, and chapter 2 batch B. Nothing in these files
 gets thrown away.
 
 ## The verses the suite guards
 
-Twenty-nine sentences across sixteen verses. Most of them refuse a specific
+Thirty-five sentences across nineteen verses. Most of them refuse a specific
 misreading that the verse has a documented history of being put to; the one
 on 18.63 is there for the opposite reason — it is the sentence the product's
 whole stance rests on. `smoke-test.sh` asserts every one of them by literal
@@ -304,6 +309,23 @@ method, a plan or an outcome, because a worked example of despair is an
 instruction rather than a teaching aid. **1.47** is the evidence that the book
 does not despise the collapse: Sañjaya reports the sitting, the bow and the grief
 and uses no word for weakness anywhere, and the gloss says so.
+
+**14.5, 14.8 and 14.23** are chapter 14's. Any chapter that sorts into three can
+be read as sorting people into three, and this one has the best possible answer
+to that: 14.10 says the three guṇas take turns, each rising by putting the other
+two down, in the same person — so a quality that alternates inside an afternoon
+cannot be an identity. Where the text refuses a misuse itself, the explanation
+quotes the text rather than arguing alongside it. **14.8** is the verse that can
+hurt somebody: tamas is listed with heedlessness, indolence and sleep, and handed
+to an exhausted reader that is the book calling their state the lowest quality of
+being. The defence is the definition, which comes *first* — ajñāna-ja, born of
+not-seeing. Somebody exhausted can see perfectly well what is happening to them.
+Rest is not on trial anywhere in the chapter and 6.17 is cross-referenced from
+this verse to prove it. **14.23** turns on a suffix: udāsīna-*vat*, LIKE one
+uninvolved, the same construction as śatru-vat in 6.6. Drop the suffix and the
+verse becomes a licence to stop caring about people, which it is not — chapter 12
+describes the same person as friendly to every being, and 12.13 is
+cross-referenced here for exactly that reason.
 
 `smoke-test.sh` also asserts that **/chapter/1 reports 8 verses**, because the
 bug that verse set fixed was a published chapter with nothing in it.

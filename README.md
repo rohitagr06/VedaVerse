@@ -23,7 +23,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | **Done** |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
-| 6 | 108 curated verses, all seed content | **In progress — 76 of 108** |
+| 6 | 108 curated verses, all seed content | **In progress — 84 of 108** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -38,7 +38,7 @@ Nothing is deployed yet.
 
 ### Where step 6 has got to
 
-Seventy-six verses are written to final quality across nine chapters, each with
+Eighty-four verses are written to final quality across ten chapters, each with
 Sanskrit, IAST and simple transliteration, a literal rendering, three original
 translations, three summaries, an explanation at beginner depth, memory hooks,
 three reflection questions, a practice, topic tags, modern examples,
@@ -53,21 +53,22 @@ Hinglish.
 | 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
 | 6 — Sitting With Yourself | 8 | 32 | intermediate, advanced |
 | 12 — The Easier Road | 8 | 24 | all three |
+| 14 — Three Settings | 8 | 32 | intermediate, advanced |
 | 16 — Two Directions | 8 | 24 | all three |
 | 17 — What You Actually Believe | 8 | 32 | intermediate, advanced |
 | 18 — Putting It Down | 8 | 24 | all three |
 
 **The beginner track is complete** — chapters 2, 3, 12, 16 and 18, eleven path
 clusters, and a reader who works through it meets the argument of the book from
-2.13 to 18.63 without a gap. The intermediate track is seven of its eleven
-chapters. Chapters 4, 13 and 14 are still to write, and chapter 2 has a second
-batch of six discretionary verses outstanding.
+2.13 to 18.63 without a gap. The intermediate track is eight of its eleven
+chapters. Chapters 4 and 13 are still to write, and chapter 2 has a second batch
+of six discretionary verses outstanding.
 
 **Two passages are deliberately deferred rather than forgotten.** 4.13, the
 varṇa verse, and 1.40–1.44, Arjuna's kula-dharma argument with its
 corruption-of-women and varṇa-saṅkara claims, are the book's hardest passages on
 caste and gender. They are being written as one piece of work rather than
-separately, because 5.18 and 17.2 both already say things that constrain how
+separately, because 5.18, 17.2 and 14.5 all already say things that constrain how
 they can honestly be handled. The deferral is recorded in `CLAUDE.md` §9 and in
 the header of `seed_ch01.sql`.
 
@@ -202,10 +203,10 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 113 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 119 HTTP checks
 ```
 
-A hundred and thirteen checks over HTTP in about twenty seconds: headers, error
+A hundred and nineteen checks over HTTP in about twenty seconds: headers, error
 pages in three languages, CSRF, the password policy, registration, escaping,
 sign-in, the role gate, recovery, the brute-force lockout — and the content
 guards described below. Exits non-zero on any failure, so it can gate a commit.
@@ -262,7 +263,9 @@ the expected string.**
 
 Against misuse: **3.35** (svadharma is *own*, not *inherited*), **16.4 and 16.5**
 (the chapter describes two directions a person can face, not two kinds of
-person), **17.2** (svabhāva-ja is not about birth), and **5.18**, which needs
+person), **14.5** (the guṇas are settings that take turns, not kinds of person —
+and 14.10 says so itself), **17.2** (svabhāva-ja is not about birth), and
+**5.18**, which needs
 guarding from both sides at once — the word śvapāka is not sanded down, and the
 verse is not turned into a boast about the tradition, because the same book
 contains 4.13.
@@ -271,9 +274,12 @@ For the reader's own wellbeing: **6.5** (leverage is not blame, and this is not 
 reason to stop asking for help), **6.17 and 17.7** (both sort by fit and by
 effect, never by amount; no number appears in either), **17.19** (practice done
 by hurting yourself is put in the bottom category by the text itself — the
-problem is the category, not the dose), **5.22** (not an argument for
-joylessness), and the three sentences on **1.46**, which is the most carefully
-written page in the corpus.
+problem is the category, not the dose), **14.8** (being tired is not what that
+verse describes — tamas is defined as born of *not-seeing*, and rest is not on
+trial anywhere in the chapter), **14.23** (udāsīna-*vat*, LIKE one uninvolved —
+the suffix is not a licence to stop caring about people), **5.22** (not an
+argument for joylessness), and the three sentences on **1.46**, which is the most
+carefully written page in the corpus.
 
 And one guarded for the opposite reason: **18.63** — *think it over completely,
 then do as you wish*. That permission is why this text can be taught to somebody

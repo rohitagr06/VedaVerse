@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 76 verses, 307 examples, nine chapters. Beginner track complete (2, 3, 12, 16, 18); intermediate seven of eleven (adds 5, 6, 17; 4, 13, 14 remain); chapter 1 written |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 84 verses, 339 examples, ten chapters. Beginner track complete (2, 3, 12, 16, 18); intermediate eight of eleven (adds 5, 6, 14, 17; 4 and 13 remain); chapter 1 written |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -305,7 +305,7 @@ asserts it on the DEFAULT render rather than at a named level.
 three tracks in full, and `PathService::build()` skips chapters that are not
 published yet rather than erroring. Seeding 6, then 5, then 17 put all three on
 the intermediate path on load, and chapter 1 joined the advanced path the same
-way — 76 verses across nine chapters — with nothing edited. Check the path after
+way — 84 verses across ten chapters — with nothing edited. Check the path after
 every new chapter anyway; the silence cuts both ways.
 
 **A published chapter with no verses is a live bug, not an empty slot.** All 18
@@ -356,14 +356,26 @@ refusing to diagnose. Same failure as `jaati` matching the Hinglish verb. Every
 one of these scans now uses `[[:<:]]...[[:>:]]`, and a scan that fires on the
 prose meant to protect the reader will be ignored within a week.
 
+**A chapter that sorts is a chapter that will be used to sort people, and the
+best refusal is one the text makes itself.** 16.4 needed an explanation written
+against the misreading. 14.5 did not have to: 14.10 says the three guṇas take
+turns, each rising by putting the other two down, in the same person — so a
+quality that alternates inside an afternoon cannot be an identity, and the
+chapter supplies its own argument. Where the text already refuses a misuse, quote
+the text; an explanation that argues where the verse already argued is weaker,
+not stronger. 17.19 is the same pattern for wellbeing, and 6.17 is what 14.8
+points at.
+
 **The safeguard sentences in 3.35, 12.13, 12.16, 16.4, 16.5, 18.63, 6.5,
-6.17, 5.18, 5.22, 5.23, 1.28, 1.46, 1.47, 17.2, 17.7, 17.16 and 17.19 are
-content, not commentary.** Each one refuses a specific misreading that the
+6.17, 5.18, 5.22, 5.23, 1.28, 1.46, 1.47, 14.5, 14.8, 14.23, 17.2, 17.7, 17.16
+and 17.19 are content, not commentary.** Each one refuses a specific misreading that the
 verse has a documented history of being put to — except 18.63, which is
 there for the opposite reason (it is the sentence the product's whole stance
 rests on) and 6.5, 6.17, 5.22, 5.23, 1.28, 1.47, 17.7, 17.16 and 17.19, which
 are wellbeing safeguards against a reading that harms the reader rather than
-somebody else. 5.18 carries two at once, in opposite directions: the word must
+somebody else — and 14.8 is the sharpest of those, because tamas is listed with
+sleep and an exhausted reader will take it personally unless the definition
+(ajñāna-ja, born of not-seeing) is put in front of the behaviour. 5.18 carries two at once, in opposite directions: the word must
 not be softened, and the verse must not be turned into a boast about the
 tradition. 1.46 carries three and none may be dropped to shorten the page — the
 line is not softened, the text does not agree with it, and what helps is a
@@ -514,8 +526,8 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
 - **Modern examples below the specified 8–12 on most verses.** Chapter 3 is
   done at eight each, with eight distinct categories per verse so no verse
   repeats a setting. Everything else is at three or four: chapter 2 (43 of
-  96), chapters 12, 16 and 18 (24 of 64 each), chapters 1, 5, 6 and 17 (32 of
-  64 each). Top-up
+  96), chapters 12, 16 and 18 (24 of 64 each), chapters 1, 5, 6, 14 and 17 (32
+  of 64 each). Top-up
   rows live at the bottom of each chapter's own seed file, continuing from
   sort_order 4, for the same reason the beginner explanations do.
 
@@ -524,12 +536,13 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
   verse from three examples to eight. The top-up is still owed.
 - **4.13 and 1.40–1.44 are deferred, not forgotten.** The varṇa verse and the
   kula-dharma block are the book's hardest passages on caste and gender, and
-  they are to be written as ONE piece of work rather than separately — 5.18 and
-  17.2 both already say things that constrain how they can honestly be handled.
+  they are to be written as ONE piece of work rather than separately — 5.18,
+  14.5 and 17.2 all already say things that constrain how they can honestly be
+  handled.
   Recorded in the header of `seed_ch01.sql` and in README.md so the deferral
   reads as a decision rather than an oversight.
 - ~~14 of the curated verses have no beginner-level explanation.~~
-  **Closed.** All 76 now have one. The fallback in
+  **Closed.** All 84 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
   from rendering an empty section — but it is no longer carrying a third of
   the corpus. Each chapter's beginner rows live at the bottom of that
