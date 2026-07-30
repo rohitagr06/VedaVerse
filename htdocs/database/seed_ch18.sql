@@ -1019,3 +1019,67 @@ SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
 ) AS w
 JOIN verses v ON v.verse_number = w.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 18;
+
+-- =====================================================================
+-- 7. BEGINNER-DEPTH EXPLANATIONS ADDED LATER
+-- =====================================================================
+-- Four verses here were seeded at intermediate only. This adds the
+-- beginner depth, and with it the last of the fourteen verses in the
+-- corpus that were serving intermediate writing to a default reader.
+-- =====================================================================
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+
+  SELECT 16 AS vn, 'beginner' AS level,
+   'The verse before this one broke any action into five parts. This one is what follows from that, and it is presented as a conclusion rather than as a fresh claim.' AS h_en,
+   'इससे पहले वाले श्लोक ने किसी भी कर्म को पाँच हिस्सों में बाँटा था। यह उसी से निकलता है, और इसे नया दावा नहीं, निष्कर्ष की तरह रखा गया है।' AS h_hi,
+   'Isse pehle wale shloka ne kisi bhi karm ko paanch hisson mein baanta tha. Yeh usi se nikalta hai, aur ise naya dawa nahi, nishkarsh ki tarah rakha gaya hai.' AS h_hing,
+   'If five things go into anything that gets done, then somebody who looks at that and sees only himself doing it is not looking carefully. The verse says so in fairly blunt language, but the reason it gives is about eyesight — an untrained way of looking — rather than about character.' AS p_en,
+   'अगर जो कुछ भी होता है उसमें पाँच चीज़ें लगती हैं, तो जो उधर देखकर सिर्फ़ ख़ुद को करते हुए देखता है वह ध्यान से नहीं देख रहा। श्लोक यह काफ़ी सख़्त भाषा में कहता है, पर जो वजह देता है वह नज़र की है — देखने का बिना गढ़ा तरीक़ा — चरित्र की नहीं।' AS p_hi,
+   'Agar jo kuch bhi hota hai usme paanch cheezein lagti hain, to jo udhar dekhkar sirf khud ko karte hue dekhta hai woh dhyan se nahi dekh raha. Shloka yeh kaafi sakht bhasha mein kehta hai, par jo wajah deta hai woh nazar ki hai — dekhne ka bina gadha tareeka — charitra ki nahi.' AS p_hing,
+   'Calling it a seeing problem rather than a moral one changes what you can do about it, and that is the whole practical value. Nobody has ever been argued out of a character flaw. Somebody can be walked through a scene. Take a success and list the five; then take a failure and list the five. The second is much harder, and how much harder is itself the finding.' AS m_en,
+   'इसे नैतिक नहीं, देखने की समस्या कहना यह बदल देता है कि आप कर क्या सकते हैं — और यही पूरी काम की क़ीमत है। किसी को बहस से उसके चरित्र की ख़ामी से आज तक बाहर नहीं निकाला जा सका। किसी को दृश्य में साथ लेकर चला जा सकता है। एक सफलता लीजिए और पाँचों गिनिए; फिर एक असफलता लीजिए और पाँचों गिनिए। दूसरा कहीं कठिन है, और कितना कठिन — यही नतीजा है।' AS m_hi,
+   'Ise naitik nahi, dekhne ki samasya kehna yeh badal deta hai ki tum kar kya sakte ho — aur yahi poori kaam ki keemat hai. Kisi ko behes se uske charitra ki khami se aaj tak bahar nahi nikala ja saka. Kisi ko drishya mein saath lekar chala ja sakta hai. Ek safalta lo aur paanchon gino; phir ek asafalta lo aur paanchon gino. Doosra kahin mushkil hai, aur kitna mushkil — yahi nateeja hai.' AS m_hing
+
+  UNION ALL SELECT 32, 'beginner',
+   'The chapter is sorting things into threes. This is the third and last kind of understanding, after one that sees clearly and one that gets the proportions wrong.',
+   'अध्याय चीज़ों को तीन-तीन में बाँट रहा है। यह बुद्धि की तीसरी और आख़िरी तरह है, उस एक के बाद जो साफ़ देखती है और उस एक के बाद जो अनुपात ग़लत लगाती है।',
+   'Chapter cheezon ko teen-teen mein baant raha hai. Yeh buddhi ki teesri aur aakhiri tarah hai, us ek ke baad jo saaf dekhti hai aur us ek ke baad jo anupat galat lagati hai.',
+   'The kind that has the wrong thing marked as the right one, and then gets everything else backwards from there. This is not a description of somebody who does not care about right and wrong. It is somebody who cares a lot and has the labels swapped, and who therefore works outward from the swap perfectly consistently.',
+   'वह तरह जिसमें ग़लत चीज़ पर सही का निशान लगा है, और वहाँ से बाक़ी सब उल्टा हो जाता है। यह उस आदमी का वर्णन नहीं है जिसे सही-ग़लत की परवाह नहीं। यह उस आदमी का है जिसे बहुत परवाह है और जिसके लेबल आपस में बदल गए हैं, और जो इसलिए उस अदला-बदली से पूरी संगति के साथ आगे बढ़ता है।',
+   'Woh tarah jisme galat cheez par sahi ka nishan laga hai, aur wahan se baaki sab ulta ho jaata hai. Yeh us aadmi ka varnan nahi hai jise sahi-galat ki parwah nahi. Yeh us aadmi ka hai jise bahut parwah hai aur jiske label aapas mein badal gaye hain, aur jo isliye us adla-badli se poori sangati ke saath aage badhta hai.',
+   'That consistency is why it cannot be spotted from inside. Every individual step is correct relative to the label at the top, so nothing feels wrong on any given day. It belongs to the same family as chapter 16 and attracts the same misuse, so the same thing has to be said: this describes a state a mind can be in, not a kind of person. And everybody in that state has one thing in common — they are sure they are not in it. Which leaves exactly one honest way to use the verse, and one honest method: ask somebody else.',
+   'वही संगति है जिसकी वजह से इसे भीतर से पकड़ा नहीं जा सकता। हर अलग क़दम ऊपर लगे लेबल के हिसाब से सही है, इसलिए किसी भी दिन कुछ ग़लत महसूस नहीं होता। यह सोलहवें अध्याय के ही परिवार का है और उसी दुरुपयोग को खींचता है, तो वही बात कहनी पड़ेगी: यह उस अवस्था का वर्णन है जिसमें कोई मन हो सकता है, किसी तरह के व्यक्ति का नहीं। और उस अवस्था में मौजूद सबमें एक बात समान है — उन्हें यक़ीन है कि वे उसमें नहीं हैं। इससे इस श्लोक का ठीक एक ईमानदार इस्तेमाल बचता है, और एक ईमानदार तरीक़ा: किसी और से पूछिए।',
+   'Wahi sangati hai jiski wajah se ise bheetar se pakda nahi ja sakta. Har alag kadam upar lage label ke hisaab se sahi hai, isliye kisi bhi din kuch galat mehsoos nahi hota. Yeh solahwe chapter ke hi parivar ka hai aur usi durupyog ko kheenchta hai, to wahi baat kehni padegi: yeh us avastha ka varnan hai jisme koi man ho sakta hai, kisi tarah ke insaan ka nahi. Aur us avastha mein maujood sabme ek baat samaan hai — unhe yakeen hai ki woh usme nahi hain. Isse is shloka ka theek ek imaandar istemaal bachta hai, aur ek imaandar tareeka: kisi aur se poocho.'
+
+  UNION ALL SELECT 48, 'beginner',
+   'Late in the chapter, and said to somebody who has spent the whole book looking for the option with nothing wrong in it. Arjuna''s first objection was that both courses open to him were terrible, which was true.',
+   'अध्याय के अंत के पास, और उस व्यक्ति से कहा गया जिसने पूरी किताब ऐसा विकल्प ढूँढ़ने में बिताई जिसमें कुछ ग़लत न हो। अर्जुन की पहली आपत्ति यही थी कि उसके सामने खुले दोनों रास्ते भयानक हैं, जो सच था।' ,
+   'Chapter ke ant ke paas, aur us insaan se kaha gaya jisne poori kitaab aisa option dhoondhne mein bitayi jisme kuch galat na ho. Arjun ki pehli aapatti yahi thi ki uske saamne khule dono raste bhayanak hain, jo sach tha.',
+   'Do not drop the work that came with you just because it has something wrong in it. Every fire has smoke — smoke is not a flaw in a particular fire, it is what fire does. So "this has something wrong in it" cannot by itself be a reason to stop, because it will be equally true of the next thing.',
+   'जो काम आपके साथ आया है उसे सिर्फ़ इसलिए मत छोड़िए कि उसमें कुछ ग़लत है। हर आग में धुआँ होता है — धुआँ किसी ख़ास आग की ख़राबी नहीं, वही है जो आग करती है। तो "इसमें कुछ ग़लत है" अपने आप में रुकने की वजह नहीं हो सकती, क्योंकि यह अगली चीज़ के बारे में भी उतनी ही सच होगी।',
+   'Jo kaam tumhare saath aaya hai use sirf isliye mat chhodo ki usme kuch galat hai. Har aag mein dhuan hota hai — dhuan kisi khaas aag ki kharabi nahi, wahi hai jo aag karti hai. To "isme kuch galat hai" apne aap mein rukne ki wajah nahi ho sakti, kyunki yeh agli cheez ke baare mein bhi utni hi sach hogi.',
+   'This verse is one comma away from becoming an excuse, so be exact about what it allows. It says do not wait for a blameless option, because there is not one. It does not say any amount of harm is therefore fine. The first is an argument against sitting still; the second is a permit, and the chapter does not issue it. Anybody using this line to avoid looking at the smoke has stopped reading a verse too early.',
+   'यह श्लोक बहाना बनने से एक अल्पविराम भर दूर है, इसलिए साफ़ रहिए कि यह क्या मंज़ूर करता है। यह कहता है कि बेदाग़ विकल्प का इंतज़ार मत कीजिए, क्योंकि ऐसा कोई है नहीं। यह यह नहीं कहता कि इसलिए कितना भी नुक़सान ठीक है। पहला जड़ता के ख़िलाफ़ दलील है; दूसरा इजाज़तनामा है, और अध्याय वह जारी नहीं करता। जो इस पंक्ति का इस्तेमाल धुएँ की तरफ़ न देखने के लिए कर रहा है, उसने एक श्लोक पहले पढ़ना बंद कर दिया।',
+   'Yeh shloka bahana banne se ek comma bhar door hai, isliye saaf raho ki yeh kya manzoor karta hai. Yeh kehta hai ki bedaag option ka intezaar mat karo, kyunki aisa koi hai nahi. Yeh yeh nahi kehta ki isliye kitna bhi nuksaan theek hai. Pehla jadta ke khilaf dalil hai; doosra ijazatnama hai, aur chapter woh jaari nahi karta. Jo is line ka istemaal dhuen ki taraf na dekhne ke liye kar raha hai, usne ek shloka pehle padhna band kar diya.'
+
+  UNION ALL SELECT 59, 'beginner',
+   'Almost the end of the book. Arjuna''s original position — I am not doing this — is picked up again and answered, and the answer is not an argument. It is a prediction.',
+   'किताब का लगभग अंत। अर्जुन की मूल स्थिति — मैं यह नहीं कर रहा — फिर उठाई जाती है और जवाब दी जाती है, और वह जवाब कोई दलील नहीं है। वह एक भविष्यवाणी है।',
+   'Kitaab ka lagbhag ant. Arjun ki mool sthiti — main yeh nahi kar raha — phir uthayi jaati hai aur jawab di jaati hai, aur woh jawab koi dalil nahi hai. Woh ek bhavishyavani hai.',
+   'If the decision rests on your own picture of yourself, it will not hold. Notice what is being called false — not the refusal, the foundation under it. And the reason given is mechanical rather than moral: what you are actually made of will put you back in it.',
+   'अगर फ़ैसला आपकी अपनी तस्वीर पर टिका है, तो वह टिकेगा नहीं। ध्यान दीजिए किसे झूठा कहा जा रहा है — इनकार को नहीं, उसके नीचे की नींव को। और जो वजह दी गई है वह नैतिक नहीं, यांत्रिक है: आप असल में जिस चीज़ से बने हैं वह आपको फिर उसी में डाल देगी।',
+   'Agar faisla tumhari apni tasveer par tika hai, to woh tikega nahi. Dhyan do kise jhootha kaha ja raha hai — inkaar ko nahi, uske neeche ki neenv ko. Aur jo wajah di gayi hai woh naitik nahi, yantrik hai: tum asal mein jis cheez se bane ho woh tumhe phir usi mein daal degi.',
+   'Most people have a version of this: the thing they announced they would never do again, and then did, on a Thursday, for reasons that seemed perfectly good at the time. That last part is what the failure looks like from inside. Not weakness you can feel arriving — a fresh and entirely sincere argument.',
+   'ज़्यादातर लोगों के पास इसका अपना रूप है: वह चीज़ जिसके बारे में उन्होंने ऐलान किया था कि दोबारा कभी नहीं, और फिर किसी गुरुवार को कर ली, ऐसी वजहों से जो उस वक़्त बिलकुल ठीक लगीं। आख़िरी हिस्सा ही वह है जो भीतर से नाकामी जैसा दिखता है। ऐसी कमज़ोरी नहीं जिसे आते हुए महसूस किया जा सके — एक ताज़ा और पूरी तरह सच्ची दलील।',
+   'Zyadatar logon ke paas iska apna roop hai: woh cheez jiske baare mein unhone elaan kiya tha ki dobara kabhi nahi, aur phir kisi Thursday ko kar li, aisi wajahon se jo us waqt bilkul theek lagin. Aakhiri hissa hi woh hai jo bheetar se nakami jaisa dikhta hai. Aisi kamzori nahi jise aate hue mehsoos kiya ja sake — ek taza aur poori tarah sachchi dalil.'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 18;

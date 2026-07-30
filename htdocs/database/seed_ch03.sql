@@ -999,3 +999,49 @@ SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
 ) AS w
 JOIN verses v ON v.verse_number = w.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;
+
+-- =====================================================================
+-- 7. BEGINNER-DEPTH EXPLANATIONS ADDED LATER
+-- =====================================================================
+-- 3.16 and 3.27 were seeded at intermediate and advanced respectively,
+-- so the default reader met them through the repository's fallback.
+-- This adds the beginner depth for both.
+--
+-- These live at the bottom of this file rather than in one of their own
+-- because the DELETE in the explanations section clears the whole
+-- chapter. A row added from elsewhere would vanish on the next re-run.
+-- =====================================================================
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+
+  SELECT 16 AS vn, 'beginner' AS level,
+   'Krishna has been describing a cycle — rain, food, work, giving, rain again — in which everything depends on something else being kept going. This verse is what he says about somebody standing outside it.' AS h_en,
+   'कृष्ण एक चक्र बता रहे हैं — वर्षा, अन्न, कर्म, दान, फिर वर्षा — जिसमें हर चीज़ इस पर टिकी है कि कोई और चीज़ चलती रहे। यह श्लोक उस व्यक्ति के बारे में है जो उसके बाहर खड़ा है।' AS h_hi,
+   'Krishna ek chakr bata rahe hain — varsha, anna, karm, daan, phir varsha — jisme har cheez is par tiki hai ki koi aur cheez chalti rahe. Yeh shloka us insaan ke baare mein hai jo uske bahar khada hai.' AS h_hing,
+   'You arrived onto something already running. Roads, water, the people who taught you, the work somebody did before you got here. The verse asks a single question about that: what are you putting back? Somebody who only takes, it says, is not really living — just consuming.' AS p_en,
+   'आप ऐसी चीज़ पर आए जो पहले से चल रही थी। सड़कें, पानी, वे लोग जिन्होंने आपको सिखाया, वह काम जो आपके आने से पहले किसी ने किया। श्लोक इस पर एक ही सवाल पूछता है: आप वापस क्या डाल रहे हैं? जो सिर्फ़ लेता है, वह कहता है, वह सचमुच जी नहीं रहा — बस खा रहा है।' AS p_hi,
+   'Tum aisi cheez par aaye jo pehle se chal rahi thi. Sadkein, paani, woh log jinhone tumhe sikhaya, woh kaam jo tumhare aane se pehle kisi ne kiya. Shloka is par ek hi sawaal poochta hai: tum wapas kya daal rahe ho? Jo sirf leta hai, woh kehta hai, woh sach mein jee nahi raha — bas kha raha hai.' AS p_hing,
+   'The word the verse uses is stronger than "unfair", and that is on purpose. But notice what it is not doing: it is not asking you to feel guilty about having been a child, or about using a road. It is asking the wheel to become visible, and it becomes visible the first time you have to turn a bit of it yourself.' AS m_en,
+   'श्लोक जो शब्द इस्तेमाल करता है वह "अन्याय" से सख़्त है, और यह जानबूझकर है। पर ध्यान दीजिए वह क्या नहीं कर रहा: वह आपसे यह नहीं कह रहा कि बच्चा रहने पर या सड़क इस्तेमाल करने पर अपराधबोध महसूस कीजिए। वह चाहता है कि चक्र दिखने लगे, और वह पहली बार तब दिखता है जब उसका थोड़ा हिस्सा आपको ख़ुद घुमाना पड़े।' AS m_hi,
+   'Shloka jo shabd istemaal karta hai woh "anyay" se sakht hai, aur yeh jaanboojhkar hai. Par dhyan do woh kya nahi kar raha: woh tumse yeh nahi keh raha ki bachcha rehne par ya sadak istemaal karne par apradhbodh mehsoos karo. Woh chahta hai ki chakr dikhne lage, aur woh pehli baar tab dikhta hai jab uska thoda hissa tumhe khud ghumana pade.' AS m_hing
+
+  UNION ALL SELECT 27, 'beginner',
+   'Krishna has been arguing that action is unavoidable. Here he goes one step further and says something about who is doing it, which is a stranger claim and the one the chapter is remembered for.',
+   'कृष्ण कह रहे थे कि कर्म से बचा नहीं जा सकता। यहाँ वे एक क़दम और आगे जाकर यह बताते हैं कि कर रहा कौन है — जो ज़्यादा अजीब दावा है और जिसके लिए यह अध्याय याद रखा जाता है।',
+   'Krishna keh rahe the ki karm se bacha nahi ja sakta. Yahan woh ek kadam aur aage jaakar yeh batate hain ki kar raha kaun hai — jo zyada ajeeb dawa hai aur jiske liye yeh chapter yaad rakha jaata hai.',
+   'The claim is that the work is done by the machinery — your temperament, your training, the conditions of the day, none of which you chose — and that afterwards something steps forward and puts its name to it. The doing and the claiming are two separate events, and only the first one actually happened out in the world.',
+   'दावा यह है कि काम मशीन करती है — आपका स्वभाव, आपकी तालीम, उस दिन के हालात, इनमें से कुछ भी आपने चुना नहीं — और बाद में कोई आगे आकर उस पर अपना नाम लिख देता है। करना और दावा करना दो अलग घटनाएँ हैं, और दुनिया में असल में पहली ही हुई।',
+   'Dawa yeh hai ki kaam machine karti hai — tumhara swabhav, tumhari taleem, us din ke haalat, inme se kuch bhi tumne chuna nahi — aur baad mein koi aage aakar us par apna naam likh deta hai. Karna aur dawa karna do alag ghatnayein hain, aur duniya mein asal mein pehli hi hui.',
+   'Taken carelessly this sounds like nobody is responsible for anything, and the book does not go there — it spends eighteen chapters telling somebody to act well. Taken carefully it does something smaller and more useful: it makes taking the credit and taking the blame look like the same mistake. Somebody who still cannot forgive themselves for a decision made ten years ago is holding exactly the claim this verse declines.',
+   'लापरवाही से लें तो यह लगता है कि किसी की कोई ज़िम्मेदारी ही नहीं, और किताब वहाँ जाती नहीं — वह अठारह अध्याय किसी से अच्छा कर्म करने को कहती है। ध्यान से लें तो यह छोटा और ज़्यादा काम का काम करता है: यह श्रेय लेने और दोष लेने को एक ही भूल जैसा दिखा देता है। जो आज भी दस साल पुराने किसी फ़ैसले के लिए ख़ुद को माफ़ नहीं कर पा रहा, वह ठीक वही दावा थामे है जिसे यह श्लोक अस्वीकार करता है।',
+   'Laparwahi se lo to yeh lagta hai ki kisi ki koi zimmedari hi nahi, aur kitaab wahan jaati nahi — woh atharah chapter kisi se achha karm karne ko kehti hai. Dhyan se lo to yeh chhota aur zyada kaam ka kaam karta hai: yeh credit lene aur blame lene ko ek hi galti jaisa dikha deta hai. Jo aaj bhi das saal purane kisi faisle ke liye khud ko maaf nahi kar paa raha, woh theek wahi dawa thame hai jise yeh shloka asweekar karta hai.'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 3;

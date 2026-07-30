@@ -1003,3 +1003,71 @@ SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
 ) AS w
 JOIN verses v ON v.verse_number = w.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 12;
+
+-- =====================================================================
+-- 7. BEGINNER-DEPTH EXPLANATIONS ADDED LATER
+-- =====================================================================
+-- Four of this chapter's eight verses were seeded at intermediate only,
+-- so a beginner-track reader met half of chapter 12 through the
+-- repository's fallback. This adds the beginner depth for all four.
+--
+-- They live at the bottom of this file rather than in one of their own
+-- because the DELETE in the explanations section clears the whole
+-- chapter; a row added from elsewhere would vanish on the next re-run.
+-- =====================================================================
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+
+  SELECT 12 AS vn, 'beginner' AS level,
+   'Krishna has just spent six verses offering smaller and smaller versions of the same thing — if you cannot do this, do that; if you cannot do that, do this instead. Then he stops offering and ranks them.' AS h_en,
+   'कृष्ण ने अभी छह श्लोक एक ही चीज़ के छोटे से छोटे रूप देने में लगाए हैं — यह नहीं कर सकते तो वह कीजिए; वह नहीं कर सकते तो यह कीजिए। फिर वे देना बंद करके उन्हें क्रम में रख देते हैं।' AS h_hi,
+   'Krishna ne abhi chhah shloka ek hi cheez ke chhote se chhote roop dene mein lagaye hain — yeh nahi kar sakte to woh karo; woh nahi kar sakte to yeh karo. Phir woh dena band karke unhe kram mein rakh dete hain.' AS h_hing,
+   'Four things, each better than the one before it. Drilling something until it sticks. Then understanding it. Then being able to hold your attention on it. And above all three: letting go of what the work gets you. Peace comes right after that one — not eventually, right after.' AS p_en,
+   'चार चीज़ें, हर एक पिछली से बेहतर। किसी चीज़ को रटकर बिठाना। फिर उसे समझना। फिर उस पर ध्यान टिका पाना। और इन तीनों से ऊपर: काम से जो मिलता है उसे छोड़ देना। शांति उसके ठीक बाद आती है — कभी बाद में नहीं, ठीक बाद।' AS p_hi,
+   'Chaar cheezein, har ek pichhli se behtar. Kisi cheez ko ratkar bithana. Phir use samajhna. Phir us par dhyan tika paana. Aur in teenon se upar: kaam se jo milta hai use chhod dena. Shanti uske theek baad aati hai — kabhi baad mein nahi, theek baad.' AS p_hing,
+   'The order is the useful part, because it is the opposite of how most people arrange their effort. Almost everybody pushes hardest on the bottom rungs — more discipline, more reading, better technique — since those are the ones that answer when you push. The thing at the top does not answer to pushing. It is something you stop doing.' AS m_en,
+   'क्रम ही काम की बात है, क्योंकि यह ठीक उल्टा है जिस तरह ज़्यादातर लोग अपनी मेहनत जमाते हैं। लगभग सब सबसे नीचे वाली सीढ़ियों पर ज़ोर लगाते हैं — और अनुशासन, और पढ़ाई, बेहतर तरीक़ा — क्योंकि ज़ोर लगाने पर वही जवाब देती हैं। जो सबसे ऊपर है वह ज़ोर का जवाब नहीं देता। वह वह चीज़ है जिसे करना बंद किया जाता है।' AS m_hi,
+   'Kram hi kaam ki baat hai, kyunki yeh theek ulta hai jis tarah zyadatar log apni mehnat jamate hain. Lagbhag sab sabse neeche wali seedhiyon par zor lagate hain — aur discipline, aur padhai, behtar tareeka — kyunki zor lagane par wahi jawab deti hain. Jo sabse upar hai woh zor ka jawab nahi deta. Woh woh cheez hai jise karna band kiya jaata hai.' AS m_hing
+
+  UNION ALL SELECT 16, 'beginner',
+   'The portrait of the person this chapter calls dear has been running for three verses. Six more qualities arrive here, and the last one in the list has caused more trouble in translation than anything else in the chapter.',
+   'इस अध्याय जिसे प्रिय कहता है, उसका चित्र तीन श्लोकों से चल रहा है। छह और गुण यहाँ आते हैं, और सूची का आख़िरी अनुवाद में अध्याय की किसी भी और बात से ज़्यादा गड़बड़ कर चुका है।',
+   'Is chapter jise priya kehta hai, uska chitra teen shlokon se chal raha hai. Chhah aur gun yahan aate hain, aur list ka aakhiri anuvaad mein chapter ki kisi bhi aur baat se zyada gadbad kar chuka hai.',
+   'Not waiting on anything. Straight in how he deals with people. Good at what he does. Not picking a side in a quarrel that is not his. The old ache gone. And then the last one, which in English comes out as "has given up all undertakings" and sounds like an instruction to stop working. It is not. The word means the starting, the launching — not the work.',
+   'किसी चीज़ के इंतज़ार में नहीं। लोगों से लेन-देन में सीधा। अपने काम में कुशल। ऐसे झगड़े में पक्ष नहीं लेता जो उसका है ही नहीं। पुरानी टीस जा चुकी। और फिर आख़िरी वाला, जो अंग्रेज़ी में "सब उद्यम छोड़ दिए" बनता है और काम बंद करने की हिदायत जैसा लगता है। वह है नहीं। शब्द का अर्थ है शुरू करना, उठाना — काम नहीं।',
+   'Kisi cheez ke intezaar mein nahi. Logon se len-den mein seedha. Apne kaam mein kushal. Aise jhagde mein paksh nahi leta jo uska hai hi nahi. Purani tees ja chuki. Aur phir aakhiri wala, jo English mein "sab udyam chhod diye" banta hai aur kaam band karne ki hidayat jaisa lagta hai. Woh hai nahi. Shabd ka arth hai shuru karna, uthana — kaam nahi.',
+   'What is being given up is the compulsive starting — the new plan on Monday, the fresh notebook, the enthusiasm that is really an escape from the boring middle of the last thing. Read that way it agrees with chapter 3 exactly instead of contradicting it, and it names a failure mode that most busy-looking people recognise immediately.',
+   'जो छोड़ा जा रहा है वह है बार-बार शुरू करने की लत — सोमवार को नई योजना, नई कॉपी, वह जोश जो असल में पिछली चीज़ के उबाऊ बीच से भागना है। ऐसे पढ़िए तो यह तीसरे अध्याय से टकराने के बजाय ठीक-ठीक मिल जाता है, और उस ख़राबी का नाम रखता है जिसे व्यस्त दिखने वाले ज़्यादातर लोग तुरंत पहचान लेते हैं।',
+   'Jo chhoda ja raha hai woh hai baar-baar shuru karne ki lat — Monday ko nayi yojna, nayi copy, woh josh jo asal mein pichhli cheez ke ubaau beech se bhaagna hai. Aise padho to yeh teesre chapter se takrane ke bajaye theek-theek mil jaata hai, aur us kharabi ka naam rakhta hai jise vyast dikhne wale zyadatar log turant pehchan lete hain.'
+
+  UNION ALL SELECT 18, 'beginner',
+   'The list of qualities reaches its hardest line. Everything before it could be read as a description of somebody with a naturally calm temperament. This one cannot, because it names an enemy.',
+   'गुणों की सूची अपनी सबसे कठिन पंक्ति पर पहुँचती है। इससे पहले सब कुछ स्वभाव से शांत व्यक्ति का वर्णन पढ़ा जा सकता था। यह नहीं, क्योंकि यह शत्रु का नाम लेता है।',
+   'Gunon ki list apni sabse mushkil line par pahunchti hai. Isse pehle sab kuch swabhav se shaant insaan ka varnan padha ja sakta tha. Yeh nahi, kyunki yeh shatru ka naam leta hai.',
+   'The same with the person who is against him and the person who is for him. The same when praised and when insulted. Be careful about what "the same" is asking for here — not liking them equally, and not pretending there is no difference. Your conduct does not change shape depending on which of the two is standing in front of you.',
+   'जो उसके ख़िलाफ़ है और जो उसके साथ है — दोनों के साथ एक जैसा। तारीफ़ में और अपमान में एक जैसा। "एक जैसा" यहाँ क्या माँग रहा है, इस पर सावधान रहिए — दोनों को बराबर पसंद करना नहीं, और यह दिखावा भी नहीं कि कोई फ़र्क़ ही नहीं। सामने दोनों में से कौन खड़ा है, इससे आपके बरताव का आकार नहीं बदलता।',
+   'Jo uske khilaf hai aur jo uske saath hai — dono ke saath ek jaisa. Tareef mein aur apmaan mein ek jaisa. "Ek jaisa" yahan kya maang raha hai, is par savdhan raho — dono ko barabar pasand karna nahi, aur yeh dikhava bhi nahi ki koi farq hi nahi. Saamne dono mein se kaun khada hai, isse tumhare bartav ka aakar nahi badalta.',
+   'The test almost everybody fails is not about grand enemies. It is the colleague who once made you look bad in front of somebody. Watch what happens to your standards of fairness when their work comes to you for review. The verse is not asking you to like them; it is asking whether your judgement is a judgement.',
+   'जिस कसौटी पर लगभग सब गिरते हैं वह किसी बड़े दुश्मन की नहीं है। वह उस सहकर्मी की है जिसने कभी किसी के सामने आपको नीचा दिखाया। देखिए कि जब उसका काम आपके पास समीक्षा के लिए आता है तब आपके निष्पक्षता के मानक का क्या होता है। श्लोक आपसे उसे पसंद करने को नहीं कह रहा; वह पूछ रहा है कि आपका फ़ैसला फ़ैसला है या नहीं।',
+   'Jis kasauti par lagbhag sab girte hain woh kisi bade dushman ki nahi hai. Woh us colleague ki hai jisne kabhi kisi ke saamne tumhe neecha dikhaya. Dekho ki jab uska kaam tumhare paas review ke liye aata hai tab tumhare nishpakshta ke standard ka kya hota hai. Shloka tumse use pasand karne ko nahi keh raha; woh pooch raha hai ki tumhara faisla faisla hai ya nahi.'
+
+  UNION ALL SELECT 19, 'beginner',
+   'The portrait ends here. One word in it — aniketaḥ, without a fixed dwelling — has carried a lot of weight historically and has been read both as an instruction to wander and as something much less dramatic.',
+   'चित्र यहाँ पूरा होता है। इसमें एक शब्द — अनिकेतः, बिना तय ठिकाने वाला — इतिहास में बहुत बोझ उठा चुका है और इसे घूमते रहने की हिदायत की तरह भी पढ़ा गया है और उससे कहीं कम नाटकीय किसी बात की तरह भी।',
+   'Chitra yahan poora hota hai. Isme ek shabd — aniketah, bina tay thikane wala — itihaas mein bahut bojh utha chuka hai aur ise ghoomte rehne ki hidayat ki tarah bhi padha gaya hai aur usse kahin kam natakiya kisi baat ki tarah bhi.',
+   'The quieter reading fits the rest of the list, which is entirely about what a person is like and not about where they sleep: not needing one particular arrangement in order to be all right. The room, the routine, the chair, the exact set-up without which the day cannot start. Most people have several.',
+   'शांत वाला पाठ बाक़ी सूची से मेल खाता है, जो पूरी की पूरी इस बारे में है कि आदमी कैसा है, न कि वह कहाँ सोता है: ठीक रहने के लिए किसी एक ख़ास इंतज़ाम की ज़रूरत न होना। वह कमरा, वह दिनचर्या, वह कुर्सी, चीज़ों की वह ठीक जमावट जिसके बिना दिन शुरू ही नहीं होता। ज़्यादातर लोगों के पास कई हैं।',
+   'Shaant wala padhna baaki list se mel khata hai, jo poori ki poori is baare mein hai ki aadmi kaisa hai, na ki woh kahan sota hai: theek rehne ke liye kisi ek khaas intezaam ki zaroorat na hona. Woh kamra, woh dinacharya, woh kursi, cheezon ki woh theek jamavat jiske bina din shuru hi nahi hota. Zyadatar logon ke paas kai hain.',
+   'The one to test yourself against is the word next to it: silent. Together they describe somebody who does not need to answer — not somebody with nothing to say, somebody for whom being described wrongly is not an emergency. Almost nobody manages it, and the tell is how fast the reply gets written rather than whether it was fair.',
+   'ख़ुद को जिस पर परखना चाहिए वह उसके बगल वाला शब्द है: मौनी। दोनों मिलकर उस व्यक्ति को बताते हैं जिसे जवाब देने की ज़रूरत नहीं पड़ती — ऐसा नहीं कि कहने को कुछ नहीं, बल्कि ऐसा कि ग़लत बताया जाना उसके लिए आपात स्थिति नहीं है। यह लगभग कोई नहीं कर पाता, और निशानी यह है कि जवाब कितनी जल्दी लिखा गया, यह नहीं कि वह जायज़ था।',
+   'Khud ko jis par parakhna chahiye woh uske bagal wala shabd hai: mauni. Dono milkar us insaan ko batate hain jise jawab dene ki zaroorat nahi padti — aisa nahi ki kehne ko kuch nahi, balki aisa ki galat bataya jaana uske liye emergency nahi hai. Yeh lagbhag koi nahi kar paata, aur nishani yeh hai ki jawab kitni jaldi likha gaya, yeh nahi ki woh jaayaz tha.'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 12;

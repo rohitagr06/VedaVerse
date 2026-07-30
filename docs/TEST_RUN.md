@@ -154,7 +154,9 @@ verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1, 3, 4, 5, 10, 13,
 
 **That is the whole beginner track.** `/` now renders eleven clusters across
 five chapters, and a reader who works through it meets the argument of the
-book from 2.13 to 18.63 without a gap.
+book from 2.13 to 18.63 without a gap. Every one of the 44 verses has an
+explanation written at beginner depth, so nobody on the default track is
+served writing pitched above them.
 
 Order matters. The five chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing

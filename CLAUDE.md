@@ -285,7 +285,21 @@ default beginner got a heading and nothing under it — with no way to discover
 that the writing existed at another depth. `VerseRepository::explanation()`
 now falls back to the nearest depth that exists, and the verse view
 highlights the depth actually shown rather than the one in the query string.
-Asserted by `smoke-test.sh` on 2.50, which is the verse seeded that way.
+
+**A regression test can go vacuous without failing.** That fallback was
+asserted on 2.50 at beginner depth, and stayed green after 2.50 got a
+beginner explanation — at which point it was testing nothing, silently. It
+now asks for ADVANCED on 2.14, which has beginner only. When you close the
+gap a test was watching, check whether the test still reaches the code it
+was written for.
+
+**Moving content between depths can drop a safeguard without touching it.**
+The 16.4 sentence refusing the "two kinds of person" reading was written into
+the intermediate explanation, which the default reader saw through the
+fallback. Adding a beginner row would have removed that sentence from the
+page almost everybody lands on — no edit to the sentence, no error, just a
+different row winning. The beginner text carries it too, and `smoke-test.sh`
+asserts it on the DEFAULT render rather than at a named level.
 
 **A cross-reference to a verse that has not been seeded yet vanishes without
 a word.** The insert is a `JOIN` against `verses`, so a row pointing at an
@@ -446,14 +460,14 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
 - **4 modern examples per verse against the specified 8–12.** Step 6 tops
   them up; nothing written so far is thrown away. Chapters 3 and 12 carry 3
   each, so they need the same pass.
-- **14 of the 44 curated verses have no beginner-level explanation** — 2.50,
-  3.16, 3.27, four in chapter 12, three in chapter 16 and four in chapter 18.
-  Nothing renders empty: `VerseRepository::explanation()` falls back to the
-  nearest depth that exists and the level chip shows the depth actually on
-  screen. But serving intermediate writing to a beginner-track reader on
-  nearly a third of the corpus is a content gap rather than a display one,
-  and the beginner depth for those fourteen wants writing before Step 6
-  closes. This is now the largest single piece of unfinished content work.
+- ~~14 of the 44 curated verses have no beginner-level explanation.~~
+  **Closed.** All 44 now have one. The fallback in
+  `VerseRepository::explanation()` stays — it is what keeps a missing depth
+  from rendering an empty section — but it is no longer carrying a third of
+  the corpus. Each chapter's beginner rows live at the bottom of that
+  chapter's own seed file, because the DELETE in its explanations section
+  clears the whole chapter and a row added from a separate file would vanish
+  on the next re-run.
 - **`install.php` does not offer to load `seed_sample.sql`.** A fresh install
   lands on an empty path. The empty state is handled properly, so this is
   cosmetic until Step 6 — but it is a poor first five minutes.

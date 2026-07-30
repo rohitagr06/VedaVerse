@@ -775,3 +775,41 @@ FROM (
 ) AS x
 JOIN verses v ON v.verse_number = x.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2;
+
+-- =====================================================================
+-- 5. BEGINNER-DEPTH EXPLANATIONS ADDED LATER
+-- =====================================================================
+-- 2.50 was seeded with an intermediate explanation only, so the default
+-- reader was served intermediate writing through the repository's
+-- fallback. This adds the beginner depth.
+--
+-- WHY IT LIVES AT THE BOTTOM OF THIS FILE RATHER THAN IN ITS OWN
+--   The DELETE at the top of the explanations section clears every
+--   explanation for this chapter. A beginner row added from a separate
+--   file would be wiped the next time anybody re-ran this one. Keeping
+--   it here means the chapter file owns all of its own content and a
+--   re-run in any order produces the same database.
+-- =====================================================================
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+
+  SELECT 50 AS vn, 'beginner' AS level,
+   'This line is three words in Sanskrit and it is on more posters and office walls than anything else in the book. It arrives here as part of a longer argument, and the argument is about putting something down rather than about picking something up.' AS h_en,
+   'यह पंक्ति संस्कृत में तीन शब्दों की है और किताब की किसी भी और बात से ज़्यादा पोस्टरों और दफ़्तर की दीवारों पर मिलती है। यह यहाँ एक लंबी दलील के हिस्से की तरह आती है, और वह दलील कुछ उठाने की नहीं, कुछ रख देने की है।' AS h_hi,
+   'Yeh line Sanskrit mein teen shabdon ki hai aur kitaab ki kisi bhi aur baat se zyada posteron aur office ki deewaron par milti hai. Yeh yahan ek lambi dalil ke hisse ki tarah aati hai, aur woh dalil kuch uthane ki nahi, kuch rakh dene ki hai.' AS h_hing,
+   'It says skill in action, and the obvious reading is "be good at your job". The context does not support that. The verses on either side are about acting without holding on to what the acting earns, so the skill being described is the letting go, not the doing.' AS p_en,
+   'यह कहती है कर्म में कुशलता, और सीधा पाठ बनता है "अपने काम में अच्छे बनिए"। संदर्भ इसका साथ नहीं देता। इसके दोनों तरफ़ के श्लोक इस बारे में हैं कि काम से जो मिलता है उसे थामे बिना काम किया जाए — तो जिस कुशलता की बात है वह छोड़ना है, करना नहीं।' AS p_hi,
+   'Yeh kehti hai karm mein kushalta, aur seedha padhna banta hai "apne kaam mein achhe bano". Context iska saath nahi deta. Iske dono taraf ke shloka is baare mein hain ki kaam se jo milta hai use thame bina kaam kiya jaaye — to jis kushalta ki baat hai woh chhodna hai, karna nahi.' AS p_hing,
+   'This is the most quoted line in the book and one of the most reliably misused, usually to ask somebody to work harder. Read in place it is asking for the opposite kind of effort: keep doing the work well and stop collecting what it earns you. That is harder than working harder, and it is quieter.' AS m_en,
+   'यह किताब की सबसे ज़्यादा उद्धृत पंक्ति है और सबसे भरोसे से ग़लत इस्तेमाल होने वालों में एक, आमतौर पर किसी से ज़्यादा मेहनत कराने के लिए। अपनी जगह पर पढ़ें तो यह उल्टी तरह की मेहनत माँगती है: काम अच्छा करते रहिए और उससे जो मिलता है उसे बटोरना बंद कीजिए। यह ज़्यादा मेहनत करने से कठिन है, और ज़्यादा चुपचाप।' AS m_hi,
+   'Yeh kitaab ki sabse zyada quote ki jaane wali line hai aur sabse bharose se galat istemaal hone walon mein ek, aam taur par kisi se zyada mehnat karane ke liye. Apni jagah par padho to yeh ulti tarah ki mehnat maangti hai: kaam achha karte raho aur usse jo milta hai use batorna band karo. Yeh zyada mehnat karne se mushkil hai, aur zyada chupchap.' AS m_hing
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 2;

@@ -419,16 +419,22 @@ case "$CHAPTERS" in
     check "an unknown reading mode still renders" 200 "$(status anon '/chapter/2/verse/47?mode=nonsense')"
 
     # THE EXPLANATION FALLBACK
-    #   Not every verse has all three depths written on the same day.
-    #   Without the fallback in VerseRepository::explanation(), a verse
-    #   whose only explanation is intermediate renders an EMPTY
-    #   explanation section for the default reader — a page that looks
-    #   broken rather than unfinished, and no way for that reader to
-    #   discover that the writing exists at another depth. 2.50 is
-    #   seeded intermediate-only, so it is the verse worth asserting on.
-    contains "a verse with no beginner depth still explains itself" \
+    #   Not every verse has all three depths written. Without the
+    #   fallback in VerseRepository::explanation(), a verse missing the
+    #   requested depth renders an EMPTY explanation section — a page
+    #   that looks broken rather than unfinished, and no way for the
+    #   reader to discover that the writing exists at another depth.
+    #
+    #   THIS ASSERTION USED TO POINT AT 2.50 AT BEGINNER DEPTH, AND WENT
+    #   VACUOUS WHEN 2.50 GOT A BEGINNER EXPLANATION. Every curated
+    #   verse now has one, so asking for beginner can no longer exercise
+    #   the fallback anywhere. It asks for ADVANCED on 2.14 instead —
+    #   2.14 has beginner only, and beginner is where advanced falls
+    #   back to. Keep this pointed at a depth that genuinely does not
+    #   exist; if 2.14 ever gains an advanced explanation, move it.
+    contains "a missing depth falls back instead of rendering empty" \
       '<h3>What was happening</h3>' \
-      "$(req anon "$BASE/chapter/2/verse/50?level=beginner")"
+      "$(req anon "$BASE/chapter/2/verse/14?level=advanced")"
 
     # CHAPTER 3, AND THE ONE SENTENCE IN IT THAT IS NOT OPTIONAL
     #   3.35 has been used for centuries to argue that the circumstances

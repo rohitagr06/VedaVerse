@@ -1020,3 +1020,67 @@ SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
 ) AS w
 JOIN verses v ON v.verse_number = w.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 16;
+
+-- =====================================================================
+-- 7. BEGINNER-DEPTH EXPLANATIONS ADDED LATER
+-- =====================================================================
+-- Three verses here were seeded at intermediate only, so the default
+-- reader met them through the repository's fallback. This adds the
+-- beginner depth.
+--
+-- 16.4's BEGINNER TEXT CARRIES THE SAFEGUARD TOO, AND MUST
+--   The safeguard sentence — this chapter describes two directions a
+--   person can face, NOT two kinds of person — was written into the
+--   intermediate explanation, which is what the default reader was
+--   being served by the fallback. The moment a beginner row exists,
+--   that row is what the default reader sees instead. If the sentence
+--   were only in the intermediate text it would silently disappear from
+--   the page almost everybody lands on, which is the exact opposite of
+--   what the safeguard is for. smoke-test.sh asserts it on the default
+--   render, so this is enforced rather than remembered.
+-- =====================================================================
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+
+  SELECT 4 AS vn, 'beginner' AS level,
+   'A list of good qualities has just been read out. This is the other list, and it is short: six things, named without any softening.' AS h_en,
+   'अभी अच्छे गुणों की एक सूची पढ़ी गई है। यह दूसरी सूची है, और छोटी है: छह बातें, बिना किसी नरमी के नाम लेकर।' AS h_hi,
+   'Abhi achhe gunon ki ek list padhi gayi hai. Yeh doosri list hai, aur chhoti hai: chhah baatein, bina kisi narmi ke naam lekar.' AS h_hing,
+   'Performing rather than being. Swagger. Thinking too much of yourself. Anger. Being hard on people. And the sixth, which is the strange one: not knowing that any of the other five is happening. Read them slowly and the honest response is not to think of somebody else. Everybody has done all six.' AS p_en,
+   'होना नहीं, दिखाना। अकड़। ख़ुद को बहुत बड़ा समझना। गुस्सा। लोगों के साथ सख़्ती। और छठी, जो अजीब है: यह पता न होना कि बाक़ी पाँच में से कुछ हो भी रहा है। इन्हें धीरे पढ़िए और ईमानदार प्रतिक्रिया किसी और को याद करना नहीं है। हर किसी ने छहों की हैं।' AS p_hi,
+   'Hona nahi, dikhana. Akad. Khud ko bahut bada samajhna. Gussa. Logon ke saath sakhti. Aur chhathi, jo ajeeb hai: yeh pata na hona ki baaki paanch mein se kuch ho bhi raha hai. Inhe dheere padho aur imaandar pratikriya kisi aur ko yaad karna nahi hai. Har kisi ne chhahon ki hain.' AS p_hing,
+   'So here is the thing to be clear about before reading any further. This chapter describes two directions a person can face — it is not two kinds of person, and it never says it is. Read as a way of sorting people it becomes a vocabulary for deciding that some people are a different sort of thing, and that vocabulary has done real damage when it has been pointed at communities. Nothing in these verses supports it, and the very next one has the speaker turning to the frightened man in front of him and telling him not to worry. If you finish this chapter holding a list of other people, you have read it backwards.' AS m_en,
+   'तो आगे पढ़ने से पहले एक बात साफ़ कर लीजिए। यह अध्याय दो दिशाएँ बताता है जिनकी तरफ़ कोई व्यक्ति मुड़ सकता है — यह दो तरह के लोग नहीं हैं, और यह कहीं कहता भी नहीं कि हैं। लोगों को छाँटने के तरीक़े की तरह पढ़ें तो यह ऐसी शब्दावली बन जाता है जिससे तय हो कि कुछ लोग अलग किस्म की चीज़ हैं, और उस शब्दावली ने समुदायों की तरफ़ मोड़े जाने पर सचमुच नुक़सान किया है। इन श्लोकों में कुछ भी उसका साथ नहीं देता, और ठीक अगले में वक्ता सामने खड़े डरे हुए आदमी की तरफ़ मुड़कर उससे कहते हैं कि परेशान मत हो। अगर आप यह अध्याय ख़त्म करके दूसरों की सूची थामे हैं, तो आपने इसे उल्टा पढ़ा है।' AS m_hi,
+   'To aage padhne se pehle ek baat saaf kar lo. Yeh chapter do dishayein batata hai jinki taraf koi insaan mud sakta hai — yeh do tarah ke log nahi hain, aur yeh kahin kehta bhi nahi ki hain. Logon ko chhaantne ke tareeke ki tarah padho to yeh aisi shabdavali ban jaata hai jisse tay ho ki kuch log alag kism ki cheez hain, aur us shabdavali ne samudayon ki taraf mode jaane par sach mein nuksaan kiya hai. In shlokon mein kuch bhi uska saath nahi deta, aur theek agle mein vakta saamne khade dare hue aadmi ki taraf mudkar usse kehte hain ki pareshan mat ho. Agar tum yeh chapter khatam karke doosron ki list thame ho, to tumne ise ulta padha hai.' AS m_hing
+
+  UNION ALL SELECT 10, 'beginner',
+   'A long description of the second direction is under way. This verse is where it stops being a list of faults and starts describing something with moving parts.',
+   'दूसरी दिशा का लंबा वर्णन चल रहा है। यह वही श्लोक है जहाँ वह ख़ामियों की सूची होना बंद करके ऐसी चीज़ बताने लगता है जिसमें चलते-फिरते पुर्ज़े हैं।',
+   'Doosri disha ka lamba varnan chal raha hai. Yeh wahi shloka hai jahan woh khamiyon ki list hona band karke aisi cheez batane lagta hai jisme chalte-firte purze hain.',
+   'Three parts. A want that cannot be filled, underneath everything. On top of it, show and self-importance and a slight drunkenness, which give it respectable clothes. And then holding on to things that are not true — not saying them to other people, holding them.',
+   'तीन हिस्से। सबके नीचे एक ऐसी चाह जो भर नहीं सकती। उसके ऊपर दिखावा, अपना बड़प्पन और हल्का नशा, जो उसे इज़्ज़तदार कपड़े पहना देते हैं। और फिर उन बातों को थामे रहना जो सच नहीं हैं — दूसरों से कहना नहीं, थामे रहना।',
+   'Teen hisse. Sabke neeche ek aisi chaah jo bhar nahi sakti. Uske upar dikhava, apna badappan aur halka nasha, jo use izzatdar kapde pehna dete hain. Aur phir un baaton ko thame rehna jo sach nahi hain — doosron se kehna nahi, thame rehna.',
+   'The last part is the useful one because it describes something people do without deciding to. Somebody holds a belief about a colleague, or about why something went wrong, that stopped matching the evidence years ago. It is still held not out of stupidity but because letting go of it would mean rewriting something else. That is findable in a real person on a real Tuesday, which a general condemnation never is.',
+   'आख़िरी हिस्सा काम का है क्योंकि यह वह चीज़ बताता है जो लोग बिना तय किए करते हैं। किसी के मन में किसी सहकर्मी के बारे में, या किसी बात के बिगड़ने की वजह के बारे में, ऐसी धारणा है जो सालों पहले सबूतों से मेल खाना बंद कर चुकी। वह अब भी मूर्खता से नहीं टिकी है, बल्कि इसलिए कि उसे छोड़ने पर कुछ और दोबारा लिखना पड़ेगा। यह किसी असली आदमी में किसी असली मंगलवार को ढूँढ़ा जा सकता है, जो किसी आम निंदा से कभी नहीं होता।',
+   'Aakhiri hissa kaam ka hai kyunki yeh woh cheez batata hai jo log bina tay kiye karte hain. Kisi ke man mein kisi colleague ke baare mein, ya kisi baat ke bigadne ki wajah ke baare mein, aisi dharna hai jo saalon pehle saboot se mel khana band kar chuki. Woh ab bhi moorkhta se nahi tiki hai, balki isliye ki use chhodne par kuch aur dobara likhna padega. Yeh kisi asli aadmi mein kisi asli Tuesday ko dhoondha ja sakta hai, jo kisi aam ninda se kabhi nahi hota.'
+
+  UNION ALL SELECT 16, 'beginner',
+   'Four verses of somebody''s own words have just been quoted. This is the summary of what running that sentence does to a person.',
+   'अभी किसी के अपने शब्दों के चार श्लोक उद्धृत हुए हैं। यह उसका सार है कि वह वाक्य चलाने से आदमी का क्या होता है।',
+   'Abhi kisi ke apne shabdon ke chaar shloka quote hue hain. Yeh uska saar hai ki woh vakya chalane se aadmi ka kya hota hai.',
+   'Pulled apart by too many wants at once — not one want but a committee of them, all pulling in different directions. Wrapped in a net. Stuck to whatever feels good. And down it goes from there.',
+   'एक साथ बहुत सारी चाहों से बिखरा हुआ — एक चाह नहीं, बल्कि चाहों की एक समिति, सब अलग-अलग तरफ़ खींचती हुई। एक जाल में लिपटा। जो अच्छा लगता है उससे चिपका। और वहाँ से नीचे ही नीचे।',
+   'Ek saath bahut saari chaahon se bikhra hua — ek chaah nahi, balki chaahon ki ek committee, sab alag-alag taraf kheenchti hui. Ek jaal mein lipta. Jo achha lagta hai usse chipka. Aur wahan se neeche hi neeche.',
+   'The net is the part worth keeping. A net is not invisible — it is invisible from inside, which is a different and much more specific claim. It explains why somebody caught in one can describe everybody else''s accurately and cannot find their own, and why being told about it rarely helps. You have to be standing outside a thing to see its shape.',
+   'जाल वाला हिस्सा रखने लायक है। जाल अदृश्य नहीं होता — वह भीतर से अदृश्य होता है, जो अलग और कहीं ज़्यादा ख़ास दावा है। इससे पता चलता है कि उसमें फँसा आदमी बाक़ी सबका जाल ठीक-ठीक बता सकता है और अपना नहीं ढूँढ़ पाता, और इसीलिए बता देने से आमतौर पर मदद नहीं मिलती। किसी चीज़ का आकार देखने के लिए उसके बाहर खड़ा होना पड़ता है।',
+   'Jaal wala hissa rakhne layak hai. Jaal adrishya nahi hota — woh bheetar se adrishya hota hai, jo alag aur kahin zyada khaas claim hai. Isse pata chalta hai ki usme phansa aadmi baaki sabka jaal theek-theek bata sakta hai aur apna nahi dhoondh paata, aur isiliye bata dene se aam taur par madad nahi milti. Kisi cheez ka aakar dekhne ke liye uske bahar khada hona padta hai.'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 16;
