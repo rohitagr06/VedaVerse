@@ -21,9 +21,9 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 1 | Schema, installer, config, core classes | **Done** |
 | 2 | Helpers, middleware, auth, anonymous merge | **Done** |
 | 3 | Design system, layouts, component library | **Done** |
-| 4 | Full three-language interface string table | Not started |
-| 5 | Content service, chapter/verse/topic pages, Chariot Path | Not started |
-| 6 | 108 curated verses, all seed content | Not started |
+| 4 | Full three-language interface string table | **Done** |
+| 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
+| 6 | 108 curated verses, all seed content | **In progress — 76 of 108** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -35,6 +35,41 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 15 | Final `.htaccess`, documentation, acceptance pass | Not started |
 
 Nothing is deployed yet.
+
+### Where step 6 has got to
+
+Seventy-six verses are written to final quality across nine chapters, each with
+Sanskrit, IAST and simple transliteration, a literal rendering, three original
+translations, three summaries, an explanation at beginner depth, memory hooks,
+three reflection questions, a practice, topic tags, modern examples,
+cross-references and word-by-word glosses — all of it in English, Hindi and
+Hinglish.
+
+| Chapter | Verses | Examples | Track |
+|---|---|---|---|
+| 1 — The Collapse | 8 | 32 | advanced (browsable from anywhere) |
+| 2 — The Ground Under Everything | 12 | 43 | all three |
+| 3 — Doing the Thing | 8 | 64 | all three |
+| 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
+| 6 — Sitting With Yourself | 8 | 32 | intermediate, advanced |
+| 12 — The Easier Road | 8 | 24 | all three |
+| 16 — Two Directions | 8 | 24 | all three |
+| 17 — What You Actually Believe | 8 | 32 | intermediate, advanced |
+| 18 — Putting It Down | 8 | 24 | all three |
+
+**The beginner track is complete** — chapters 2, 3, 12, 16 and 18, eleven path
+clusters, and a reader who works through it meets the argument of the book from
+2.13 to 18.63 without a gap. The intermediate track is seven of its eleven
+chapters. Chapters 4, 13 and 14 are still to write, and chapter 2 has a second
+batch of six discretionary verses outstanding.
+
+**Two passages are deliberately deferred rather than forgotten.** 4.13, the
+varṇa verse, and 1.40–1.44, Arjuna's kula-dharma argument with its
+corruption-of-women and varṇa-saṅkara claims, are the book's hardest passages on
+caste and gender. They are being written as one piece of work rather than
+separately, because 5.18 and 17.2 both already say things that constrain how
+they can honestly be handled. The deferral is recorded in `CLAUDE.md` §9 and in
+the header of `seed_ch01.sql`.
 
 ---
 
@@ -164,14 +199,19 @@ home page returns 404.
 what cannot be tested without the real host, and a per-step log of what exists.
 
 ```bash
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 51 HTTP checks
-php tools/check-contrast.php                          # 33 WCAG AA pairings
+find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
+php tools/check-strings.php                           # string table complete
+php tools/check-contrast.php                          # 35 WCAG AA pairings
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 113 HTTP checks
 ```
 
-Fifty-one checks over HTTP in about ten seconds: headers, error pages in three
-languages, CSRF, the password policy, registration, escaping, sign-in, the role
-gate, recovery and the brute-force lockout. Exits non-zero on any failure, so it
-can gate a commit.
+A hundred and thirteen checks over HTTP in about twenty seconds: headers, error
+pages in three languages, CSRF, the password policy, registration, escaping,
+sign-in, the role gate, recovery, the brute-force lockout — and the content
+guards described below. Exits non-zero on any failure, so it can gate a commit.
+
+`docs/TEST_RUN.md` lists the seed files to load and, in a section called *The
+verses the suite guards*, explains every content assertion and why it is there.
 
 ---
 
@@ -210,8 +250,54 @@ Every record keeps four things visibly distinct: what the scripture says, what
 traditional commentators have said, what a modern reading suggests, and what is
 an AI-generated analogy. They are never blurred.
 
+### The verses the suite guards
+
+Some verses in this book have a documented history of being put to uses their
+words do not support, and some can hurt the reader who lands on them. Where that
+is true, the explanation refuses the misreading in as many words, and
+`smoke-test.sh` asserts the refusal by literal string on the **default** render —
+not at a named depth, because the default is what a reader actually gets. **If
+one of those checks fails, find out what changed in the content. Never update
+the expected string.**
+
+Against misuse: **3.35** (svadharma is *own*, not *inherited*), **16.4 and 16.5**
+(the chapter describes two directions a person can face, not two kinds of
+person), **17.2** (svabhāva-ja is not about birth), and **5.18**, which needs
+guarding from both sides at once — the word śvapāka is not sanded down, and the
+verse is not turned into a boast about the tradition, because the same book
+contains 4.13.
+
+For the reader's own wellbeing: **6.5** (leverage is not blame, and this is not a
+reason to stop asking for help), **6.17 and 17.7** (both sort by fit and by
+effect, never by amount; no number appears in either), **17.19** (practice done
+by hurting yourself is put in the bottom category by the text itself — the
+problem is the category, not the dose), **5.22** (not an argument for
+joylessness), and the three sentences on **1.46**, which is the most carefully
+written page in the corpus.
+
+And one guarded for the opposite reason: **18.63** — *think it over completely,
+then do as you wish*. That permission is why this text can be taught to somebody
+with no background and no belief without either side pretending, and it is in the
+book rather than being a modern accommodation.
+
 ---
 
 ## Licence
 
-Not yet chosen. Add one before the repository goes public.
+Two licences, because this repository holds two different kinds of work.
+
+**The software is MIT.** The PHP application, the stylesheets, the JavaScript,
+the schema, the tooling. Take it, learn from it, build on it.
+
+**The content is CC BY-SA 4.0.** Everything written for a reader rather than for
+a computer: the translations, explanations, modern examples, reflection
+questions, and the interface text in all three languages. Share it and adapt it
+freely, including commercially — but credit it, and keep your version open under
+the same terms. This is months of original writing and it is the actual product;
+ShareAlike is what stops somebody closing it.
+
+The Sanskrit source is ancient and in the public domain. No published translation
+by anyone else appears here — every rendering in this project was written for it.
+
+Full detail, including the bundled OFL fonts and how to tell software from
+content in a file that contains both, is in [LICENSE](LICENSE).

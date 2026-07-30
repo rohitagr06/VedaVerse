@@ -608,6 +608,99 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 5 not seeded — load database/seed_ch05.sql to test 5.18 and 5.22"
     fi
 
+    # CHAPTER 1 — THE ONE PLACE A READER IN TROUBLE MAY LAND FIRST
+    #   Chapter 1 is Arjuna's collapse, and it is published and marked
+    #   beginner, so it sits at the top of the chapter list where a
+    #   browsing reader meets it before anything else. Three sets of
+    #   sentences do the work and all three are asserted on the DEFAULT
+    #   render, because the default is what that reader gets.
+    #
+    #   1.28 to 1.30 describe an acute stress response with unusual
+    #   precision, and the temptation is to say so and stop. The
+    #   explanation says this is one man on one afternoon, that it is
+    #   not a claim about anybody's body now, and that the book is not
+    #   treatment.
+    #
+    #   1.46 is "it would be better if they killed me, unarmed and not
+    #   resisting", and it is the most carefully written page in the
+    #   corpus. Three things have to survive on it: the line is not
+    #   softened, the text does not agree with it (nothing in seventeen
+    #   chapters returns to it — what happens next is that somebody
+    #   stays), and if the sentence is live for the reader then what
+    #   helps is a person and not a chapter. All three are asserted, and
+    #   none of them may be edited out to make the page shorter.
+    #
+    #   1.47 is the evidence that the book does not despise the
+    #   collapse: Sanjaya reports the sitting, the bow and the grief and
+    #   uses no word for weakness anywhere.
+    if [ "$(status anon /chapter/1/verse/46)" = "200" ]; then
+      contains "1.28 describes rather than diagnoses" \
+        'this book is not treatment' \
+        "$(req anon "$BASE/chapter/1/verse/28")"
+      contains "1.46 records the sentence without agreeing with it" \
+        'the text does not agree with it' \
+        "$(req anon "$BASE/chapter/1/verse/46")"
+      contains "  and what happens next is that somebody stays" \
+        'somebody stays and keeps talking to him' \
+        "$(req anon "$BASE/chapter/1/verse/46")"
+      contains "  and it points at a person, not at a chapter" \
+        'what helps is a person and not a chapter' \
+        "$(req anon "$BASE/chapter/1/verse/46")"
+      contains "  and the ksemataram gloss keeps it a comparison" \
+        'It is not a request and not a threat' \
+        "$(req anon "$BASE/chapter/1/verse/46?mode=study")"
+      contains "1.47 records the collapse without contempt" \
+        'nobody in the text calls him weak' \
+        "$(req anon "$BASE/chapter/1/verse/47")"
+      contains "  and the gloss says the word is absent from the verse" \
+        'no word for weak, cowardly, unmanly or unbecoming' \
+        "$(req anon "$BASE/chapter/1/verse/47?mode=study")"
+      contains "chapter 1 is no longer an empty published chapter" \
+        '8 verses' \
+        "$(req anon "$BASE/chapter/1")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 1 not seeded — load database/seed_ch01.sql to test 1.46 and 1.47"
+    fi
+
+    # CHAPTER 17 — THREE CARE-VERSES, ALL POINTING AT THE READER
+    #   17.2 says shraddha is svabhava-ja, born of one's own nature.
+    #   Read as "determined by birth" that is 4.13 again, and the rest
+    #   of the chapter makes the reading impossible because every test
+    #   it gives is behavioural. The explanation says so outright.
+    #
+    #   17.7 is 6.17 with sharper teeth: a verse that sorts food, in a
+    #   product somebody with a disordered relationship to eating will
+    #   read. The defence is that the chapter sorts by WHAT FOOD DOES
+    #   and never by how much — no amount appears in the Sanskrit or
+    #   anywhere in seed_ch17.sql — and that the chapter closes the door
+    #   itself twelve verses later.
+    #
+    #   17.19 is that door and it is the strongest wellbeing sentence in
+    #   the corpus: practice undertaken by hurting yourself is named and
+    #   put in the bottom category by the text. The explanation says the
+    #   problem is the category and not the severity, and the gloss on
+    #   pidaya says the wrongness is in the hurting and not the amount.
+    #   A gentler regimen is NOT what this verse asks for.
+    if [ "$(status anon /chapter/17/verse/19)" = "200" ]; then
+      contains "17.2 keeps svabhava-ja away from birth" \
+        'does NOT mean determined by birth' \
+        "$(req anon "$BASE/chapter/17/verse/2")"
+      contains "17.7 is not a diet and not a rule" \
+        'Nothing here is a diet and nothing here is a rule' \
+        "$(req anon "$BASE/chapter/17/verse/7")"
+      contains "17.19 says the category is wrong, not the dose" \
+        'it is that this is the wrong category of thing' \
+        "$(req anon "$BASE/chapter/17/verse/19")"
+      contains "  and the pidaya gloss puts it in the hurting" \
+        'and NOT in the amount' \
+        "$(req anon "$BASE/chapter/17/verse/19?mode=study")"
+      contains "17.16 puts gentleness on the list and severity nowhere" \
+        'Severity is not on the list anywhere' \
+        "$(req anon "$BASE/chapter/17/verse/16")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 17 not seeded — load database/seed_ch17.sql to test 17.7 and 17.19"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 

@@ -149,38 +149,54 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # Step 6, chapter 5 — the second intermediate chapter. Contains 5.18.
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch05.sql
+
+# Step 6, chapter 17 — the third intermediate chapter. Contains 17.7 and 17.19.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch17.sql
+
+# Step 6, chapter 1 — fixes a published chapter that had no verses.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch01.sql
 ```
 
-All eight are safe to re-run — they update rather than duplicating.
+All ten are safe to re-run — they update rather than duplicating.
 Together they add all 18 chapters, 14 topics and their graph, and
-**sixty fully-written verses** with word meanings, explanations, 243 modern
+**seventy-six fully-written verses** with word meanings, explanations, 243 modern
 examples, memory hooks, reflections, practices and cross-references, all in
-three languages: chapter 2 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
+three languages: chapter 1 verses 28, 29, 30, 31, 32, 38, 46 and 47; chapter 2
+verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
 8, 10, 12, 18, 21, 22 and 23; chapter 6 verses 5, 6, 17, 19, 26, 34, 35 and
 40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 16 verses 1,
-3, 4, 5, 10, 13, 16 and 21; and chapter 18 verses 11, 14, 16, 32, 37, 48, 59
-and 63.
+3, 4, 5, 10, 13, 16 and 21; chapter 17 verses 2, 3, 7, 15, 16, 19, 20 and 28;
+and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 
-**The beginner track is complete and the intermediate track is more than
-half written.** `/` renders eleven clusters across five chapters on the
-beginner track and fifteen across seven on the intermediate one, and a
-reader who works through the beginner track meets the argument of the book
-from 2.13 to 18.63 without a gap. Every one of the 60 verses has an
-explanation written at beginner depth, so nobody on the default track is
-served writing pitched above them.
+**The beginner track is complete and the intermediate track is seven of its
+eleven chapters.** `/` renders eleven clusters across five chapters on the
+beginner track, seventeen across eight on the intermediate one and nineteen
+across nine on the advanced one, and a reader who works through the beginner
+track meets the argument of the book from 2.13 to 18.63 without a gap. Every one
+of the 76 verses has an explanation written at beginner depth, so nobody on the
+default track is served writing pitched above them.
 
-Order matters. The seven chapter files all join to the chapters and topics
+**Chapter 1 is a fix, not an addition.** All 18 chapters are seeded as published,
+so an unwritten one still appears in `/chapters` — and chapter 1 sat at the top
+of that list, labelled *Beginner*, saying "0 verses · Nothing here yet". It stays
+off the beginner path deliberately (`app.php` explains why: the collapse reads
+far better once you know what the argument is going to be), and it is now on the
+advanced path where the config always had it.
+
+Order matters. The nine chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-Step 6 adds the other 48 verses — the rest of the intermediate track
-(chapters 4, 13, 14, 17), the advanced track, and chapter 2 batch B. Nothing
-in these files gets thrown away.
+Step 6 adds the other 32 verses — the rest of the intermediate track (chapters
+4, 13 and 14), the advanced track, and chapter 2 batch B. Nothing in these files
+gets thrown away.
 
 ## The verses the suite guards
 
-Sixteen sentences across nine verses. Most of them refuse a specific
+Twenty-nine sentences across sixteen verses. Most of them refuse a specific
 misreading that the verse has a documented history of being put to; the one
 on 18.63 is there for the opposite reason — it is the sentence the product's
 whole stance rests on. `smoke-test.sh` asserts every one of them by literal
@@ -254,6 +270,43 @@ its examples the person keeps the thing they enjoy — what changes is what
 they had built on top of it. **5.23** glosses `vega` as a surge with a shape
 that ends, because the verse asks the reader to outlast one wave rather than
 to become a person who does not have them.
+
+**17.2, 17.7, 17.16 and 17.19** are chapter 17's four, and they all point at the
+reader. 17.2's `svabhāva-jā` — born of one's own nature — must not become
+determined by birth; that is 4.13's move again, and the rest of the chapter makes
+it impossible because every test it gives is behavioural. 17.7 is 6.17 with
+sharper teeth: a verse that sorts food, in a product somebody with a disordered
+relationship to eating will read. The defence is that the chapter sorts by what
+food *does* and never by how much — no amount appears in the Sanskrit or anywhere
+in `seed_ch17.sql` — and that the chapter closes the door itself twelve verses
+later. That door is **17.19**, the strongest wellbeing sentence in the corpus:
+practice undertaken by hurting yourself is named and placed in the bottom
+category *by the text*. Somebody who has turned a practice into a punishment is
+not being asked to try harder — the problem is the category, not the dose, and
+the gloss on `pīḍayā` says the wrongness is in the hurting and not in the amount.
+In all four of the 17.19 examples the person stops and **nothing replaces it**; a
+set where the punishment got swapped for a gentler regimen would teach that the
+problem was the severity dial. **17.16** puts `prasāda` first and the holding
+fourth, and its gloss records that gentleness is on the list and severity is
+nowhere on it.
+
+**1.28, 1.46 and 1.47** are chapter 1's, and 1.46 is the most carefully written
+page in the corpus. 1.28 to 1.30 describe an acute stress response with unusual
+precision and the temptation is to say so and stop; the explanation says this is
+one man on one afternoon, not a claim about anybody's body now, and that the book
+is not treatment. 1.46 is *it would be better if they killed me, unarmed and not
+resisting*, and three things have to survive on that page: the line is not
+softened, the text does not agree with it — nothing in seventeen chapters returns
+to it, and what happens next is that somebody stays — and if the sentence is live
+for the reader then what helps is a person and not a chapter. All four of its
+examples turn on another person being in the room, and not one describes a
+method, a plan or an outcome, because a worked example of despair is an
+instruction rather than a teaching aid. **1.47** is the evidence that the book
+does not despise the collapse: Sañjaya reports the sitting, the bow and the grief
+and uses no word for weakness anywhere, and the gloss says so.
+
+`smoke-test.sh` also asserts that **/chapter/1 reports 8 verses**, because the
+bug that verse set fixed was a published chapter with nothing in it.
 
 ---
 
