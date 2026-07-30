@@ -47,7 +47,7 @@ Hinglish.
 
 | Chapter | Verses | Examples | Track |
 |---|---|---|---|
-| 1 — The Collapse | 8 | 32 | advanced (browsable from anywhere) |
+| 1 — The Collapse | 8 | 32 | all three, second to last |
 | 2 — The Ground Under Everything | 12 | 43 | all three |
 | 3 — Doing the Thing | 8 | 64 | all three |
 | 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
@@ -58,9 +58,14 @@ Hinglish.
 | 17 — What You Actually Believe | 8 | 32 | intermediate, advanced |
 | 18 — Putting It Down | 8 | 24 | all three |
 
-**The beginner track is complete** — chapters 2, 3, 12, 16 and 18, eleven path
-clusters, and a reader who works through it meets the argument of the book from
-2.13 to 18.63 without a gap. The intermediate track is eight of its eleven
+**The beginner track is complete** — chapters 2, 3, 12, 16, 1 and 18, thirteen
+path clusters, and a reader who works through it meets the argument of the book
+from 2.13 to 18.63 without a gap. Chapter 1 sits second to last in all three
+tracks rather than first: the collapse reads far better once you know what the
+argument is going to be. It used to be on the advanced track only, which was the
+same judgement taken one step too far — the chapter list shows chapter 1 first,
+badged Beginner, so a reader could open it and then never meet it again on their
+own path. The intermediate track is eight of its eleven
 chapters. Chapters 4 and 13 are still to write, and chapter 2 has a second batch
 of six discretionary verses outstanding.
 
@@ -203,10 +208,10 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 119 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 120 HTTP checks
 ```
 
-A hundred and nineteen checks over HTTP in about twenty seconds: headers, error
+A hundred and twenty checks over HTTP in about twenty seconds: headers, error
 pages in three languages, CSRF, the password policy, registration, escaping,
 sign-in, the role gate, recovery, the brute-force lockout — and the content
 guards described below. Exits non-zero on any failure, so it can gate a commit.

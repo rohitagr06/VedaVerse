@@ -305,8 +305,30 @@ asserts it on the DEFAULT render rather than at a named level.
 three tracks in full, and `PathService::build()` skips chapters that are not
 published yet rather than erroring. Seeding 6, then 5, then 17 put all three on
 the intermediate path on load, and chapter 1 joined the advanced path the same
-way — 84 verses across ten chapters — with nothing edited. Check the path after
+way — 84 verses across ten chapters — with nothing edited. The one thing that
+IS config is which chapters a track walks and in what order, and that is
+`app.tracks`. Check the path after
 every new chapter anyway; the silence cuts both ways.
+
+**Being late on a path and being absent from it are different things, and the
+second one is not a design decision — it is what happens when the first one is
+implemented carelessly.** Chapter 1 was in the advanced track only, on the sound
+editorial judgement that the collapse reads better once you know what the
+argument is. But `/chapters` lists chapter 1 first, badged Beginner, so a reader
+could open it, read all eight verses and then never meet it again on their own
+path. It is now second to last in ALL THREE tracks — still late, no longer
+missing — and `smoke-test.sh` asserts it appears on the guest home page. Note
+what this means for content: 1.46, the despair verse, is now on the default
+reader's guided path rather than only reachable by browsing. Its three
+safeguards were already written and asserted on the DEFAULT render, which is why
+this change needed no content work at all.
+
+**The `chapters.difficulty` column has never matched track membership and should
+not be read as if it did.** Chapters 9 and 10 are badged intermediate and appear
+only on advanced; 13 is badged advanced and sits on intermediate. The badge is an
+estimate of how hard the chapter is to read. The track is an editorial judgement
+about teaching order. They are different claims, and chapter 1 was the place a
+reader would notice them disagreeing.
 
 **A published chapter with no verses is a live bug, not an empty slot.** All 18
 chapters are seeded as `published = 1` by `seed_sample.sql`, so an unwritten one

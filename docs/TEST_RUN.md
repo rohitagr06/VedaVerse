@@ -177,19 +177,24 @@ and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
 and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 
 **The beginner track is complete and the intermediate track is eight of its
-eleven chapters.** `/` renders eleven clusters across five chapters on the
-beginner track, nineteen across nine on the intermediate one and twenty-one
-across ten on the advanced one, and a reader who works through the beginner
+eleven chapters.** `/` renders thirteen clusters across six chapters on the
+beginner track and twenty-one across ten on both of the others, and a reader who works through the beginner
 track meets the argument of the book from 2.13 to 18.63 without a gap. Every one
 of the 84 verses has an explanation written at beginner depth, so nobody on the
 default track is served writing pitched above them.
 
 **Chapter 1 is a fix, not an addition.** All 18 chapters are seeded as published,
 so an unwritten one still appears in `/chapters` — and chapter 1 sat at the top
-of that list, labelled *Beginner*, saying "0 verses · Nothing here yet". It stays
-off the beginner path deliberately (`app.php` explains why: the collapse reads
-far better once you know what the argument is going to be), and it is now on the
-advanced path where the config always had it.
+of that list, labelled *Beginner*, saying "0 verses · Nothing here yet".
+
+It now sits **second to last on all three tracks**, just before chapter 18.
+`app.php` explains the placement: the collapse reads far better once you know
+what the argument is going to be. It was previously on the advanced track only,
+which was that same judgement taken one step too far — being late is editorial,
+being absent was an accident of it, and a reader who opened chapter 1 from the
+chapter list would never have seen it again on their own path. `smoke-test.sh`
+asserts chapter 1 appears on the guest home page so this cannot regress
+silently.
 
 Order matters. The ten chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing

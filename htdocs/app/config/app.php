@@ -113,16 +113,24 @@ return array(
     //   late rather than absent. Chapter 18 is the summary and belongs
     //   last in every track.
     //
+    //   Chapter 1 is now second-to-last in ALL THREE tracks rather than
+    //   only in advanced. It used to be absent from beginner and
+    //   intermediate entirely, which was defensible on reading order and
+    //   wrong in practice: the chapter list shows chapter 1 first, with
+    //   a Beginner badge, and a reader who opened it then never saw it
+    //   again on their path. Being late is the editorial judgement.
+    //   Being missing was an accident of that judgement.
+    //
     // A track is a VIEW, never a restriction. Every chapter is readable
     // by anybody at any time; the track decides what the Chariot Path
     // lays out in front of you, and switching tracks never costs
     // progress.
     'tracks' => array(
         'beginner' => array(
-            'chapters' => array(2, 3, 12, 16, 18),
+            'chapters' => array(2, 3, 12, 16, 1, 18),
         ),
         'intermediate' => array(
-            'chapters' => array(2, 3, 4, 5, 6, 12, 13, 14, 16, 17, 18),
+            'chapters' => array(2, 3, 4, 5, 6, 12, 13, 14, 16, 17, 1, 18),
         ),
         'advanced' => array(
             'chapters' => array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1, 18),

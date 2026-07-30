@@ -748,6 +748,19 @@ case "$CHAPTERS" in
     fi
 
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
+
+    # CHAPTER 1 IS ON EVERY TRACK, NOT ONLY ON ADVANCED
+    #   It used to sit in the advanced track alone, on the editorial
+    #   judgement that the collapse reads better once you know what the
+    #   argument is. That judgement stands and chapter 1 is still second
+    #   to last. What was wrong was it being ABSENT from beginner and
+    #   intermediate: the chapter list shows chapter 1 first, badged
+    #   Beginner, so a reader could open it and then never meet it again
+    #   on their own path. Asserted on the guest home page, which is the
+    #   beginner track.
+    contains "chapter 1 is on the beginner path" \
+      'href="/chapter/1/verse/28"' \
+      "$(req anon "$BASE/")"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 
     PROBLEM="$(req anon "$BASE/problem/anger")"
