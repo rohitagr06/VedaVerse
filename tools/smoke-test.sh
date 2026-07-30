@@ -655,8 +655,12 @@ case "$CHAPTERS" in
       contains "  and the gloss says the word is absent from the verse" \
         'no word for weak, cowardly, unmanly or unbecoming' \
         "$(req anon "$BASE/chapter/1/verse/47?mode=study")"
+      # The exact count is deliberate rather than brittle-by-accident.
+      # It catches the original bug (a published chapter with nothing in
+      # it) AND a partial load. Update the number when chapter 1 grows;
+      # it went 8 -> 9 when 1.41 was written.
       contains "chapter 1 is no longer an empty published chapter" \
-        '8 verses' \
+        '9 verses' \
         "$(req anon "$BASE/chapter/1")"
     else
       printf '  \033[33m—\033[0m %s\n' "chapter 1 not seeded — load database/seed_ch01.sql to test 1.46 and 1.47"
@@ -794,6 +798,71 @@ case "$CHAPTERS" in
         "$(req anon "$BASE/chapter/13/verse/32?mode=study")"
     else
       printf '  \033[33m—\033[0m %s\n' "chapter 13 not seeded — load database/seed_ch13.sql to test 13.6 and 13.29"
+    fi
+
+    # CHAPTER 4 AND 1.41 — THE PASSAGES THIS PROJECT DEFERRED
+    #   4.13 is the most consequential sentence in the book, not for
+    #   what it says but for what it was used to do. FOUR things are
+    #   true and leaving any one out produces a dishonest page, so all
+    #   four are asserted:
+    #     1. the criterion the verse states is quality and action, and
+    #        the Sanskrit word for birth is not in the line
+    #     2. it was read as birth anyway, for centuries, by people with
+    #        authority, and that reading did real damage
+    #     3. the book does not settle it — 18.41 supports the hereditary
+    #        reading, 5.18 and 13.27 pull hard against it
+    #     4. the second half withdraws the verse's own authorship claim
+    #   A page that keeps only 1 is doing the same thing as a page that
+    #   keeps only 2: picking the comfortable half.
+    #
+    #   4.8 is the licence verse. Every verb in it is first person, so
+    #   it instructs nobody, and the strongest evidence is that Arjuna
+    #   asked directly for a reason to fight and was never given it.
+    #
+    #   1.41 is the worst sentence in the book on gender and caste at
+    #   once. It is recorded, not softened, framed by 1.31 where the
+    #   chapter already said his reasons arrived after his legs gave
+    #   way — and the explanation says out loud that this describes the
+    #   sentence and does NOT excuse it. Nothing in the seventeen
+    #   chapters that follow takes it up.
+    if [ "$(status anon /chapter/4/verse/13)" = "200" ]; then
+      contains "4.13 states a criterion that is not birth" \
+        'it is not birth' \
+        "$(req anon "$BASE/chapter/4/verse/13")"
+      contains "  and admits it was read as birth anyway" \
+        'read as birth anyway, for centuries' \
+        "$(req anon "$BASE/chapter/4/verse/13")"
+      contains "  and does not pretend the book settles it" \
+        'the book does not settle this' \
+        "$(req anon "$BASE/chapter/4/verse/13")"
+      contains "  and keeps the half that withdraws the claim" \
+        'withdraws its own claim' \
+        "$(req anon "$BASE/chapter/4/verse/13")"
+      contains "  and the guna-karma gloss says the word is absent" \
+        'does not appear anywhere in the line' \
+        "$(req anon "$BASE/chapter/4/verse/13?mode=study")"
+      contains "4.8 licenses nobody" \
+        'every verb in it is first person' \
+        "$(req anon "$BASE/chapter/4/verse/8")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 4 not seeded — load database/seed_ch04.sql to test 4.13 and 4.8"
+    fi
+
+    if [ "$(status anon /chapter/1/verse/41)" = "200" ]; then
+      contains "1.41 is named for what it is" \
+        'worst sentence in the book' \
+        "$(req anon "$BASE/chapter/1/verse/41")"
+      contains "  and the frame is not offered as an excuse" \
+        'is NOT a defence of it' \
+        "$(req anon "$BASE/chapter/1/verse/41")"
+      contains "  and the book never takes the claim up" \
+        'never granted, never returned to' \
+        "$(req anon "$BASE/chapter/1/verse/41")"
+      contains "  and the varna-sankara gloss says what it was for" \
+        'the stated reason for controlling women' \
+        "$(req anon "$BASE/chapter/1/verse/41?mode=study")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "1.41 not seeded — reload database/seed_ch01.sql"
     fi
 
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"

@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 92 verses, 371 examples, eleven chapters. Beginner track complete; intermediate complete except chapter 4, which is deferred. Remaining: ch 4, ch 2 batch B, and the advanced-only chapters 7–11 and 15 |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 101 verses, 407 examples, twelve chapters. Beginner AND intermediate tracks complete. Remaining: ch 2 batch B and the advanced-only chapters 7–11 and 15 |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -305,7 +305,7 @@ asserts it on the DEFAULT render rather than at a named level.
 three tracks in full, and `PathService::build()` skips chapters that are not
 published yet rather than erroring. Seeding 6, then 5, then 17 put all three on
 the intermediate path on load, and chapter 1 joined the advanced path the same
-way — 92 verses across eleven chapters — with nothing edited. The one thing that
+way — 101 verses across twelve chapters — with nothing edited. The one thing that
 IS config is which chapters a track walks and in what order, and that is
 `app.tracks`. Check the path after
 every new chapter anyway; the silence cuts both ways.
@@ -397,9 +397,31 @@ name. A reader who lands on any one of them is offered the other two. When a
 fourth chapter turns out to need a wellbeing safeguard, wire it into this
 triangle rather than inventing a new sentence.
 
+**A page that keeps only the comfortable half of a hard verse is doing the same
+thing as a page that keeps only the damning half.** 4.13 is the case that
+settled this. FOUR things are true of it and the explanation says all four: the
+criterion the verse states is quality and action and the word for birth is not in
+the line; it was read as birth anyway, for centuries, by people with authority,
+and that reading did real damage; the book does not settle it, because 18.41–44
+supports the hereditary reading while 5.18 and 13.27 pull against it; and the
+second half of the verse withdraws its own authorship claim. Pointing at the
+Sanskrit is TRUE and is NOT SUFFICIENT. When a verse has a history, the history
+goes on the page next to the grammar, and neither is allowed to dispose of the
+other. 1.41 is the same discipline run the other way: the sentence is recorded,
+attributed, and never agreed with.
+
+**Recording is not endorsing, and a product that only keeps a text's good lines
+is not reading it — it is marketing it.** 1.41 was deferred for months and then
+written rather than skipped. What makes it safe is not omission but the four
+things around it: the line is not softened, the frame (1.31 — his reasons
+arrived after his legs gave way) is stated as description and explicitly NOT as
+an excuse, nothing in the seventeen following chapters takes the claim up, and
+the gloss says what varṇa-saṅkara anxiety was enforced on and who it was enforced
+against. Note the third of those is the strongest and it is the text's, not ours.
+
 **The safeguard sentences in 3.35, 12.13, 12.16, 16.4, 16.5, 18.63, 6.5,
-6.17, 5.18, 5.22, 5.23, 1.28, 1.46, 1.47, 13.6, 13.29, 13.32, 14.5, 14.8,
-14.23, 17.2, 17.7, 17.16 and 17.19 are content, not commentary.** Each one refuses a specific misreading that the
+6.17, 5.18, 5.22, 5.23, 1.28, 1.41, 1.46, 1.47, 4.8, 4.13, 13.6, 13.29, 13.32,
+14.5, 14.8, 14.23, 17.2, 17.7, 17.16 and 17.19 are content, not commentary.** Each one refuses a specific misreading that the
 verse has a documented history of being put to — except 18.63, which is
 there for the opposite reason (it is the sentence the product's whole stance
 rests on) and 6.5, 6.17, 5.22, 5.23, 1.28, 1.47, 17.7, 17.16 and 17.19, which
@@ -564,25 +586,27 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
 - **Modern examples below the specified 8–12 on most verses.** Chapter 3 is
   done at eight each, with eight distinct categories per verse so no verse
   repeats a setting. Everything else is at three or four: chapter 2 (43 of
-  96), chapters 12, 16 and 18 (24 of 64 each), chapters 1, 5, 6, 13, 14 and 17
-  (32 of 64 each). Top-up
+  96), chapters 12, 16 and 18 (24 of 64 each), chapters 4, 5, 6, 13, 14 and 17
+  (32 of 64 each), chapter 1 (36 of 72). Top-up
   rows live at the bottom of each chapter's own seed file, continuing from
   sort_order 4, for the same reason the beginner explanations do.
 
   **Deliberately deprioritised.** Breadth was chosen over depth: opening a
   new chapter puts more of the book in front of a reader than taking one
   verse from three examples to eight. The top-up is still owed.
-- **4.13 and 1.40–1.44 are deferred, not forgotten.** The varṇa verse and the
-  kula-dharma block are the book's hardest passages on caste and gender, and
-  they are to be written as ONE piece of work rather than separately — 5.18,
-  13.27, 14.5 and 17.2 all already say things that constrain how they can
-  honestly be handled. Chapter 4 is now the ONLY thing standing between the
-  intermediate track and complete, which makes it the next real decision rather
-  than a distant one.
+- ~~4.13 and 1.40–1.44 are deferred, not forgotten.~~ **Closed.** Both are
+  written, together, as one piece of work — 4.13 in `seed_ch04.sql` and 1.41 in
+  section 7 of `seed_ch01.sql`. The rest of the kula-dharma block (1.40, 1.42–44)
+  is not written and is not deferred either; 1.41 is the load-bearing verse and
+  the others repeat its structure. **A consequence worth knowing:** chapter 1 is
+  on all three tracks, so 1.41 now sits on the BEGINNER path, in the cluster
+  1.32 · 1.38 · 1.41 · 1.46. The reading order is right — 1.31 and 1.38 come
+  first — but if it should be browsable and off the path,
+  `UPDATE verses SET is_curated = 0 ...` for that one verse is the whole change.
   Recorded in the header of `seed_ch01.sql` and in README.md so the deferral
   reads as a decision rather than an oversight.
 - ~~14 of the curated verses have no beginner-level explanation.~~
-  **Closed.** All 92 now have one. The fallback in
+  **Closed.** All 101 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
   from rendering an empty section — but it is no longer carrying a third of
   the corpus. Each chapter's beginner rows live at the bottom of that

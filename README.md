@@ -23,7 +23,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | **Done** |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
-| 6 | 108 curated verses, all seed content | **In progress — 92 of 108** |
+| 6 | 108 curated verses, all seed content | **In progress — 101 of 108** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -38,7 +38,7 @@ Nothing is deployed yet.
 
 ### Where step 6 has got to
 
-Ninety-two verses are written to final quality across eleven chapters, each with
+A hundred and one verses are written to final quality across twelve chapters, each with
 Sanskrit, IAST and simple transliteration, a literal rendering, three original
 translations, three summaries, an explanation at beginner depth, memory hooks,
 three reflection questions, a practice, topic tags, modern examples,
@@ -47,9 +47,10 @@ Hinglish.
 
 | Chapter | Verses | Examples | Track |
 |---|---|---|---|
-| 1 — The Collapse | 8 | 32 | all three, second to last |
+| 1 — The Collapse | 9 | 36 | all three, second to last |
 | 2 — The Ground Under Everything | 12 | 43 | all three |
 | 3 — Doing the Thing | 8 | 64 | all three |
+| 4 — Knowing and Doing | 8 | 32 | intermediate, advanced |
 | 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
 | 6 — Sitting With Yourself | 8 | 32 | intermediate, advanced |
 | 12 — The Easier Road | 8 | 24 | all three |
@@ -66,18 +67,29 @@ tracks rather than first: the collapse reads far better once you know what the
 argument is going to be. It used to be on the advanced track only, which was the
 same judgement taken one step too far — the chapter list shows chapter 1 first,
 badged Beginner, so a reader could open it and then never meet it again on their
-own path. **The intermediate track is now complete except for chapter 4**, which
-is deferred on purpose (below). Chapter 2 has a second batch of six discretionary
-verses outstanding, and the advanced-only chapters — 7 to 11 and 15 — are the
-remaining body of work.
+own path. **The beginner and intermediate tracks are both complete.** Chapter 2
+has a second batch of six discretionary verses outstanding, and the advanced-only
+chapters — 7 to 11 and 15 — are the remaining body of work.
 
-**Two passages are deliberately deferred rather than forgotten.** 4.13, the
-varṇa verse, and 1.40–1.44, Arjuna's kula-dharma argument with its
-corruption-of-women and varṇa-saṅkara claims, are the book's hardest passages on
-caste and gender. They are being written as one piece of work rather than
-separately, because 5.18, 17.2 and 14.5 all already say things that constrain how
-they can honestly be handled. The deferral is recorded in `CLAUDE.md` §9 and in
-the header of `seed_ch01.sql`.
+**The two deferred passages are now written.** 4.13, the varṇa verse, and 1.41,
+Arjuna's claim that ruined women produce varṇa-saṅkara, are the book's hardest
+passages on caste and gender. They were held back for months and then done
+together, because they are the same problem approached from two sides.
+
+Neither is softened and neither is left out. **4.13** carries four sentences and
+removing any one produces a dishonest page: the criterion the verse states is
+quality and action and the Sanskrit word for birth is not in the line; it was
+read as birth anyway, for centuries, by people with authority, and that reading
+did real damage; the book does not settle it, because 18.41–44 supports the
+hereditary reading while 5.18 and 13.27 pull hard against it; and the second half
+of the verse withdraws its own authorship claim. **1.41** is recorded rather than
+endorsed — it is Arjuna's, thirteen verses into a speech that began after his
+legs gave way, and the explanation says out loud that this describes the sentence
+and does *not* excuse it, because a bad argument made in distress is still a bad
+argument and this one did centuries of damage in the mouths of people who were
+perfectly calm. Nothing in the seventeen chapters that follow takes it up. Not
+one modern example in either chapter names a caste, a community, a religion or a
+region.
 
 ---
 
@@ -210,10 +222,10 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 126 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 136 HTTP checks
 ```
 
-A hundred and twenty-six checks over HTTP in about twenty seconds: headers, error
+A hundred and thirty-six checks over HTTP in about twenty seconds: headers, error
 pages in three languages, CSRF, the password policy, registration, escaping,
 sign-in, the role gate, recovery, the brute-force lockout — and the content
 guards described below. Exits non-zero on any failure, so it can gate a commit.
@@ -271,8 +283,10 @@ the expected string.**
 Against misuse: **3.35** (svadharma is *own*, not *inherited*), **16.4 and 16.5**
 (the chapter describes two directions a person can face, not two kinds of
 person), **14.5** (the guṇas are settings that take turns, not kinds of person —
-and 14.10 says so itself), **17.2** (svabhāva-ja is not about birth), and
-**5.18**, which needs
+and 14.10 says so itself), **17.2** (svabhāva-ja is not about birth), **4.8**
+(every verb in it is first person, so it instructs nobody — and Arjuna, who asked
+directly for a reason to fight, is never given this one), **4.13** and **1.41**
+(above), and **5.18**, which needs
 guarding from both sides at once — the word śvapāka is not sanded down, and the
 verse is not turned into a boast about the tradition, because the same book
 contains 4.13.

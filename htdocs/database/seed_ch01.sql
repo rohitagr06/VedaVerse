@@ -9,6 +9,7 @@
 --   1.31  the reasons arrive, and they are good reasons
 --   1.32  what is any of it for
 --   1.38  they cannot see it. I can.
+--   1.41  the kula-dharma claim                           [CARE]
 --   1.46  the despair sentence                            [CARE]
 --   1.47  he sits down                                    [CARE]
 --
@@ -64,15 +65,15 @@
 --   the collapse; the last verse of chapter 1 is the evidence that it
 --   does not. The explanation says so and the smoke suite asserts it.
 --
--- DELIBERATELY NOT IN THIS FILE — 1.40 TO 1.44
---   Arjuna's kula-dharma argument, which contains the claim that the
---   destruction of a family corrupts its women and produces varṇa-
---   saṅkara. It is the book's hardest passage on both gender and caste
---   and it is not written here as an oversight — it is deferred, on
---   purpose, to be done as one piece of work with 4.13, which is
---   deferred for the same reason. Skipping it quietly would have been
---   the wrong kind of easy; this comment is the record that it was a
---   decision. See CLAUDE.md §9.
+-- 1.41 WAS DEFERRED AND IS NOW WRITTEN — SEE SECTION 7 AT THE END
+--   Arjuna's kula-dharma argument contains the claim that the
+--   destruction of a family ruins its women and produces varṇa-saṅkara.
+--   It is the book's hardest passage on gender and caste at once, and
+--   it was held back until chapter 4 could be written with it, because
+--   4.13 and this line are the same problem approached from two sides.
+--   Both are now done. The verse is in section 7 of this file, after
+--   the original eight, with its own explanation, examples, references
+--   and glosses. Nothing about the first eight verses changed.
 --
 -- CONTENT RULES — unchanged
 --   Original writing throughout. Sanskrit unaltered, numbering
@@ -1160,6 +1161,254 @@ SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
   UNION ALL SELECT 47, 4, 'विसृज्य', 'visṛjya', 'having released, having let go — the same root as in "release"; not thrown down, not surrendered', 'छोड़कर, हाथ से जाने देकर — वही धातु जो "विसर्जन" में है; न पटका गया, न सौंपा गया', 'chhodkar, haath se jaane dekar — wahi dhatu jo "visarjan" mein hai; na pataka gaya, na saunpa gaya', 'gerund', 'वि + सृज्'
   UNION ALL SELECT 47, 5, 'सशरम् चापम्', 'sa-śaraṁ cāpam', 'the bow along with the arrows — both named, so nothing is left in his hands', 'बाणों समेत धनुष — दोनों का नाम लिया गया है, ताकि हाथ में कुछ न बचे', 'baanon samet dhanush — dono ka naam liya gaya hai, taaki haath mein kuch na bache', 'accusative singular', NULL
   UNION ALL SELECT 47, 6, 'शोकसंविग्नमानसः', 'śoka-saṁvigna-mānasaḥ', 'mind overrun by grief — saṁvigna is being thoroughly shaken. Note what is NOT here: no word for weak, cowardly, unmanly or unbecoming appears anywhere in the verse, and Sañjaya had every opportunity to use one', 'शोक से विह्वल मन — संविग्न यानी पूरी तरह हिल जाना। यह देखिए कि यहाँ क्या नहीं है: कमज़ोर, कायर, नामर्द या अशोभनीय जैसा एक भी शब्द इस श्लोक में कहीं नहीं है, और संजय के पास इस्तेमाल करने का पूरा मौक़ा था', 'shok se vihval man — samvigna yani poori tarah hil jaana. Yeh dekho ki yahan kya nahi hai: kamzor, kaayar, namard ya ashobhaniya jaisa ek bhi shabd is shloka mein kahin nahi hai, aur Sanjay ke paas istemaal karne ka poora mauka tha', 'nominative singular', 'सम् + विज्'
+) AS w
+JOIN verses v ON v.verse_number = w.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+-- =====================================================================
+-- 7. VERSE 1.41 — THE DEFERRED ONE
+-- =====================================================================
+-- This section is appended after the original eight verses and their
+-- material, so it adds without disturbing anything above it. There are
+-- no DELETE statements here: the section deletes higher up in the file
+-- have already run by the time this executes, and adding one here would
+-- remove the eight verses this file just loaded.
+--
+-- WHY THIS VERSE IS IN THE PRODUCT AT ALL
+--   "When what holds is overrun the women of the family are ruined, and
+--   when the women are ruined the orders get mixed." It is the worst
+--   sentence in the book on gender and caste simultaneously, and it was
+--   deferred for months rather than skipped, because skipping it
+--   quietly is what a product does when it wants the reputation of
+--   honesty without the cost.
+--
+--   THE HANDLING IS 5.18's, RUN IN THE OPPOSITE DIRECTION.
+--
+--   1. THE LINE IS NOT SOFTENED. The translation says what the Sanskrit
+--      says. A sanitised rendering would hide the thing a reader most
+--      needs to see, which is that this sentence is in the book.
+--
+--   2. THE FRAME IS ONE THE CHAPTER ALREADY BUILT AND IT IS NOT A
+--      RESCUE. 1.28 to 1.30 is a man whose legs gave way. 1.31 is where
+--      the arguments start, and this file already says there, in its
+--      own explanation, that the reasons arrived after the collapse.
+--      1.41 is thirteen verses into that speech. That is not a defence
+--      of the sentence and it is not offered as one — a bad argument
+--      made in distress is still a bad argument, and this one did
+--      centuries of damage in the mouths of people who were perfectly
+--      calm.
+--
+--   3. NOTHING IN THE SEVENTEEN CHAPTERS THAT FOLLOW ENDORSES IT.
+--      Arjuna is answered at length and this particular claim is never
+--      taken up, never repeated and never conceded. What the book does
+--      instead is 5.18, 13.27 and 4.11.
+--
+--   4. THE GLOSS SAYS WHAT VARṆA-SAṄKARA ANXIETY WAS AND WHO IT WAS
+--      USED AGAINST — specifically, that it was enforced on women, as
+--      control of who they could marry and how they could live, for a
+--      very long time, and that it is still doing that.
+--
+--   NOT ONE EXAMPLE HERE NAMES A CASTE, A COMMUNITY, A RELIGION OR A
+--   REGION, and not one of them is about a woman being blamed. All four
+--   are about the structural move: a frightened person reaching for an
+--   inherited argument that was waiting for them.
+-- =====================================================================
+
+INSERT IGNORE INTO verses
+  (chapter_id, verse_number, global_order, is_curated, slug,
+   sanskrit_devanagari, transliteration_iast, transliteration_simple,
+   translation_literal,
+   translation_en, translation_hi, translation_hinglish,
+   summary_en, summary_hi, summary_hinglish,
+   difficulty, seo_title, seo_description, published)
+SELECT c.id, v.* FROM (
+  SELECT 41 AS verse_number, 41 AS global_order, 1 AS is_curated, 'gita-1-41' AS slug,
+    'अधर्माभिभवात्कृष्ण प्रदुष्यन्ति कुलस्त्रियः।\nस्त्रीषु दुष्टासु वार्ष्णेय जायते वर्णसंकरः॥' AS sanskrit_devanagari,
+    'adharmābhibhavāt kṛṣṇa praduṣyanti kula-striyaḥ\nstrīṣu duṣṭāsu vārṣṇeya jāyate varṇa-saṅkaraḥ' AS transliteration_iast,
+    'adharmabhibhavat krishna pradushyanti kula-striyah\nstrishu dushtasu varshneya jayate varna-sankarah' AS transliteration_simple,
+    'From the overpowering of adharma, Krishna, the women of the family become corrupted. When the women are corrupted, Varshneya, varna-sankara is born.' AS translation_literal,
+    'Once what holds things together has been overrun, he says, the women of the family are ruined. And when the women are ruined, the orders get mixed.' AS translation_en,
+    'जब वह चीज़ जो सब थामे रखती है कुचल दी जाती है, वह कहता है, तब कुल की स्त्रियाँ बिगड़ जाती हैं। और जब स्त्रियाँ बिगड़ जाती हैं, तब वर्ण घुल-मिल जाते हैं।' AS translation_hi,
+    'Jab woh cheez jo sab thaame rakhti hai kuchal di jaati hai, woh kehta hai, tab kul ki striyan bigad jaati hain. Aur jab striyan bigad jaati hain, tab varna ghul-mil jaate hain.' AS translation_hinglish,
+    'The worst sentence in the book, and it belongs to a man whose legs gave way thirteen verses ago.' AS summary_en,
+    'किताब का सबसे बुरा वाक्य, और वह उस आदमी का है जिसके पैर तेरह श्लोक पहले जवाब दे चुके थे।' AS summary_hi,
+    'Kitaab ka sabse bura vakya, aur woh us aadmi ka hai jiske pair terah shloka pehle jawab de chuke the.' AS summary_hinglish,
+    'advanced' AS difficulty,
+    'Gita 1.41: the worst sentence in the book, and whose it is' AS seo_title,
+    'The Bhagavad Gita records Arjuna claiming that ruined women produce varna-sankara. It is his argument, made in collapse, and nothing in the seventeen chapters that follow takes it up.' AS seo_description,
+    1 AS published
+) AS v
+JOIN chapters c ON c.chapter_number = 1;
+
+INSERT INTO verse_explanations
+  (verse_id, level,
+   historical_context_en, historical_context_hi, historical_context_hinglish,
+   practical_meaning_en, practical_meaning_hi, practical_meaning_hinglish,
+   modern_interpretation_en, modern_interpretation_hi, modern_interpretation_hinglish)
+SELECT v.id, x.level, x.h_en, x.h_hi, x.h_hing, x.p_en, x.p_hi, x.p_hing, x.m_en, x.m_hi, x.m_hing
+FROM (
+  SELECT 41 AS vn, 'beginner' AS level,
+   'Thirteen verses into Arjuna''s argument. He began at 1.31 with reasons that were good ones, and by here the speech has widened into an account of what a war does to a society. This is where it goes wrong.' AS h_en,
+   'अर्जुन की दलील के तेरहवें श्लोक पर। उसने 1.31 से शुरू किया था अच्छी वजहों के साथ, और यहाँ तक आते-आते भाषण फैलकर इस ब्यौरे में बदल चुका है कि युद्ध किसी समाज के साथ क्या करता है। यहीं यह बिगड़ता है।' AS h_hi,
+   'Arjun ki dalil ke terahve shloka par. Usne 1.31 se shuru kiya tha achhi wajahon ke saath, aur yahan tak aate aate bhashan phailkar is byore mein badal chuka hai ki yuddh kisi samaj ke saath kya karta hai. Yahin yeh bigadta hai.' AS h_hing,
+   'The claim has three steps and they are worth separating. Order breaks down. The women of the family are ruined by that. And from ruined women, mixed orders. Every step is doing work and the middle one is doing the most.' AS p_en,
+   'दावे में तीन क़दम हैं और इन्हें अलग करके देखना ज़रूरी है। व्यवस्था टूटती है। उससे कुल की स्त्रियाँ बिगड़ती हैं। और बिगड़ी स्त्रियों से वर्ण घुल-मिल जाते हैं। हर क़दम काम कर रहा है और सबसे ज़्यादा बीच वाला।' AS p_hi,
+   'Dawe mein teen kadam hain aur inhe alag karke dekhna zaroori hai. Vyavastha tootti hai. Usse kul ki striyan bigadti hain. Aur bigdi striyon se varna ghul-mil jaate hain. Har kadam kaam kar raha hai aur sabse zyada beech wala.' AS p_hing,
+   'This is the worst sentence in the book and it is here rather than left out, because a text that keeps only its good lines is not being read, it is being marketed. Four things about it. The line is not softened above; the translation says what the Sanskrit says. It is Arjuna''s, thirteen verses into a speech that began after his legs gave way, and this file already said at 1.31 that his reasons arrived second — that is a description of where the sentence came from and it is NOT a defence of it, because a bad argument made in distress is still a bad argument, and this one did centuries of damage in the mouths of people who were perfectly calm. Nothing in the seventeen chapters that follow takes it up: he is answered at length and this claim is never repeated, never granted, never returned to. And what the book says instead is 5.18, which refuses to rank a learned brahmin above a śvapāka, and 13.27, and 4.11, which sets no entry condition on anybody at all.' AS m_en,
+   'यह किताब का सबसे बुरा वाक्य है और यह छोड़ा नहीं गया बल्कि यहाँ है, क्योंकि जो ग्रंथ सिर्फ़ अपनी अच्छी पंक्तियाँ रखता है वह पढ़ा नहीं जा रहा, बेचा जा रहा है। इसके बारे में चार बातें। ऊपर पंक्ति नरम नहीं की गई; अनुवाद वही कहता है जो संस्कृत कहती है। यह अर्जुन की है, उस भाषण के तेरहवें श्लोक पर जो उसके पैर जवाब देने के बाद शुरू हुआ था, और यह फ़ाइल 1.31 पर पहले ही कह चुकी है कि उसकी वजहें दूसरे नंबर पर आईं — यह वर्णन है कि वाक्य आया कहाँ से, और यह उसका बचाव नहीं है, क्योंकि परेशानी में दी गई बुरी दलील फिर भी बुरी दलील है, और इसी ने सदियों तक उन लोगों के मुँह में रहकर नुक़सान किया जो बिलकुल शांत थे। आगे के सत्रह अध्यायों में कुछ भी इसे नहीं उठाता: उसे लंबा जवाब मिलता है और यह दावा कभी दोहराया नहीं जाता, कभी माना नहीं जाता, कभी लौटाया नहीं जाता। और किताब इसकी जगह जो कहती है वह है 5.18, जो विद्वान ब्राह्मण को श्वपाक से ऊपर रखने से इनकार करता है, और 13.27, और 4.11, जो किसी पर भीतर आने की कोई शर्त रखता ही नहीं।' AS m_hi,
+   'Yeh kitaab ka sabse bura vakya hai aur yeh chhoda nahi gaya balki yahan hai, kyunki jo granth sirf apni achhi panktiyan rakhta hai woh padha nahi ja raha, becha ja raha hai. Iske baare mein chaar baatein. Upar pankti naram nahi ki gayi; anuvaad wahi kehta hai jo Sanskrit kehti hai. Yeh Arjun ki hai, us bhashan ke terahve shloka par jo uske pair jawab dene ke baad shuru hua tha, aur yeh file 1.31 par pehle hi keh chuki hai ki uski wajahein doosre number par aayin — yeh varnan hai ki vakya aaya kahan se, aur yeh uska bachav nahi hai, kyunki pareshani mein di gayi buri dalil phir bhi buri dalil hai, aur isi ne sadiyon tak un logon ke munh mein rehkar nuksaan kiya jo bilkul shaant the. Aage ke satrah adhyayon mein kuch bhi ise nahi uthata: use lamba jawab milta hai aur yeh dawa kabhi dohraya nahi jaata, kabhi maana nahi jaata, kabhi lautaya nahi jaata. Aur kitaab iski jagah jo kehti hai woh hai 5.18, jo vidwan brahmin ko shvapak se upar rakhne se inkaar karta hai, aur 13.27, aur 4.11, jo kisi par bheetar aane ki koi shart rakhta hi nahi.' AS m_hing
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+INSERT INTO verse_memory_aids (verse_id, hook_en, hook_hi, hook_hinglish, analogy_en, analogy_hi, analogy_hinglish, visual_cue)
+SELECT v.id, m.h_en, m.h_hi, m.h_hing, m.a_en, m.a_hi, m.a_hing, m.cue FROM (
+  SELECT 41 AS vn,
+  'The worst sentence in the book. It is his, and nobody ever agrees with it.' AS h_en,
+  'किताब का सबसे बुरा वाक्य। वह उसका है, और उससे कोई कभी सहमत नहीं होता।' AS h_hi,
+  'Kitaab ka sabse bura vakya. Woh uska hai, aur usse koi kabhi sehmat nahi hota.' AS h_hing,
+  'Like a frightened person reaching for the nearest argument. It was already lying there.' AS a_en,
+  'डरे हुए इंसान के सबसे पास पड़ी दलील उठा लेने जैसा। वह पहले से वहीं पड़ी थी।' AS a_hi,
+  'Dare hue insan ke sabse paas padi dalil utha lene jaisa. Woh pehle se wahin padi thi.' AS a_hing,
+  'A hand reaching sideways without looking' AS cue
+) AS m
+JOIN verses v ON v.verse_number = m.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+INSERT INTO verse_reflections (verse_id, question_en, question_hi, question_hinglish, display_order)
+SELECT v.id, r.q_en, r.q_hi, r.q_hing, r.ord FROM (
+  SELECT 41 AS vn, 'What argument do you reach for when you are frightened? It was probably lying nearby already.' AS q_en, 'डर लगने पर आप कौन-सी दलील उठा लेते हैं? वह शायद पहले से पास ही पड़ी थी।' AS q_hi, 'Dar lagne par tum kaun si dalil utha lete ho? Woh shayad pehle se paas hi padi thi.' AS q_hing, 1 AS ord
+  UNION ALL SELECT 41, 'The book records this and never agrees with it. Is recording without agreeing a thing you can do?', 'किताब इसे दर्ज करती है और इससे कभी सहमत नहीं होती। दर्ज करना और सहमत न होना — क्या यह आप कर सकते हैं?', 'Kitaab ise darj karti hai aur isse kabhi sehmat nahi hoti. Darj karna aur sehmat na hona — kya yeh tum kar sakte ho?', 2
+  UNION ALL SELECT 41, 'A bad argument made in distress is still a bad argument. Where have you needed to hold both of those at once?', 'परेशानी में दी गई बुरी दलील फिर भी बुरी दलील है। आपको दोनों बातें एक साथ कहाँ थामनी पड़ी हैं?', 'Pareshani mein di gayi buri dalil phir bhi buri dalil hai. Tumhe dono baatein ek saath kahan thaamni padi hain?', 3
+) AS r
+JOIN verses v ON v.verse_number = r.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+INSERT INTO verse_practices (verse_id, action_en, action_hi, action_hinglish, estimated_minutes, difficulty, display_order)
+SELECT v.id, p.a_en, p.a_hi, p.a_hing, p.mins, p.diff, 1 FROM (
+  SELECT 41 AS vn, 'Think of a position you hold that you did not arrive at. Write down where it was lying when you picked it up.' AS a_en, 'ऐसी कोई राय सोचिए जो आपकी है और जिस तक आप पहुँचे नहीं। लिखिए कि जब आपने उसे उठाया तब वह पड़ी कहाँ थी।' AS a_hi, 'Aisi koi raay socho jo tumhari hai aur jis tak tum pahunche nahi. Likho ki jab tumne use uthaya tab woh padi kahan thi.' AS a_hing, 10 AS mins, 'advanced' AS diff
+) AS p
+JOIN verses v ON v.verse_number = p.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+INSERT INTO verse_topics (verse_id, topic_id, relevance)
+SELECT v.id, t.id, x.rel FROM (
+  SELECT 41 AS vn, 'fear' AS slug, 9 AS rel
+  UNION ALL SELECT 41, 'comparison', 8
+  UNION ALL SELECT 41, 'hard-decisions', 6
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1
+JOIN topics t ON t.slug = x.slug;
+
+INSERT INTO modern_examples
+  (verse_id, category, title_en, title_hi, title_hinglish,
+   scenario_en, scenario_hi, scenario_hinglish,
+   connection_en, connection_hi, connection_hinglish,
+   lesson_en, lesson_hi, lesson_hinglish,
+   source_reference, has_spoiler, difficulty, tags, is_ai_generated, approved, sort_order)
+SELECT v.id, x.cat, x.t_en, x.t_hi, x.t_hing, x.s_en, x.s_hi, x.s_hing,
+       x.c_en, x.c_hi, x.c_hing, x.l_en, x.l_hi, x.l_hing,
+       x.src, 0, x.diff, x.tags, 0, 1, x.ord
+FROM (
+
+  SELECT 41 AS vn, 'corporate' AS cat, 1 AS ord,
+  'The reason that was waiting for him' AS t_en, 'वह वजह जो उसका इंतज़ार कर रही थी' AS t_hi, 'Woh wajah jo uska intezaar kar rahi thi' AS t_hing,
+  'Somebody whose project has just been cancelled explains, within about four minutes, that this is what happens when a place stops promoting on merit. He has never said this before. It arrives fully formed, and by the following week he does not believe it.' AS s_en,
+  'जिसका प्रोजेक्ट अभी रद्द हुआ है, वह क़रीब चार मिनट में समझा देता है कि यही होता है जब कोई जगह योग्यता पर तरक़्क़ी देना बंद कर देती है। उसने यह पहले कभी नहीं कहा। यह पूरी बनी-बनाई आती है, और अगले हफ़्ते तक वह इस पर यक़ीन नहीं करता।' AS s_hi,
+  'Jiska project abhi radd hua hai, woh kareeb chaar minute mein samjha deta hai ki yahi hota hai jab koi jagah yogyata par tarakki dena band kar deti hai. Usne yeh pehle kabhi nahi kaha. Yeh poori bani-banayi aati hai, aur agle hafte tak woh is par yakeen nahi karta.' AS s_hing,
+  'The structural move, at a size anybody can watch. He did not reason his way to this position; it was lying nearby and he picked it up while frightened, fully formed, in four minutes. That is what 1.41 is — an argument that was already available in the culture, arriving in the mouth of a man whose legs gave way thirteen verses earlier.' AS c_en,
+  'वही ढाँचागत चाल, उस नाप पर जिसे कोई भी देख सके। वह तर्क करते हुए इस राय तक नहीं पहुँचा; वह पास ही पड़ी थी और उसने डरे हुए, चार मिनट में, पूरी बनी-बनाई उठा ली। 1.41 यही है — एक दलील जो संस्कृति में पहले से मौजूद थी, और वह उस आदमी के मुँह में आ गई जिसके पैर तेरह श्लोक पहले जवाब दे चुके थे।' AS c_hi,
+  'Wahi dhanchagat chaal, us naap par jise koi bhi dekh sake. Woh tark karte hue is raay tak nahi pahuncha; woh paas hi padi thi aur usne dare hue, chaar minute mein, poori bani-banayi utha li. 1.41 yahi hai — ek dalil jo sanskriti mein pehle se maujood thi, aur woh us aadmi ke munh mein aa gayi jiske pair terah shloka pehle jawab de chuke the.' AS c_hing,
+  'It arrived fully formed in four minutes. Nobody builds an argument that fast.' AS l_en,
+  'वह चार मिनट में पूरी बनी-बनाई आई। इतनी तेज़ी से कोई दलील नहीं बनाता।' AS l_hi,
+  'Woh chaar minute mein poori bani-banayi aayi. Itni tezi se koi dalil nahi banata.' AS l_hing,
+  NULL AS src, 'advanced' AS diff, 'grievance,ready-made,fear,arguments' AS tags
+
+  UNION ALL SELECT 41, 'social_media', 2,
+  'The thread that got the order wrong', 'वह थ्रेड जिसका क्रम उलटा था', 'Woh thread jiska kram ulta tha',
+  'A long post explains a personal setback by way of a general theory about how society has declined. Somebody reads it twice and notices that the theory occupies four paragraphs and the setback occupies one line, near the end, mentioned in passing.',
+  'एक लंबी पोस्ट किसी निजी झटके को इस आम सिद्धांत के ज़रिए समझाती है कि समाज कैसे गिर गया है। कोई उसे दो बार पढ़ता है और देखता है कि सिद्धांत चार पैराग्राफ़ लेता है और झटका एक पंक्ति, अंत के पास, यूँ ही ज़िक्र में।',
+  'Ek lambi post kisi niji jhatke ko is aam siddhant ke zariye samjhati hai ki samaj kaise gir gaya hai. Koi use do baar padhta hai aur dekhta hai ki siddhant chaar paragraph leta hai aur jhatka ek pankti, ant ke paas, yoon hi zikr mein.',
+  'The proportions give it away, and they give 1.41 away too. Arjuna''s speech starts with his own legs and ends four verses later describing what happens to a whole society. The chapter''s own explanation of 1.31 says the reasons arrived after the collapse; the ratio of theory to setback is how anybody can check that in themselves.',
+  'अनुपात ही भेद खोल देता है, और 1.41 का भी। अर्जुन का भाषण उसके अपने पैरों से शुरू होता है और चार श्लोक बाद पूरे समाज का हाल बताने लगता है। इस अध्याय की 1.31 वाली व्याख्या कहती है कि वजहें ढहने के बाद आईं; सिद्धांत और झटके का अनुपात वह तरीक़ा है जिससे कोई भी यह अपने भीतर जाँच सकता है।',
+  'Anupat hi bhed khol deta hai, aur 1.41 ka bhi. Arjun ka bhashan uske apne pairon se shuru hota hai aur chaar shloka baad poore samaj ka haal batane lagta hai. Is adhyay ki 1.31 wali vyakhya kehti hai ki wajahein dhehne ke baad aayin; siddhant aur jhatke ka anupat woh tareeka hai jisse koi bhi yeh apne bheetar jaanch sakta hai.',
+  'Four paragraphs of theory, one line of setback. The proportions give it away.',
+  'चार पैराग्राफ़ सिद्धांत, एक पंक्ति झटका। अनुपात ही भेद खोल देता है।',
+  'Chaar paragraph siddhant, ek pankti jhatka. Anupat hi bhed khol deta hai.',
+  NULL, 'advanced', 'online,proportion,theory,setback'
+
+  UNION ALL SELECT 41, 'ethics', 3,
+  'Recorded, and not agreed with', 'दर्ज किया गया, और माना नहीं गया', 'Darj kiya gaya, aur maana nahi gaya',
+  'A transcript of a difficult meeting includes something one participant said that everybody present thought was wrong. The minutes keep it, verbatim, attributed. Nobody in the organisation has ever cited it as policy and nobody has removed it either.',
+  'किसी मुश्किल बैठक के ब्यौरे में वह बात भी है जो एक शामिल इंसान ने कही और जिसे वहाँ मौजूद सब ग़लत मानते थे। कार्यवृत्त उसे ज्यों का त्यों रखता है, नाम के साथ। संस्था में किसी ने उसे कभी नीति की तरह उद्धृत नहीं किया और किसी ने हटाया भी नहीं।',
+  'Kisi mushkil baithak ke byore mein woh baat bhi hai jo ek shamil insan ne kahi aur jise wahan maujood sab galat maante the. Karyavritt use jyon ka tyon rakhta hai, naam ke saath. Sanstha mein kisi ne use kabhi neeti ki tarah uddhrit nahi kiya aur kisi ne hataya bhi nahi.',
+  'Recording is not endorsing, and this is the distinction the whole treatment of 1.41 rests on. The Gita keeps the sentence, attributed, and then declines to take it up for seventeen chapters. A book that had deleted it would be easier to defend and less worth reading.',
+  'दर्ज करना मंज़ूरी देना नहीं है, और 1.41 का पूरा बरताव इसी फ़र्क़ पर टिका है। गीता वाक्य रखती है, नाम के साथ, और फिर सत्रह अध्याय उसे उठाने से इनकार करती है। जो किताब उसे मिटा देती वह बचाने में आसान होती और पढ़ने लायक़ कम।',
+  'Darj karna manzoori dena nahi hai, aur 1.41 ka poora bartav isi farq par tika hai. Gita vakya rakhti hai, naam ke saath, aur phir satrah adhyay use uthane se inkaar karti hai. Jo kitaab use mita deti woh bachane mein aasan hoti aur padhne layak kam.',
+  'A book that had deleted it would be easier to defend and less worth reading.',
+  'जो किताब उसे मिटा देती वह बचाने में आसान होती और पढ़ने लायक़ कम।',
+  'Jo kitaab use mita deti woh bachane mein aasan hoti aur padhne layak kam.',
+  NULL, 'advanced', 'records,endorsement,minutes,honesty'
+
+  UNION ALL SELECT 41, 'everyday_life', 4,
+  'The sentence he heard himself say', 'वह वाक्य जो उसने ख़ुद को कहते सुना', 'Woh vakya jo usne khud ko kehte suna',
+  'Somebody having a bad month says something at a table that stops the conversation. He hears it as it leaves him and knows immediately where he got it, and that he does not believe it. He says so, badly, about ten seconds later.',
+  'बुरे महीने से गुज़रता कोई मेज़ पर कुछ ऐसा कह देता है जिससे बातचीत रुक जाती है। वह उसे निकलते ही सुन लेता है और उसे फ़ौरन पता चल जाता है कि यह उसे कहाँ से मिला था, और यह कि वह इस पर यक़ीन नहीं करता। वह क़रीब दस सेकंड बाद, अटकते हुए, यह कह भी देता है।',
+  'Bure mahine se guzarta koi mez par kuch aisa keh deta hai jisse baatcheet ruk jaati hai. Woh use nikalte hi sun leta hai aur use fauran pata chal jaata hai ki yeh use kahan se mila tha, aur yeh ki woh is par yakeen nahi karta. Woh kareeb das second baad, atakte hue, yeh keh bhi deta hai.',
+  'Ten seconds is the whole of what is available here and it is worth having. Nothing in this excuses what was said, and the ten seconds do not undo it for whoever heard it. What they do is stop the sentence from becoming a position, which is the difference between one bad evening and a set of views.',
+  'दस सेकंड ही यहाँ उपलब्ध सब कुछ है और वह रखने लायक़ है। इसमें कुछ भी कही गई बात को माफ़ नहीं करता, और जिसने सुना उसके लिए वे दस सेकंड उसे मिटाते नहीं। वे इतना करते हैं कि वाक्य राय में नहीं बदलता, और एक बुरी शाम और राय के पुलिंदे में यही फ़र्क़ है।',
+  'Das second hi yahan uplabdh sab kuch hai aur woh rakhne layak hai. Isme kuch bhi kahi gayi baat ko maaf nahi karta, aur jisne suna uske liye woh das second use mitate nahi. Woh itna karte hain ki vakya raay mein nahi badalta, aur ek buri shaam aur raay ke pulinde mein yahi farq hai.',
+  'The ten seconds do not undo it. They stop the sentence becoming a position.',
+  'वे दस सेकंड उसे मिटाते नहीं। वे वाक्य को राय बनने से रोक देते हैं।',
+  'Woh das second use mitate nahi. Woh vakya ko raay banne se rok dete hain.',
+  NULL, 'advanced', 'speech,regret,positions,catching-it'
+
+) AS x
+JOIN verses v ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
+
+INSERT INTO verse_cross_references
+  (verse_id, reference_type, book, chapter, verse, target_verse_id,
+   description_en, description_hi, description_hinglish, relationship, sort_order)
+SELECT v.id, 'gita', 'Bhagavad Gita', CAST(x.tch AS CHAR), CAST(x.tvn AS CHAR), tv.id,
+       x.d_en, x.d_hi, x.d_hing, x.rel, x.ord
+FROM (
+  SELECT 41 AS vn, 1 AS tch, 31 AS tvn, 1 AS ord,
+    'Read this first. 1.31 is where his arguments start, ten verses after his legs gave way, and its explanation already says the reasons arrived second. That is where this sentence came from — which describes it and does not excuse it.' AS d_en,
+    'पहले यह पढ़िए। 1.31 वह जगह है जहाँ उसकी दलीलें शुरू होती हैं, पैर जवाब देने के दस श्लोक बाद, और उसकी व्याख्या पहले ही कहती है कि वजहें दूसरे नंबर पर आईं। यह वाक्य वहीं से आया — और यह उसका वर्णन है, बहाना नहीं।' AS d_hi,
+    'Pehle yeh padho. 1.31 woh jagah hai jahan uski dalilein shuru hoti hain, pair jawab dene ke das shloka baad, aur uski vyakhya pehle hi kehti hai ki wajahein doosre number par aayin. Yeh vakya wahin se aaya — aur yeh uska varnan hai, bahana nahi.' AS d_hing,
+    'supports' AS rel
+  UNION ALL SELECT 41, 5, 18, 2,
+    'What the book says instead. 5.18 puts a learned brahmin and a śvapāka in one line and refuses to rank them, which is the opposite claim from the one Arjuna makes here, in the same text.',
+    'किताब इसकी जगह जो कहती है वह यह है। 5.18 एक विद्वान ब्राह्मण और एक श्वपाक को एक पंक्ति में रखता है और उनमें क्रम लगाने से इनकार करता है, और यह उसी ग्रंथ में अर्जुन के यहाँ किए दावे का उलटा है।',
+    'Kitaab iski jagah jo kehti hai woh yeh hai. 5.18 ek vidwan brahmin aur ek shvapak ko ek pankti mein rakhta hai aur unme kram lagane se inkaar karta hai, aur yeh usi granth mein Arjun ke yahan kiye dawe ka ulta hai.',
+    'opposite'
+  UNION ALL SELECT 41, 4, 13, 3,
+    'The other half of the same problem, and the reason this verse waited. 4.13 states its criterion as quality and action and was read as birth for centuries; 1.41 is the anxiety that reading was built to protect. Neither makes sense alone.',
+    'उसी समस्या का दूसरा आधा, और यही वजह है कि यह श्लोक रुका रहा। 4.13 अपनी कसौटी गुण और कर्म बताता है और उसे सदियों तक जन्म पढ़ा गया; 1.41 वह घबराहट है जिसे बचाने के लिए वह पाठ बना था। कोई भी अकेले समझ नहीं आता।',
+    'Usi samasya ka doosra aadha, aur yahi wajah hai ki yeh shloka ruka raha. 4.13 apni kasauti gun aur karm batata hai aur use sadiyon tak janm padha gaya; 1.41 woh ghabrahat hai jise bachane ke liye woh paath bana tha. Koi bhi akele samajh nahi aata.',
+    'supports'
+  UNION ALL SELECT 41, 4, 11, 4,
+    'However people come, that is how they are met, and whichever way they walk, they are on it. A book containing 4.11 cannot be run on the anxiety in 1.41, and it is worth knowing both are in it.',
+    'लोग जैसे भी आएँ, उनसे वैसे ही मिला जाता है, और वे जिस भी रास्ते चलें, वे उसी पर हैं। जिस किताब में 4.11 है वह 1.41 की घबराहट पर नहीं चलाई जा सकती, और यह जानना काम का है कि दोनों उसी में हैं।',
+    'Log jaise bhi aayein, unse waise hi mila jaata hai, aur woh jis bhi raste chalein, woh usi par hain. Jis kitaab mein 4.11 hai woh 1.41 ki ghabrahat par nahi chalayi ja sakti, aur yeh jaanna kaam ka hai ki dono usi mein hain.',
+    'opposite'
+) AS x
+JOIN verses v  ON v.verse_number = x.vn
+JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1
+JOIN chapters tc ON tc.chapter_number = x.tch
+JOIN verses tv ON tv.verse_number = x.tvn AND tv.chapter_id = tc.id;
+
+INSERT INTO verse_word_meanings
+  (verse_id, word_order, devanagari, transliteration,
+   meaning_en, meaning_hi, meaning_hinglish, grammar, root_word)
+SELECT v.id, w.ord, w.dev, w.tr, w.m_en, w.m_hi, w.m_hing, w.gram, w.root FROM (
+  SELECT 41 AS vn, 1 AS ord, 'अधर्माभिभवात्' AS dev, 'adharmābhibhavāt' AS tr, 'from the overpowering of adharma — abhibhava is being overcome, pressed down from above' AS m_en, 'अधर्म के अभिभव से — अभिभव यानी दब जाना, ऊपर से दबाया जाना' AS m_hi, 'adharm ke abhibhav se — abhibhav yani dab jaana, upar se dabaya jaana' AS m_hing, 'ablative singular' AS gram, 'अभि + भू' AS root
+  UNION ALL SELECT 41, 2, 'प्रदुष्यन्ति', 'praduṣyanti', 'become spoiled, become corrupted. The verb is not softened here because softening it would hide what the sentence does. It is the middle step of the argument and it is the step doing the work', 'बिगड़ जाती हैं, दूषित हो जाती हैं। यहाँ क्रिया नरम नहीं की गई क्योंकि नरम करने से छिप जाता कि वाक्य कर क्या रहा है। यह दलील का बीच का क़दम है और काम यही क़दम कर रहा है', 'bigad jaati hain, dooshit ho jaati hain. Yahan kriya naram nahi ki gayi kyunki naram karne se chhip jaata ki vakya kar kya raha hai. Yeh dalil ka beech ka kadam hai aur kaam yahi kadam kar raha hai', 'present, third plural', 'प्र + दुष्'
+  UNION ALL SELECT 41, 3, 'कुलस्त्रियः', 'kula-striyaḥ', 'the women of the family — grammatically the subject of the spoiling, which is the sentence''s whole architecture: the breakdown is general and the corruption is assigned to one group of people', 'कुल की स्त्रियाँ — व्याकरण में बिगड़ने का कर्ता वही हैं, और वाक्य की पूरी बनावट यही है: टूटना आम है और बिगड़ना एक ख़ास समूह के नाम कर दिया गया है', 'kul ki striyan — vyakaran mein bigadne ka karta wahi hain, aur vakya ki poori banawat yahi hai: tootna aam hai aur bigadna ek khaas samooh ke naam kar diya gaya hai', 'nominative plural', 'स्त्री'
+  UNION ALL SELECT 41, 4, 'वर्णसंकरः', 'varṇa-saṅkaraḥ', 'mixing of the varṇas. This anxiety was not theoretical: for a very long time it was the stated reason for controlling women — who they could marry, where they could go, what they could do — and it is still used that way. The gloss says so because a reader meeting the phrase here should know what it has been for', 'वर्णों का मिल जाना। यह घबराहट सैद्धांतिक नहीं थी: बहुत लंबे समय तक यही वह कही हुई वजह थी जिससे स्त्रियों को नियंत्रित किया गया — किससे विवाह करें, कहाँ जाएँ, क्या करें — और आज भी इसी तरह इस्तेमाल होती है। अर्थ यह इसलिए कहता है कि यहाँ इस शब्द से मिलने वाले पाठक को पता होना चाहिए कि यह किस काम आता रहा है', 'varnon ka mil jaana. Yeh ghabrahat saiddhantik nahi thi: bahut lambe samay tak yahi woh kahi hui wajah thi jisse striyon ko niyantrit kiya gaya — kisse vivah karein, kahan jaayein, kya karein — aur aaj bhi isi tarah istemaal hoti hai. Arth yeh isliye kehta hai ki yahan is shabd se milne wale paathak ko pata hona chahiye ki yeh kis kaam aata raha hai', 'nominative singular', 'सम् + कृ'
+  UNION ALL SELECT 41, 5, 'जायते', 'jāyate', 'is born, comes about — the same root as janma, birth, and this is the only place in the argument where that root appears', 'जन्म लेता है, पैदा होता है — वही धातु जो जन्म की है, और पूरी दलील में यह धातु सिर्फ़ यहीं आती है', 'janm leta hai, paida hota hai — wahi dhatu jo janm ki hai, aur poori dalil mein yeh dhatu sirf yahin aati hai', 'present middle, third singular', 'जन्'
 ) AS w
 JOIN verses v ON v.verse_number = w.vn
 JOIN chapters c ON c.id = v.chapter_id AND c.chapter_number = 1;
