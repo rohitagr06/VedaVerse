@@ -23,7 +23,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | **Done** |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
-| 6 | 108 curated verses, all seed content | **In progress — 109 written, 5 chapters to go** |
+| 6 | 108 curated verses, all seed content | **In progress — 117 written, 4 chapters to go** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -38,7 +38,7 @@ Nothing is deployed yet.
 
 ### Where step 6 has got to
 
-A hundred and nine verses are written to final quality across thirteen chapters, each with
+A hundred and seventeen verses are written to final quality across fourteen chapters, each with
 Sanskrit, IAST and simple transliteration, a literal rendering, three original
 translations, three summaries, an explanation at beginner depth, memory hooks,
 three reflection questions, a practice, topic tags, modern examples,
@@ -53,6 +53,7 @@ Hinglish.
 | 4 — Knowing and Doing | 8 | 32 | intermediate, advanced |
 | 5 — Doing It Without Carrying It | 8 | 32 | intermediate, advanced |
 | 6 — Sitting With Yourself | 8 | 32 | intermediate, advanced |
+| 7 — Where To Look, And Who Comes | 8 | 32 | advanced |
 | 12 — The Easier Road | 8 | 24 | all three |
 | 13 — The Field and Who Watches It | 8 | 32 | intermediate, advanced |
 | 14 — Three Settings | 8 | 32 | intermediate, advanced |
@@ -70,7 +71,7 @@ same judgement taken one step too far — the chapter list shows chapter 1 first
 badged Beginner, so a reader could open it and then never meet it again on their
 own path. **The beginner and intermediate tracks are both complete.** Chapter 2
 has a second batch of six discretionary verses outstanding, and the advanced-only
-chapters 7 to 11 are the remaining body of work.
+chapters 8 to 11 are the remaining body of work.
 
 **The advanced track now differs from the intermediate one.** Until chapter 15
 was seeded it did not. `app.tracks` lists 7, 8, 9, 10, 11 and 15 for advanced,
@@ -79,7 +80,9 @@ switched to advanced gained nothing but chapter 1 — nothing errored, no check
 failed, and the product quietly did not do what it said. That is the same family
 of bug as a published chapter with no verses in it. Chapter 15 is the shortest
 of the six at twenty verses, so it went first, and the smoke suite now switches
-track the way a reader does and asserts that the path actually changes.
+track the way a reader does and asserts that the path actually changes. Chapter 7
+followed it, and the advanced path now runs 2, 3, 4, 5, 6, 7, 12, 13, 14, 15, 16,
+17, 1, 18.
 
 **The two deferred passages are now written.** 4.13, the varṇa verse, and 1.41,
 Arjuna's claim that ruined women produce varṇa-saṅkara, are the book's hardest
@@ -232,7 +235,7 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 148 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 161 HTTP checks
 ```
 
 A hundred and thirty-six checks over HTTP in about twenty seconds: headers, error
@@ -328,6 +331,23 @@ not-feeling. **15.15** names apohana, the taking away of memory and knowledge, a
 coming from the same place they do; nothing in that chapter file treats
 forgetting or going blank as a fault, and the four modern examples on the verse
 all run the other way.
+
+**7.16** is the verse with the best claim to being this project's licence. It
+names four kinds of person who come — the one in distress, the one who wants to
+know, the one who wants something out of it, and the one who knows — and the
+word it puts on all four, *before* it separates them, is sukṛtinaḥ: people who
+have done well. A reader who arrived here in a bad month, or because they wanted
+something, is named as legitimate by the text itself. And then **7.17** ranks
+them, and the ranking is asserted too, because printing 7.16 without 7.17 would
+have been the most comfortable omission in the chapter and a lie by arrangement.
+What the 7.17 page adds is what the ranking is *not*: all four are already
+inside when it is drawn. **7.3** — one in thousands even tries — counts an
+activity and not a worth, and is cross-referenced to 7.16 as an *opposite* so a
+reader who lands on it alone is handed the other one. **7.11** is the book
+endorsing desire, and the narrow qualifier is kept rather than widened into
+"only spiritual desire counts". **7.14** says *hard to get across* before it says
+anything about getting across, and nothing in that chapter file promises a
+timescale.
 
 And one guarded for the opposite reason: **18.63** — *think it over completely,
 then do as you wish*. That permission is why this text can be taught to somebody

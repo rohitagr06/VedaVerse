@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 109 verses, 439 examples, thirteen chapters. Beginner AND intermediate tracks complete; advanced now differs from intermediate. Remaining: ch 2 batch B and the advanced-only chapters 7–11 |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 117 verses, 471 examples, fourteen chapters. Beginner AND intermediate tracks complete; advanced now differs from intermediate. Remaining: ch 2 batch B and the advanced-only chapters 8–11 |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -305,7 +305,7 @@ asserts it on the DEFAULT render rather than at a named level.
 three tracks in full, and `PathService::build()` skips chapters that are not
 published yet rather than erroring. Seeding 6, then 5, then 17 put all three on
 the intermediate path on load, and chapter 1 joined the advanced path the same
-way — 109 verses across thirteen chapters — with nothing edited. The one thing
+way — 117 verses across fourteen chapters — with nothing edited. The one thing
 that IS config is which chapters a track walks and in what order, and that is
 `app.tracks`. Check the path after
 every new chapter anyway; the silence cuts both ways.
@@ -412,6 +412,18 @@ target drops the row silently — no error, no dangling id, just one fewer
 cross-reference than intended. Declare the count in a comment at the top of
 section 5, then verify the loaded rows against it before shipping. The fix was
 6.17, which turned out to be the better pairing anyway.
+
+**When the text ranks, print the ranking.** 7.16 names four kinds of person who
+come and calls all four sukṛtinaḥ — people who have done well — before it
+separates them, which makes it the single best verse in the book for what this
+product is. 7.17 then says one of the four stands out. Seeding 7.16 and quietly
+leaving 7.17 out was available, would have passed every check, and would have
+been a lie by arrangement rather than by sentence. Both are written, both are in
+the same path cluster, and the 7.17 explanation says the verse ranks in as many
+words before saying what the ranking is not. **The rule generalises: where the
+text says something this project would rather it did not, the page says it and
+then says what it does not entail. Omission is the failure mode that leaves no
+trace.**
 
 **A chapter that sorts is a chapter that will be used to sort people, and the
 best refusal is one the text makes itself.** 16.4 needed an explanation written
@@ -641,7 +653,7 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
   Recorded in the header of `seed_ch01.sql` and in README.md so the deferral
   reads as a decision rather than an oversight.
 - ~~14 of the curated verses have no beginner-level explanation.~~
-  **Closed.** All 109 now have one. The fallback in
+  **Closed.** All 117 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
   from rendering an empty section — but it is no longer carrying a third of
   the corpus. Each chapter's beginner rows live at the bottom of that

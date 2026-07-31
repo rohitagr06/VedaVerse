@@ -174,20 +174,25 @@ mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
 # the advanced track renders identically to the intermediate one.
 mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
     < htdocs/database/seed_ch15.sql
+
+# Step 6, chapter 7 — the second advanced-only chapter. Contains 7.16,
+# which is the verse this whole product rests on, and 7.17 next to it.
+mariadb --skip-ssl -h 127.0.0.1 -u vedaverse -p vedaverse_db \
+    < htdocs/database/seed_ch07.sql
 ```
 
-All fourteen are safe to re-run — they update rather than duplicating.
+All fifteen are safe to re-run — they update rather than duplicating.
 **Re-run `seed_ch01.sql` as well**: it has gained a section 7 containing 1.41,
 which was deferred until chapter 4 could be written with it.
 Together they add all 18 chapters, 14 topics and their graph, and
-**a hundred and nine fully-written verses** with word meanings, explanations, 439 modern
+**a hundred and seventeen fully-written verses** with word meanings, explanations, 471 modern
 examples, memory hooks, reflections, practices and cross-references, all in
 three languages: chapter 1 verses 28, 29, 30, 31, 32, 38, 41, 46 and 47; chapter 2
 verses 13, 14, 20, 22, 23, 27, 47, 48, 50, 62, 63
 and 70; chapter 3 verses 5, 8, 16, 19, 21, 27, 35 and 37; chapter 5 verses 2,
 8, 10, 12, 18, 21, 22 and 23; chapter 4 verses 7, 8, 11, 13, 18, 20, 34 and 38;
 chapter 6 verses 5, 6, 17, 19, 26, 34, 35 and
-40; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 13 verses 2, 6, 8,
+40; chapter 7 verses 3, 5, 8, 11, 14, 16, 17 and 21; chapter 12 verses 5, 8, 12, 13, 15, 16, 18 and 19; chapter 13 verses 2, 6, 8,
 20, 27, 29, 32 and 34; chapter 14 verses 5, 6, 7,
 8, 11, 22, 23 and 26; chapter 15 verses 1, 3, 5, 7, 9, 10, 15 and 20;
 chapter 16 verses 1,
@@ -197,12 +202,12 @@ and chapter 18 verses 11, 14, 16, 32, 37, 48, 59 and 63.
 **The beginner and intermediate tracks are both complete, and the advanced
 track has finally stopped being a copy of the intermediate one.** `/` renders
 thirteen clusters across six chapters on the beginner track, twenty-five across
-twelve on intermediate, and twenty-seven across thirteen on advanced now that
-chapter 15 exists. Before it was seeded the last of those numbers was identical
+twelve on intermediate, and twenty-nine across fourteen on advanced now that
+chapters 15 and 7 exist. Before it was seeded the last of those numbers was identical
 to the second: `PathService` silently skips chapters with no seeded verses, so
 switching to advanced gained a reader nothing and nothing errored. A reader who
 works through the beginner track meets the argument of the book from 2.13 to
-18.63 without a gap. Every one of the 109 verses has an explanation written at
+18.63 without a gap. Every one of the 117 verses has an explanation written at
 beginner depth, so nobody on the default track is served writing pitched above
 them.
 
@@ -219,16 +224,16 @@ chapter list would never have seen it again on their own path. `smoke-test.sh`
 asserts chapter 1 appears on the guest home page so this cannot regress
 silently.
 
-Order matters. The thirteen chapter files all join to the chapters and topics
+Order matters. The fourteen chapter files all join to the chapters and topics
 that `seed_sample.sql` creates, so running any of them first inserts nothing
 and reports no error.
 
-What remains of step 6 is the advanced-only chapters 7 to 11 and chapter 2
+What remains of step 6 is the advanced-only chapters 8 to 11 and chapter 2
 batch B. Nothing in these files gets thrown away.
 
 ## The verses the suite guards
 
-Sixty-one sentences across thirty-three verses. Most of them refuse a specific
+Seventy-three sentences across forty-one verses. Most of them refuse a specific
 misreading that the verse has a documented history of being put to; the one
 on 18.63 is there for the opposite reason — it is the sentence the product's
 whole stance rests on. `smoke-test.sh` asserts every one of them by literal
@@ -433,6 +438,36 @@ no complaint in it, and `adhiṣṭhāya` is a presiding word rather than a figh
 one), **15.10** keeps an eye distinct from a belief about it, **15.5** reads its
 list as subtraction rather than as five new qualities to acquire, and **15.20**
 refuses to turn `kṛta-kṛtya` into a promise that nothing is ever required again.
+
+**7.16** has the best claim of any verse in the book to being this project's
+licence. Four kinds of person come — `ārta`, the one in distress; `jijñāsu`, the
+one who wants to know; `arthārthī`, the one who wants something out of it; and
+`jñānī`, the one who knows — and the word applied to all four, arriving *before*
+they are separated, is `sukṛtinaḥ`: people who have done well. The one in
+distress is named first. The one who wanted something is counted in with no
+qualifying clause anywhere near it. Both the explanation and the `sukṛtinaḥ`
+gloss are asserted by literal string.
+
+**7.17** then ranks them, and the ranking is asserted as well. Printing 7.16 and
+quietly omitting 7.17 was available, would have passed every check in this
+suite, and would have been a lie by arrangement rather than by sentence. The
+explanation says the verse ranks in as many words, and then says what the
+ranking is not: 7.16 has already put all four inside, so this sorts people who
+are all in rather than deciding who is let in.
+
+**7.3** — one in thousands even tries — is the discouragement verse. Read as a
+scoreboard it tells almost every reader they are nobody. The page says it counts
+an activity and not a worth, and the cross-reference to 7.16 is stored with the
+relationship `opposite` so a reader who lands on 7.3 alone is handed the other
+one. **7.11** is the book endorsing desire: `dharmāviruddha`, not set against
+dharma, is the whole qualifier and it is narrow. The gloss says the word for
+only-spiritual is not in the line and never was, and the verse is
+cross-referenced to 3.37 — which calls `kāma` the enemy — because hiding that
+tension would be worse than naming it. **7.14** says `duratyayā` before it says
+anything about crossing, and no page in that file attaches a timescale.
+**7.8**'s `pauruṣaṁ nṛṣu` is glossed honestly rather than tidied: the root is
+gendered, the gloss says so, and the rendering is defended rather than
+disguised.
 
 ## 3. The four automated checks
 

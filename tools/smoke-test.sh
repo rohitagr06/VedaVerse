@@ -923,6 +923,83 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "chapter 15 not seeded — load database/seed_ch15.sql to test 15.7 and 15.15"
     fi
 
+    # CHAPTER 7 — THE VERSE THIS WHOLE PRODUCT RESTS ON, AND THE ONE
+    # IMMEDIATELY AFTER IT
+    #   7.16 names four kinds of person who come — the one in distress,
+    #   the one who wants to know, the one who wants something out of
+    #   it, and the one who knows — and the word it puts on all four,
+    #   BEFORE it separates them, is sukritinah: people who have done
+    #   well. A reader who arrived here in a bad month, or because they
+    #   wanted something, is named as legitimate by the text itself.
+    #   Nothing in this repository has a better claim to being its
+    #   licence.
+    #
+    #   And then 7.17 ranks them. Printing 7.16 without 7.17 would have
+    #   been the most comfortable omission available in this chapter and
+    #   it would have been a lie by arrangement. Both are seeded, both
+    #   sit in the same path cluster, and the 7.17 explanation says in
+    #   as many words that the verse ranks. What it adds is what the
+    #   ranking is NOT: 7.16 has already counted all four in, so this
+    #   sorts people who are all inside rather than deciding who is let
+    #   in at all.
+    #
+    #   7.3 is the discouragement verse — one in thousands even tries.
+    #   Read as a scoreboard it tells almost every reader they are
+    #   nobody. It counts an activity, not a worth, and it is cross
+    #   referenced to 7.16 as an opposite so a reader who lands on it
+    #   alone is handed the other one.
+    #
+    #   7.11 is the book endorsing desire: kama that is not set against
+    #   dharma is named as the divine thing. The qualifier is real and
+    #   narrow, and softening this into "only spiritual desire counts"
+    #   would put a word in the line that is not there. It is cross
+    #   referenced to 3.37, which calls kama the enemy, because hiding
+    #   that tension would be worse than naming it.
+    #
+    #   7.14 says duratyaya — hard to get across — BEFORE it says
+    #   anything about getting across. No page in that chapter file
+    #   promises a timescale.
+    if [ "$(status anon /chapter/7/verse/16)" = "200" ]; then
+      contains "7.16 counts the one in trouble in, by name" \
+        'The one in trouble is counted in, by name' \
+        "$(req anon "$BASE/chapter/7/verse/16")"
+      contains "  and the sukritinah gloss says it covers all four" \
+        'THE WORD IS APPLIED TO ALL FOUR' \
+        "$(req anon "$BASE/chapter/7/verse/16?mode=study")"
+      contains "7.17 admits that it ranks" \
+        'The verse ranks, and this page is not going to pretend otherwise' \
+        "$(req anon "$BASE/chapter/7/verse/17")"
+      contains "  and the vishishyate gloss does not soften it" \
+        'THE VERSE RANKS AND THIS IS THE WORD IT RANKS WITH' \
+        "$(req anon "$BASE/chapter/7/verse/17?mode=study")"
+      contains "7.3 counts an activity and not a worth" \
+        'it is counting an activity and not a worth' \
+        "$(req anon "$BASE/chapter/7/verse/3")"
+      contains "7.11 keeps the qualifier and keeps it narrow" \
+        'The qualifier is in the compound and it is real' \
+        "$(req anon "$BASE/chapter/7/verse/11")"
+      contains "  and the dharmaviruddha gloss refuses the spiritual-only reading" \
+        'THE WHOLE QUALIFIER' \
+        "$(req anon "$BASE/chapter/7/verse/11?mode=study")"
+      contains "7.14 promises no timescale" \
+        'Nothing here is quick and the verse says so first' \
+        "$(req anon "$BASE/chapter/7/verse/14")"
+      contains "7.5 says has become rather than oversees" \
+        'the verb is one of having turned into' \
+        "$(req anon "$BASE/chapter/7/verse/5")"
+      contains "7.8 has no rank or birth on its list" \
+        'no rank, no birth, nothing anybody has to be admitted to' \
+        "$(req anon "$BASE/chapter/7/verse/8")"
+      contains "  and the paurusham gloss names the gendered root" \
+        'the gendered root is named rather than tidied away' \
+        "$(req anon "$BASE/chapter/7/verse/8?mode=study")"
+      contains "7.21 redirects nobody" \
+        'The verse redirects nobody' \
+        "$(req anon "$BASE/chapter/7/verse/21")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 7 not seeded — load database/seed_ch07.sql to test 7.16 and 7.17"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
 
     # CHAPTER 1 IS ON EVERY TRACK, NOT ONLY ON ADVANCED
@@ -954,6 +1031,8 @@ case "$CHAPTERS" in
     contains "a guest can switch to the advanced track" 'is-current' "$ADVPATH"
     contains "  and the advanced path now includes chapter 15" \
       'href="/chapter/15/verse/1"' "$ADVPATH"
+    contains "  and chapter 7" \
+      'href="/chapter/7/verse/3"' "$ADVPATH"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 
     PROBLEM="$(req anon "$BASE/problem/anger")"
