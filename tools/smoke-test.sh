@@ -865,6 +865,64 @@ case "$CHAPTERS" in
       printf '  \033[33m—\033[0m %s\n' "1.41 not seeded — reload database/seed_ch01.sql"
     fi
 
+    # CHAPTER 15 — THE FIRST ADVANCED-ONLY CHAPTER, AND THREE CARE-VERSES
+    #   Until this chapter was seeded the advanced track rendered
+    #   identically to the intermediate one: app.tracks lists 7, 8, 9,
+    #   10, 11 and 15 for advanced, PathService silently skips chapters
+    #   with no seeded verses, and so switching to advanced gained a
+    #   reader nothing. Same family of bug as a published chapter with
+    #   no verses in it — nothing errors and no check fails.
+    #
+    #   15.7 is the warmest sentence in the book and it has been used as
+    #   a permission slip: I am already a fragment of the divine, so
+    #   what I do is beside the point. The refusal is in the SAME verse.
+    #   The second line says the fragment DRAWS the senses, and karshati
+    #   is the word for hauling something heavy. It is not sitting above
+    #   the situation.
+    #
+    #   15.3 hands over an axe, and asanga is the same sanga as 5.10 and
+    #   14.7 — the sticking, not the contact. Two guards: the axe is
+    #   pointed at a TREE, and not-sticking is not not-feeling.
+    #
+    #   15.15 names apohana — the taking away of memory and knowledge —
+    #   as coming from the same place they do. For a reader treating
+    #   their own blankness as a personal failure that is the text
+    #   saying otherwise, unprompted, and almost nobody quotes it.
+    if [ "$(status anon /chapter/15/verse/7)" = "200" ]; then
+      contains "15.7 is not a permission slip" \
+        'the fragment is not sitting above the situation' \
+        "$(req anon "$BASE/chapter/15/verse/7")"
+      contains "  and the karshati gloss keeps the fragment at work" \
+        'THE FRAGMENT IS THE SUBJECT' \
+        "$(req anon "$BASE/chapter/15/verse/7?mode=study")"
+      contains "15.3 points the axe at a tree" \
+        'the axe in this verse is pointed at a tree' \
+        "$(req anon "$BASE/chapter/15/verse/3")"
+      contains "  and asanga is not-sticking, not not-feeling" \
+        'asanga is not-sticking, not not-feeling' \
+        "$(req anon "$BASE/chapter/15/verse/3")"
+      contains "15.15 puts the forgetting on the list" \
+        'The forgetting is on the list' \
+        "$(req anon "$BASE/chapter/15/verse/15")"
+      contains "  and the apohana gloss refuses to call it a fault" \
+        'THE FORGETTING IS ON THE LIST' \
+        "$(req anon "$BASE/chapter/15/verse/15?mode=study")"
+      contains "15.9 does not make an enemy of the senses" \
+        'Nothing in chapter 15 asks anybody to stop hearing or stop tasting' \
+        "$(req anon "$BASE/chapter/15/verse/9")"
+      contains "15.10 keeps an eye distinct from a belief" \
+        'between somebody who has looked and somebody who has read about looking' \
+        "$(req anon "$BASE/chapter/15/verse/10")"
+      contains "15.5 reads its list as subtraction" \
+        'every single term is a subtraction' \
+        "$(req anon "$BASE/chapter/15/verse/5")"
+      contains "15.20 does not promise nothing is left to do" \
+        'does not mean a person now has nothing left to do' \
+        "$(req anon "$BASE/chapter/15/verse/20")"
+    else
+      printf '  \033[33m—\033[0m %s\n' "chapter 15 not seeded — load database/seed_ch15.sql to test 15.7 and 15.15"
+    fi
+
     contains "the path shows a current node" 'is-current' "$(req anon "$BASE/")"
 
     # CHAPTER 1 IS ON EVERY TRACK, NOT ONLY ON ADVANCED
@@ -879,6 +937,23 @@ case "$CHAPTERS" in
     contains "chapter 1 is on the beginner path" \
       'href="/chapter/1/verse/28"' \
       "$(req anon "$BASE/")"
+
+    # THE ADVANCED TRACK HAS TO DIFFER FROM THE INTERMEDIATE ONE
+    #   PathService skips chapters with no seeded verses, so for as long
+    #   as 7, 8, 9, 10, 11 and 15 were empty the advanced track rendered
+    #   the intermediate one exactly — switching to it gained a reader
+    #   nothing and no check caught that. Chapter 15 is the first of the
+    #   six to be written. Switching track is a POST with a CSRF token,
+    #   the same as a reader does it, and it is remembered in the
+    #   session, so this needs its own jar.
+    ADVT="$(token adv /path)"
+    req adv -o /dev/null -X POST \
+      --data-urlencode "_csrf=$ADVT" --data-urlencode "track=advanced" \
+      "$BASE/path/track"
+    ADVPATH="$(req adv "$BASE/path")"
+    contains "a guest can switch to the advanced track" 'is-current' "$ADVPATH"
+    contains "  and the advanced path now includes chapter 15" \
+      'href="/chapter/15/verse/1"' "$ADVPATH"
     contains "life problems are listed"      'problem/anger' "$(req anon "$BASE/problems")"
 
     PROBLEM="$(req anon "$BASE/problem/anger")"

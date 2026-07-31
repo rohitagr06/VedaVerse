@@ -23,7 +23,7 @@ The build follows the fifteen-step order in `spec/RC1_Master_Build_Prompt_v2.md`
 | 3 | Design system, layouts, component library | **Done** |
 | 4 | Full three-language interface string table | **Done** |
 | 5 | Content service, chapter/verse/topic pages, Chariot Path | **Done** |
-| 6 | 108 curated verses, all seed content | **In progress — 101 of 108** |
+| 6 | 108 curated verses, all seed content | **In progress — 109 written, 5 chapters to go** |
 | 7 | Quizzes, SM-2 spaced repetition, progress, badges | Not started |
 | 8 | Search | Not started |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | Not started |
@@ -38,7 +38,7 @@ Nothing is deployed yet.
 
 ### Where step 6 has got to
 
-A hundred and one verses are written to final quality across twelve chapters, each with
+A hundred and nine verses are written to final quality across thirteen chapters, each with
 Sanskrit, IAST and simple transliteration, a literal rendering, three original
 translations, three summaries, an explanation at beginner depth, memory hooks,
 three reflection questions, a practice, topic tags, modern examples,
@@ -56,6 +56,7 @@ Hinglish.
 | 12 — The Easier Road | 8 | 24 | all three |
 | 13 — The Field and Who Watches It | 8 | 32 | intermediate, advanced |
 | 14 — Three Settings | 8 | 32 | intermediate, advanced |
+| 15 — The Upside-Down Tree | 8 | 32 | advanced |
 | 16 — Two Directions | 8 | 24 | all three |
 | 17 — What You Actually Believe | 8 | 32 | intermediate, advanced |
 | 18 — Putting It Down | 8 | 24 | all three |
@@ -69,7 +70,16 @@ same judgement taken one step too far — the chapter list shows chapter 1 first
 badged Beginner, so a reader could open it and then never meet it again on their
 own path. **The beginner and intermediate tracks are both complete.** Chapter 2
 has a second batch of six discretionary verses outstanding, and the advanced-only
-chapters — 7 to 11 and 15 — are the remaining body of work.
+chapters 7 to 11 are the remaining body of work.
+
+**The advanced track now differs from the intermediate one.** Until chapter 15
+was seeded it did not. `app.tracks` lists 7, 8, 9, 10, 11 and 15 for advanced,
+`PathService` silently skips chapters with no seeded verses, and so a reader who
+switched to advanced gained nothing but chapter 1 — nothing errored, no check
+failed, and the product quietly did not do what it said. That is the same family
+of bug as a published chapter with no verses in it. Chapter 15 is the shortest
+of the six at twenty verses, so it went first, and the smoke suite now switches
+track the way a reader does and asserts that the path actually changes.
 
 **The two deferred passages are now written.** 4.13, the varṇa verse, and 1.41,
 Arjuna's claim that ruined women produce varṇa-saṅkara, are the book's hardest
@@ -222,7 +232,7 @@ what cannot be tested without the real host, and a per-step log of what exists.
 find htdocs tools -name "*.php" -exec php -l {} \;    # syntax, PHP 7.4 upward
 php tools/check-strings.php                           # string table complete
 php tools/check-contrast.php                          # 35 WCAG AA pairings
-php tools/dev-reset.php && bash tools/smoke-test.sh   # 136 HTTP checks
+php tools/dev-reset.php && bash tools/smoke-test.sh   # 148 HTTP checks
 ```
 
 A hundred and thirty-six checks over HTTP in about twenty seconds: headers, error
@@ -306,6 +316,18 @@ trial anywhere in the chapter), **14.23** (udāsīna-*vat*, LIKE one uninvolved 
 the suffix is not a licence to stop caring about people), **5.22** (not an
 argument for joylessness), and the three sentences on **1.46**, which is the most
 carefully written page in the corpus.
+
+**15.7** is the warmest sentence in the book and has been used as a permission
+slip — *I am already a fragment of the divine, so what I do is beside the point*.
+The refusal is in the same verse: its second line says the fragment *draws* the
+senses, and karṣati is the word for hauling something heavy, so the fragment is
+not sitting above the situation, it is down in the body doing the pulling.
+**15.3** hands over an axe, and two things are asserted because both are in the
+line — the axe is pointed at a *tree*, and asaṅga is not-sticking, not
+not-feeling. **15.15** names apohana, the taking away of memory and knowledge, as
+coming from the same place they do; nothing in that chapter file treats
+forgetting or going blank as a fault, and the four modern examples on the verse
+all run the other way.
 
 And one guarded for the opposite reason: **18.63** — *think it over completely,
 then do as you wish*. That permission is why this text can be taught to somebody

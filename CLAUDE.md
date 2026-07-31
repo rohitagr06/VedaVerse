@@ -44,7 +44,7 @@ supernatural claims, medical/legal/financial advice.
 | 3 | `tokens.css`, `base.css`, `components.css`, layouts, navigation, component library | **Done** |
 | 4 | Complete three-language interface string table + `I18nService` | **Done** |
 | 5 | `ContentService`, repositories, chapter/verse/topic/problem pages, the Chariot Path | **Done** |
-| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 101 verses, 407 examples, twelve chapters. Beginner AND intermediate tracks complete. Remaining: ch 2 batch B and the advanced-only chapters 7–11 and 15 |
+| 6 | **All seed content** — 108 verses in three languages, 8–12 examples each. The largest deliverable. | **In progress** — 109 verses, 439 examples, thirteen chapters. Beginner AND intermediate tracks complete; advanced now differs from intermediate. Remaining: ch 2 batch B and the advanced-only chapters 7–11 |
 | 7 | `QuizService`, `SrsService`, `ProgressService`, `BadgeService` | |
 | 8 | `SearchService` | |
 | 9 | Cloudflare Worker, Sarathi chat, offline responder | |
@@ -305,10 +305,23 @@ asserts it on the DEFAULT render rather than at a named level.
 three tracks in full, and `PathService::build()` skips chapters that are not
 published yet rather than erroring. Seeding 6, then 5, then 17 put all three on
 the intermediate path on load, and chapter 1 joined the advanced path the same
-way — 101 verses across twelve chapters — with nothing edited. The one thing that
-IS config is which chapters a track walks and in what order, and that is
+way — 109 verses across thirteen chapters — with nothing edited. The one thing
+that IS config is which chapters a track walks and in what order, and that is
 `app.tracks`. Check the path after
 every new chapter anyway; the silence cuts both ways.
+
+**The same silence had a second victim, and it took longer to notice.** For
+months the ADVANCED track rendered identically to the intermediate one.
+`app.tracks` lists 7, 8, 9, 10, 11 and 15 for advanced, none of them were
+seeded, `PathService` skipped every one of them without a word, and so a reader
+who switched track got exactly what they already had. Nothing errored, no check
+failed, and the setting quietly did nothing. Same family of bug as a published
+chapter with no verses in it: the config was right and the data was absent, and
+absence is what this codebase is built to survive rather than to report.
+Chapter 15 was written first of the six because it is the shortest at twenty
+verses, and `smoke-test.sh` now POSTs a track switch the way a reader does and
+asserts that the rendered path actually changes. **A track that costs a reader
+a choice has to be worth the choice.**
 
 **Being late on a path and being absent from it are different things, and the
 second one is not a design decision — it is what happens when the first one is
@@ -377,6 +390,28 @@ rows because `diagnos` matched *"worth reading rather than diagnosing"* and
 refusing to diagnose. Same failure as `jaati` matching the Hinglish verb. Every
 one of these scans now uses `[[:<:]]...[[:>:]]`, and a scan that fires on the
 prose meant to protect the reader will be ignored within a week.
+
+**And the boundary syntax is not portable — `[[:<:]]` is BSD, not GNU.** On this
+container GNU grep answers `Invalid character class name` and then prints
+`none`, which reads exactly like a clean scan and is not one. Every safety
+sweep must be run as `grep -P "\b(...)\b"` here, and any scan that reports
+nothing should be re-run once with a term you know is present, to prove the
+pattern compiled at all. A safety check that silently cannot fail is worse than
+no check, because it is recorded as having passed.
+
+**`jaati` will keep firing and it is always the verb.** *jaati hai*, *ji jaati
+zindagi* — "goes", "a life that is lived". Ten hits in chapter 15, ten false
+positives, same as every chapter before it. Scan for the caste sense with the
+verb forms excluded rather than dropping the term.
+
+**A cross-reference to an unseeded verse vanishes, and the count is the only
+thing that tells you.** Chapter 15 declared fifteen and loaded fourteen: 15.9
+pointed at 3.34, chapter 3 has 5, 8, 16, 19, 21, 27, 35 and 37 seeded, and 34 is
+not among them. The INSERT joins the target chapter and verse, so a missing
+target drops the row silently — no error, no dangling id, just one fewer
+cross-reference than intended. Declare the count in a comment at the top of
+section 5, then verify the loaded rows against it before shipping. The fix was
+6.17, which turned out to be the better pairing anyway.
 
 **A chapter that sorts is a chapter that will be used to sort people, and the
 best refusal is one the text makes itself.** 16.4 needed an explanation written
@@ -606,7 +641,7 @@ Found in the Step 5 audit. None is a defect; each is scheduled or argued.
   Recorded in the header of `seed_ch01.sql` and in README.md so the deferral
   reads as a decision rather than an oversight.
 - ~~14 of the curated verses have no beginner-level explanation.~~
-  **Closed.** All 101 now have one. The fallback in
+  **Closed.** All 109 now have one. The fallback in
   `VerseRepository::explanation()` stays — it is what keeps a missing depth
   from rendering an empty section — but it is no longer carrying a third of
   the corpus. Each chapter's beginner rows live at the bottom of that
